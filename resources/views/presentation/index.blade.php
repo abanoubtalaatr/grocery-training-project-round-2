@@ -4,51 +4,81 @@
 
 @section('content')
     <section class="hero">
-        <p style="opacity:.75;margin:0 0 .35rem;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;">SmartLearn LMS · Auth Lab</p>
-        <h1>One Laravel app. Four authentication methods.</h1>
-        <p>
-            This project demonstrates <strong>Session</strong>, <strong>Sanctum</strong>,
-            <strong>Passport (OAuth2)</strong>, and <strong>JWT</strong> with a Learning Management System
-            similar to Udemy/Coursera — built for training, with live examples.
+        <h1 class="hero__brand">SmartLearn</h1>
+        <p class="hero__title">Learn authentication by watching it work.</p>
+        <p class="hero__lead">
+            One Laravel LMS. Four real methods — Session, Sanctum, Passport, and JWT —
+            explained with flows you can click and APIs you can call.
         </p>
+        <div class="hero__cta">
+            <a class="btn btn-primary" href="{{ route('presentation.session') }}">Start with Session</a>
+            <a class="btn btn-ghost" href="{{ route('login') }}">Open live login</a>
+        </div>
     </section>
 
-    <div class="grid" style="margin-bottom:1.5rem;">
-        <a class="card" href="{{ route('presentation.session') }}" style="text-decoration:none;">
-            <span class="badge badge-session">Phase 1</span>
-            <h3>Session Auth</h3>
-            <p>Traditional Blade website. Cookie + server session. Breeze login/logout/remember me.</p>
-        </a>
-        <a class="card" href="{{ route('presentation.sanctum') }}" style="text-decoration:none;">
-            <span class="badge badge-sanctum">Phase 2</span>
-            <h3>Sanctum</h3>
-            <p>Own Flutter / SPA apps. Personal access tokens in <code class="inline">personal_access_tokens</code>.</p>
-        </a>
-        <a class="card" href="{{ route('presentation.passport') }}" style="text-decoration:none;">
-            <span class="badge badge-passport">Phase 3</span>
-            <h3>Passport OAuth2</h3>
-            <p>Third-party apps (ABC University, Zoom, ExamPro) with Client ID, Secret, and scopes.</p>
-        </a>
-        <a class="card" href="{{ route('presentation.jwt') }}" style="text-decoration:none;">
-            <span class="badge badge-jwt">Phase 4</span>
-            <h3>JWT</h3>
-            <p>Microservice-style API. Stateless Bearer JWT — no token row lookup for basic auth.</p>
-        </a>
-    </div>
+    <section class="section">
+        <div class="section-head reveal">
+            <h2>Pick a phase</h2>
+            <p>Each one answers: who is the client, and what do they send?</p>
+        </div>
 
-    <div class="card prose">
-        <h2>Demo accounts</h2>
-        <p>Password for all: <code class="inline">password</code></p>
-        <ul>
-            <li><strong>admin@smartlearn.test</strong> — Admin</li>
-            <li><strong>instructor@smartlearn.test</strong> — Instructor</li>
-            <li><strong>student@smartlearn.test</strong> — Student</li>
-        </ul>
-        <p style="margin-top:1rem;">
-            Start here:
-            <a href="{{ route('login') }}">Session login</a> ·
-            <a href="{{ route('presentation.demos') }}">API demo scripts</a> ·
-            <a href="{{ route('presentation.compare') }}">Side-by-side comparison</a>
-        </p>
-    </div>
+        <div class="phase-grid stagger">
+            <a class="phase-card reveal" data-phase="session" href="{{ route('presentation.session') }}">
+                <div class="phase-card__meta">
+                    <span class="badge badge-session">Phase 1</span>
+                    <span class="phase-card__arrow">→</span>
+                </div>
+                <h3>Session</h3>
+                <p>Blade website. Cookie + server session. Best for students in the browser.</p>
+            </a>
+
+            <a class="phase-card reveal" data-phase="sanctum" href="{{ route('presentation.sanctum') }}">
+                <div class="phase-card__meta">
+                    <span class="badge badge-sanctum">Phase 2</span>
+                    <span class="phase-card__arrow">→</span>
+                </div>
+                <h3>Sanctum</h3>
+                <p>Your Flutter / SPA apps. Personal access tokens you fully control.</p>
+            </a>
+
+            <a class="phase-card reveal" data-phase="passport" href="{{ route('presentation.passport') }}">
+                <div class="phase-card__meta">
+                    <span class="badge badge-passport">Phase 3</span>
+                    <span class="phase-card__arrow">→</span>
+                </div>
+                <h3>Passport</h3>
+                <p>Third-party systems. Client ID, secret, scopes, and an approval screen.</p>
+            </a>
+
+            <a class="phase-card reveal" data-phase="jwt" href="{{ route('presentation.jwt') }}">
+                <div class="phase-card__meta">
+                    <span class="badge badge-jwt">Phase 4</span>
+                    <span class="phase-card__arrow">→</span>
+                </div>
+                <h3>JWT</h3>
+                <p>Microservice style. Signed token, mostly stateless, easy to pass around.</p>
+            </a>
+        </div>
+    </section>
+
+    <section class="panel reveal">
+        <div class="section-head">
+            <h2>Demo accounts</h2>
+            <p>Password for everyone: <code class="inline">password</code></p>
+        </div>
+        <div class="accounts">
+            <div class="account">
+                <strong>Admin</strong>
+                <code>admin@smartlearn.test</code>
+            </div>
+            <div class="account">
+                <strong>Instructor</strong>
+                <code>instructor@smartlearn.test</code>
+            </div>
+            <div class="account">
+                <strong>Student</strong>
+                <code>student@smartlearn.test</code>
+            </div>
+        </div>
+    </section>
 @endsection

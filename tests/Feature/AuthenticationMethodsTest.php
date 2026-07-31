@@ -23,7 +23,8 @@ class AuthenticationMethodsTest extends TestCase
     {
         $this->get(route('presentation.index'))
             ->assertOk()
-            ->assertSee('Four authentication methods');
+            ->assertSee('SmartLearn')
+            ->assertSee('Learn authentication by watching it work');
     }
 
     public function test_session_login_and_dashboard_access(): void

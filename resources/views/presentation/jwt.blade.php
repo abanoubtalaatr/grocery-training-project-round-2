@@ -3,37 +3,57 @@
 @section('title', 'JWT')
 
 @section('content')
-    <div class="card prose">
+    <header class="page-intro reveal">
         <span class="badge badge-jwt">Phase 4 · JWT</span>
-        <h2>Microservice-style API</h2>
+        <h1>A signed token that travels with the request.</h1>
         <p>
-            A separate API authenticates with JWT (<code class="inline">php-open-source-saver/jwt-auth</code>).
-            No session. No Sanctum PAT row. The token itself carries claims; the server verifies the signature.
+            Microservice style. No session cookie. No Sanctum row lookup for basic JWT.
+            The server verifies the signature and expiry.
         </p>
+    </header>
 
-        <h3>Flow</h3>
-        <div class="flow">POST /api/jwt/login
-↓
-Generate signed JWT
-↓
-Return JWT to client
-↓
-Client stores JWT
-↓
-Authorization: Bearer JWT
-↓
-Server verifies signature + expiry (stateless)</div>
+    <section class="panel reveal">
+        <h2 style="font-family:var(--font-display);margin:0 0 .4rem;">How it flows</h2>
+        <div class="flow-track">
+            <div class="flow-step" data-tone="jwt">
+                <div class="flow-step__index">1</div>
+                <div>
+                    <strong>POST /api/jwt/login</strong>
+                    <span>Credentials in, signed JWT out.</span>
+                </div>
+            </div>
+            <div class="flow-step" data-tone="jwt">
+                <div class="flow-step__index">2</div>
+                <div>
+                    <strong>Client stores the JWT</strong>
+                    <span>Usually only on the client — the token carries the claims.</span>
+                </div>
+            </div>
+            <div class="flow-step" data-tone="jwt">
+                <div class="flow-step__index">3</div>
+                <div>
+                    <strong>Authorization: Bearer JWT</strong>
+                    <span>Profile endpoint trusts the signature + expiry.</span>
+                </div>
+            </div>
+            <div class="flow-step" data-tone="jwt">
+                <div class="flow-step__index">4</div>
+                <div>
+                    <strong>POST /api/jwt/refresh</strong>
+                    <span>Rotate before expiry without asking for the password again.</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        <h3>Endpoints</h3>
-        <ul>
-            <li><code class="inline">POST /api/jwt/login</code></li>
-            <li><code class="inline">POST /api/jwt/refresh</code></li>
-            <li><code class="inline">GET /api/jwt/profile</code></li>
-            <li><code class="inline">POST /api/jwt/logout</code></li>
-        </ul>
-
-        <h3>Example</h3>
-        <div class="flow">curl -X POST {{ url('/api/jwt/login') }} \
+    <section class="panel reveal">
+        <h2 style="font-family:var(--font-display);margin:0 0 .4rem;">Copy & try</h2>
+        <div class="code-block">
+            <div class="code-block__bar">
+                <span>curl · JWT login + profile</span>
+                <button type="button" class="copy-btn" data-copy="#jwt-login">Copy</button>
+            </div>
+            <pre id="jwt-login">curl -X POST {{ url('/api/jwt/login') }} \
   -H "Accept: application/json" \
   -H "Content-Type: application/json" \
   -d '{"email":"student@smartlearn.test","password":"password"}'
@@ -44,12 +64,10 @@ curl {{ url('/api/jwt/profile') }} \
 
 curl -X POST {{ url('/api/jwt/refresh') }} \
   -H "Authorization: Bearer JWT_HERE" \
-  -H "Accept: application/json"</div>
-
-        <div class="note">
-            JWT shines for microservices and distributed systems where you want to avoid
-            a shared token database on every request. Revocation is harder than Sanctum/Passport
-            unless you add a denylist.
+  -H "Accept: application/json"</pre>
         </div>
-    </div>
+        <div class="note">
+            Great for microservices. Harder to revoke instantly unless you add a denylist.
+        </div>
+    </section>
 @endsection
