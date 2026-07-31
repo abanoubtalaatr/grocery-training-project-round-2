@@ -2,25 +2,33 @@
 
 namespace App\Providers;
 
-use App\Models\Meal;
-use App\Observers\MealObserver;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Passport\Passport;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
         //
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        Meal::observe(MealObserver::class);
+        Passport::tokensExpireIn(now()->addHours(2));
+        Passport::refreshTokensExpireIn(now()->addDays(30));
+        Passport::authorizationView('auth.oauth.authorize');
+
+        Passport::tokensCan([
+            'courses.read' => 'Read courses',
+            'courses.write' => 'Create/update/delete courses',
+            'students.read' => 'Read students',
+            'grades.read' => 'Read exam grades',
+            'meetings.read' => 'Read Zoom/course meetings',
+            'certificates.write' => 'Generate certificates',
+        ]);
+
+        Passport::setDefaultScope([
+            'courses.read',
+        ]);
     }
 }

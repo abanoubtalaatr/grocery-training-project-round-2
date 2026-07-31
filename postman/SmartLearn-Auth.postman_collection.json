@@ -1,0 +1,194 @@
+{
+  "info": {
+    "name": "SmartLearn Auth Lab",
+    "description": "Session / Sanctum / Passport / JWT demos for SmartLearn LMS",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:8000" },
+    { "key": "sanctumToken", "value": "" },
+    { "key": "jwtToken", "value": "" },
+    { "key": "passportToken", "value": "" },
+    { "key": "clientId", "value": "" },
+    { "key": "clientSecret", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Sanctum",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@smartlearn.test\",\n  \"password\": \"password\"\n}"
+            },
+            "url": "{{baseUrl}}/api/sanctum/login"
+          }
+        },
+        {
+          "name": "Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{sanctumToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/sanctum/profile"
+          }
+        },
+        {
+          "name": "Courses",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{sanctumToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/sanctum/courses"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{sanctumToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/sanctum/logout"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Passport",
+      "item": [
+        {
+          "name": "Client Credentials Token",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "grant_type", "value": "client_credentials" },
+                { "key": "client_id", "value": "{{clientId}}" },
+                { "key": "client_secret", "value": "{{clientSecret}}" },
+                { "key": "scope", "value": "courses.read students.read" }
+              ]
+            },
+            "url": "{{baseUrl}}/oauth/token"
+          }
+        },
+        {
+          "name": "Read Courses",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{passportToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/oauth-demo/courses"
+          }
+        },
+        {
+          "name": "Read Students",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{passportToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/oauth-demo/students"
+          }
+        },
+        {
+          "name": "Read Grades",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{passportToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/oauth-demo/grades"
+          }
+        },
+        {
+          "name": "Read Meetings",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{passportToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/oauth-demo/meetings"
+          }
+        },
+        {
+          "name": "Create Certificate",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{passportToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"student_id\": 3,\n  \"course_id\": 1\n}"
+            },
+            "url": "{{baseUrl}}/api/oauth-demo/certificates"
+          }
+        }
+      ]
+    },
+    {
+      "name": "JWT",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"student@smartlearn.test\",\n  \"password\": \"password\"\n}"
+            },
+            "url": "{{baseUrl}}/api/jwt/login"
+          }
+        },
+        {
+          "name": "Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/jwt/profile"
+          }
+        },
+        {
+          "name": "Refresh",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{jwtToken}}" }
+            ],
+            "url": "{{baseUrl}}/api/jwt/refresh"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -14,15 +14,12 @@ return [
     |
     */
 
-    'mailgun' => [
-        'domain' => env('MAILGUN_DOMAIN'),
-        'secret' => env('MAILGUN_SECRET'),
-        'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
-        'scheme' => 'https',
+    'postmark' => [
+        'key' => env('POSTMARK_API_KEY'),
     ],
 
-    'postmark' => [
-        'token' => env('POSTMARK_TOKEN'),
+    'resend' => [
+        'key' => env('RESEND_API_KEY'),
     ],
 
     'ses' => [
@@ -31,33 +28,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
-    'twilio' => [
-        'sid' => env('TWILIO_SID'),
-        'token' => env('TWILIO_AUTH_TOKEN'),
-        'phone' => env('TWILIO_PHONE_NUMBER'),
-    ],
-    'stripe' => [
-        'key' => env('STRIPE_KEY'),
-        'secret' => env('STRIPE_SECRET'),
-        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
-        'currency' => env('STRIPE_CURRENCY', 'usd'),
-        'checkout_success_url' => env(
-            'STRIPE_CHECKOUT_SUCCESS_URL',
-            rtrim((string) env('APP_URL', 'http://localhost'), '/').'/payment/success?session_id={CHECKOUT_SESSION_ID}'
-        ),
-        'checkout_cancel_url' => env(
-            'STRIPE_CHECKOUT_CANCEL_URL',
-            rtrim((string) env('APP_URL', 'http://localhost'), '/').'/payment/cancel?order_id={ORDER_ID}'
-        ),
-    ],
-    'google' => [
-        'client_id' => env('GOOGLE_CLIENT_ID'),
-        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-        'client_ids' => array_values(array_filter([
-            env('GOOGLE_WEB_CLIENT_ID'),
-            env('GOOGLE_ANDROID_CLIENT_ID'),
-            env('GOOGLE_IOS_CLIENT_ID'),
-        ])),
+    'slack' => [
+        'notifications' => [
+            'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),
+            'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
+        ],
     ],
 
 ];
