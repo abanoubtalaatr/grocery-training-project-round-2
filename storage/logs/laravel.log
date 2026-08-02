@@ -158,3 +158,35 @@ Stack trace:
 #25 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
 #26 {main}
 "} 
+[2026-08-02 18:32:54] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at D:/Laravel-Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
+[stacktrace]
+#0 D:/Laravel-Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
+#1 D:/Laravel-Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
+#2 D:/Laravel-Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate/Log/LogManager->driver()
+#3 D:/Laravel-Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate/Log/LogManager->error('Uncaught Error:...', Array)
+#4 D:/Laravel-Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate/Foundation/Exceptions/Handler->reportThrowable(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#5 D:/Laravel-Training/grocery-training-project-round-2/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate/Foundation/Exceptions/Handler->report(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#6 D:/Laravel-Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(183): NunoMaduro/Collision/Adapters/Laravel/ExceptionHandler->report(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#7 D:/Laravel-Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(231): Illuminate/Foundation/Bootstrap/HandleExceptions->handleException(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#8 D:/Laravel-Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate/Foundation/Bootstrap/HandleExceptions->handleShutdown()
+#9 [internal function]: Illuminate/Foundation/Bootstrap/HandleExceptions->{closure:Illuminate/Foundation/Bootstrap/HandleExceptions::forwardsTo():254}()
+#10 {main}
+"} 
+[2026-08-02 18:32:54] laravel.ERROR: Uncaught Error: Class "Illuminate\Http\Middleware\ValidateSignature" not found in D:\Laravel-Training\grocery-training-project-round-2\app\Http\Middleware\ValidateSignature.php:7
+Stack trace:
+#0 D:\Laravel-Training\grocery-training-project-round-2\vendor\composer\ClassLoader.php(576): include()
+#1 D:\Laravel-Training\grocery-training-project-round-2\vendor\composer\ClassLoader.php(427): {closure:Composer\Autoload\ClassLoader::initializeIncludeClosure():575}('D:\\Laravel-Trai...')
+#2 [internal function]: Composer\Autoload\ClassLoader->loadClass('App\\Http\\Middle...')
+#3 Command line code(1): ReflectionMethod->__construct('App\\Http\\Middle...', 'handle')
+#4 {main}
+  thrown {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Uncaught Error: Class \"Illuminate\\Http\\Middleware\\ValidateSignature\" not found in D:\\Laravel-Training\\grocery-training-project-round-2\\app\\Http\\Middleware\\ValidateSignature.php:7
+Stack trace:
+#0 D:\\Laravel-Training\\grocery-training-project-round-2\\vendor\\composer\\ClassLoader.php(576): include()
+#1 D:\\Laravel-Training\\grocery-training-project-round-2\\vendor\\composer\\ClassLoader.php(427): {closure:Composer\\Autoload\\ClassLoader::initializeIncludeClosure():575}('D:\\\\Laravel-Trai...')
+#2 [internal function]: Composer\\Autoload\\ClassLoader->loadClass('App\\\\Http\\\\Middle...')
+#3 Command line code(1): ReflectionMethod->__construct('App\\\\Http\\\\Middle...', 'handle')
+#4 {main}
+  thrown at D:/Laravel-Training/grocery-training-project-round-2/app/Http/Middleware/ValidateSignature.php:7)
+[stacktrace]
+#0 {main}
+"} 
