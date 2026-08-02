@@ -84,3 +84,111 @@
 #25 D:/Huma Volve/grocery-training-project-round-2/artisan(35): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
 #26 {main}
 "} 
+[2026-08-02 17:37:18] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
+[stacktrace]
+#0 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
+#1 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
+#2 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate/Log/LogManager->driver()
+#3 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate/Log/LogManager->error('Uncaught Error:...', Array)
+#4 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate/Foundation/Exceptions/Handler->reportThrowable(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#5 D:/Huma Volve/grocery-training-project-round-2/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate/Foundation/Exceptions/Handler->report(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#6 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(183): NunoMaduro/Collision/Adapters/Laravel/ExceptionHandler->report(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#7 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(231): Illuminate/Foundation/Bootstrap/HandleExceptions->handleException(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#8 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate/Foundation/Bootstrap/HandleExceptions->handleShutdown()
+#9 [internal function]: Illuminate/Foundation/Bootstrap/HandleExceptions->Illuminate/Foundation/Bootstrap/{closure}()
+#10 {main}
+"} 
+[2026-08-02 17:37:18] laravel.ERROR: Uncaught Error: Class "Illuminate\Http\Middleware\ValidateSignature" not found in D:\Huma Volve\grocery-training-project-round-2\app\Http\Middleware\ValidateSignature.php:7
+Stack trace:
+#0 D:\Huma Volve\grocery-training-project-round-2\vendor\composer\ClassLoader.php(576): include()
+#1 D:\Huma Volve\grocery-training-project-round-2\vendor\composer\ClassLoader.php(427): Composer\Autoload\{closure}('D:\\Huma Volve\\g...')
+#2 [internal function]: Composer\Autoload\ClassLoader->loadClass('App\\Http\\Middle...')
+#3 Command line code(1): ReflectionMethod->__construct('App\\Http\\Middle...', 'handle')
+#4 {main}
+  thrown {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Uncaught Error: Class \"Illuminate\\Http\\Middleware\\ValidateSignature\" not found in D:\\Huma Volve\\grocery-training-project-round-2\\app\\Http\\Middleware\\ValidateSignature.php:7
+Stack trace:
+#0 D:\\Huma Volve\\grocery-training-project-round-2\\vendor\\composer\\ClassLoader.php(576): include()
+#1 D:\\Huma Volve\\grocery-training-project-round-2\\vendor\\composer\\ClassLoader.php(427): Composer\\Autoload\\{closure}('D:\\\\Huma Volve\\\\g...')
+#2 [internal function]: Composer\\Autoload\\ClassLoader->loadClass('App\\\\Http\\\\Middle...')
+#3 Command line code(1): ReflectionMethod->__construct('App\\\\Http\\\\Middle...', 'handle')
+#4 {main}
+  thrown at D:/Huma Volve/grocery-training-project-round-2/app/Http/Middleware/ValidateSignature.php:7)
+[stacktrace]
+#0 {main}
+"} 
+[2026-08-02 19:31:48] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
+[stacktrace]
+#0 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
+#1 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
+#2 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(113): Illuminate/Log/LogManager->driver(NULL)
+#3 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Mail/MailManager.php(418): Illuminate/Log/LogManager->channel(NULL)
+#4 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Mail/MailManager.php(166): Illuminate/Mail/MailManager->createLogTransport(Array)
+#5 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Mail/MailManager.php(124): Illuminate/Mail/MailManager->createSymfonyTransport(Array)
+#6 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Mail/MailManager.php(99): Illuminate/Mail/MailManager->resolve('log')
+#7 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Mail/MailManager.php(77): Illuminate/Mail/MailManager->get('log')
+#8 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Mail/MailManager.php(592): Illuminate/Mail/MailManager->mailer()
+#9 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(355): Illuminate/Mail/MailManager->__call('raw', Array)
+#10 D:/Huma Volve/grocery-training-project-round-2/app/Services/NotificationService.php(120): Illuminate/Support/Facades/Facade::__callStatic('raw', Array)
+#11 D:/Huma Volve/grocery-training-project-round-2/app/Services/AuthService.php(36): App/Services/NotificationService->sendWelcomeEmail('ye@y.com', 'yehia')
+#12 D:/Huma Volve/grocery-training-project-round-2/app/Http/Controllers/Api/AuthController.php(29): App/Services/AuthService->register(Array)
+#13 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Routing/Controller.php(54): App/Http/Controllers/Api/AuthController->register(Object(App/Http/Requests/RegisterRequest))
+#14 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php(43): Illuminate/Routing/Controller->callAction('register', Array)
+#15 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Routing/Route.php(259): Illuminate/Routing/ControllerDispatcher->dispatch(Object(Illuminate/Routing/Route), Object(App/Http/Controllers/Api/AuthController), 'register')
+#16 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Routing/Route.php(205): Illuminate/Routing/Route->runController()
+#17 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Routing/Router.php(806): Illuminate/Routing/Route->run()
+#18 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate/Routing/Router->Illuminate/Routing/{closure}(Object(Illuminate/Http/Request))
+#19 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(50): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#20 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Routing/Middleware/SubstituteBindings->handle(Object(Illuminate/Http/Request), Object(Closure))
+#21 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(159): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#22 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(125): Illuminate/Routing/Middleware/ThrottleRequests->handleRequest(Object(Illuminate/Http/Request), Object(Closure), Array)
+#23 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(87): Illuminate/Routing/Middleware/ThrottleRequests->handleRequestUsingNamedLimiter(Object(Illuminate/Http/Request), Object(Closure), 'api', Object(Closure))
+#24 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Routing/Middleware/ThrottleRequests->handle(Object(Illuminate/Http/Request), Object(Closure), 'api')
+#25 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(25): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#26 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->Laravel/Sanctum/Http/Middleware/{closure}(Object(Illuminate/Http/Request))
+#27 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#28 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(24): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#29 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->handle(Object(Illuminate/Http/Request), Object(Closure))
+#30 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#31 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Routing/Router.php(805): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#32 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Routing/Router.php(784): Illuminate/Routing/Router->runRouteWithinStack(Object(Illuminate/Routing/Route), Object(Illuminate/Http/Request))
+#33 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Routing/Router.php(748): Illuminate/Routing/Router->runRoute(Object(Illuminate/Http/Request), Object(Illuminate/Routing/Route))
+#34 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Routing/Router.php(737): Illuminate/Routing/Router->dispatchToRoute(Object(Illuminate/Http/Request))
+#35 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(200): Illuminate/Routing/Router->dispatch(Object(Illuminate/Http/Request))
+#36 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate/Foundation/Http/Kernel->Illuminate/Foundation/Http/{closure}(Object(Illuminate/Http/Request))
+#37 D:/Huma Volve/grocery-training-project-round-2/vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php(19): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#38 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Livewire/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware->handle(Object(Illuminate/Http/Request), Object(Closure))
+#39 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#40 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
+#41 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull->handle(Object(Illuminate/Http/Request), Object(Closure))
+#42 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#43 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(40): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
+#44 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/TrimStrings->handle(Object(Illuminate/Http/Request), Object(Closure))
+#45 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php(27): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#46 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/ValidatePostSize->handle(Object(Illuminate/Http/Request), Object(Closure))
+#47 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(99): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#48 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance->handle(Object(Illuminate/Http/Request), Object(Closure))
+#49 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(62): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#50 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Http/Middleware/HandleCors->handle(Object(Illuminate/Http/Request), Object(Closure))
+#51 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(39): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#52 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Http/Middleware/TrustProxies->handle(Object(Illuminate/Http/Request), Object(Closure))
+#53 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
+#54 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#55 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate/Foundation/Http/Kernel->sendRequestThroughRouter(Object(Illuminate/Http/Request))
+#56 D:/Huma Volve/grocery-training-project-round-2/public/index.php(51): Illuminate/Foundation/Http/Kernel->handle(Object(Illuminate/Http/Request))
+#57 D:/Huma Volve/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(16): require_once('D://Huma Volve//g...')
+#58 {main}
+"} 
+[2026-08-02 19:31:48] laravel.DEBUG: From: Grocery <hello@grocery.app>
+To: ye@y.com
+Subject: Welcome to Grocery!
+MIME-Version: 1.0
+Date: Sun, 02 Aug 2026 19:31:48 +0000
+Message-ID: <41950cbcbb69f5a46183e78be55ed997@grocery.app>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Welcome to Grocery, yehia!
+
+Thank you for registering. We're excited to have you on board.
+
+Start exploring our fresh meals and categories today!  
