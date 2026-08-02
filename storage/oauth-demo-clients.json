@@ -1,0 +1,38 @@
+[
+    {
+        "name": "ABC University",
+        "client_id": "019fb74e-b007-71f7-84d5-b9a45de377f6",
+        "client_secret": "jDwce1FKAGdwlX7DxFUTxkcgTsq3F2SBXiTkM0LX",
+        "grant": "client_credentials",
+        "scopes": "courses.read students.read"
+    },
+    {
+        "name": "Zoom",
+        "client_id": "019fb74e-b196-7012-8c42-d6510b68d5c0",
+        "client_secret": "TaON3s5kczFd7rY628G4Kbckuv5M0wJElSNzLxvy",
+        "grant": "client_credentials",
+        "scopes": "meetings.read courses.read"
+    },
+    {
+        "name": "ExamPro",
+        "client_id": "019fb74e-b324-7145-91c7-b8323c3d5a01",
+        "client_secret": "6X7LkF4v70awyAzDq07vmKJjLW5dmc5e9Z5VLc6c",
+        "grant": "client_credentials",
+        "scopes": "grades.read"
+    },
+    {
+        "name": "Certificate Generator",
+        "client_id": "019fb74e-b4d1-70e7-a478-d47422d5c7b9",
+        "client_secret": "aDzNkwRHd3J38djASjC4QJqNYrm08VylxG1v0cgn",
+        "grant": "client_credentials",
+        "scopes": "certificates.write"
+    },
+    {
+        "name": "ABC University Portal (Auth Code)",
+        "client_id": "019fb74e-b670-702e-926c-1140030f6124",
+        "client_secret": "XLS7PEs1YcmpHlsIZXTH6pPj2vGVqnYFIXObFbaM",
+        "grant": "authorization_code",
+        "scopes": "courses.read students.read",
+        "redirect": "http://127.0.0.1:8000/learn/passport"
+    }
+]

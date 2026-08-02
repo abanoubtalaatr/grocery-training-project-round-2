@@ -2,6 +2,14 @@
 
 A comprehensive Laravel-based RESTful API backend for a modern grocery and meal delivery mobile application. This API provides complete e-commerce functionality including user authentication, product management, shopping cart, favorites, AI-powered chatbot, payment processing, and delivery address management.
 
+## PHP Memory Management (learning module)
+
+Practical demos for reference counting, circular references, garbage collection, and Laravel `chunk()` vs `all()`:
+
+- Docs & diagrams: [`memory-demos/README.md`](memory-demos/README.md)
+- Run pure PHP demos: `php memory-demos/run-all.php`
+- Laravel comparison: `php artisan memory:test --seed=5000 --mode=compare --cleanup`
+
 ## ✨ Features
 
 ### 🔐 Authentication & User Management
