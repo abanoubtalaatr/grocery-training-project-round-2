@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\SmartList;
 use App\Traits\HasNotificationPreferences;
 use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -234,6 +235,10 @@ class User extends Authenticatable implements HasName
     public function favoriteMeals()
     {
         return $this->belongsToMany(Meal::class, 'favorites')->withTimestamps();
+    }
+    public function smartLists()
+    {
+        return $this->hasMany(SmartList::class);
     }
 
     /**
