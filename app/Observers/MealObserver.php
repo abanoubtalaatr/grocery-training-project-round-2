@@ -4,12 +4,31 @@ namespace App\Observers;
 
 use App\Models\Meal;
 use App\Services\WishlistAlertService;
+use Illuminate\Support\Str;
 
 class MealObserver
 {
     public function __construct(
         protected WishlistAlertService $wishlistAlerts
     ) {}
+
+        public function creating(Meal $meal): void
+    {
+        $meal->slug = Str::slug($meal->title);
+    }
+
+    /**
+     * Handle the Category "updating" event.
+     */
+    public function updating(Meal $meal): void
+    {
+        if($meal->isDirty('title')){
+        $meal->slug = Str::slug($meal->title);
+
+        }
+    }
+
+
 
     /**
      * After a meal is updated, notify wish list users if price dropped or limited-time offer added.

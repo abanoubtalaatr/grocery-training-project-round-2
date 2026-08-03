@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Auth\GoogleAuthController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\CategoryMealController;
 use App\Http\Controllers\Api\ChatbotController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\DashboardController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SmartListController;
+use App\Http\Controllers\Api\SmartListMealController;
 use App\Http\Controllers\Api\SpecialNoteController;
 use App\Http\Controllers\Api\StaticPageController;
 use App\Http\Controllers\Api\StripeCheckoutController;
@@ -80,9 +82,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{id}/set-default', [AddressController::class, 'setDefault']);
     });
 
-    Route::post('smart-lists/{id}/meals', [SmartListController::class, 'addMeal']);
-    Route::delete('smart-lists/{id}/meals/{mealId}', [SmartListController::class, 'removeMeal']);
     Route::apiResource('smart-lists', SmartListController::class);
+
+    Route::prefix('smart-lists/{smart_list}/meals')->group(function () {
+        Route::post('/', [SmartListMealController::class, 'store']);
+        Route::delete('/{meal}', [SmartListMealController::class, 'destroy']);
+    });
 
     Route::prefix('notification-settings')->group(function () {
         Route::get('/', [NotificationSettingsController::class, 'index']);
@@ -176,7 +181,6 @@ Route::prefix('meals')->group(function () {
     Route::get('/recommendations', [MealController::class, 'recommendations']);
     Route::get('/', [MealController::class, 'index']);
     Route::get('/{id}', [MealController::class, 'show']);
-
 });
 Route::get('/new-products', [MealController::class, 'newProducts']);
 Route::get('best-sells', [MealController::class, 'bestSells']);
@@ -193,10 +197,11 @@ Route::prefix('offers')->group(function () {
     Route::get('/validate', [OfferController::class, 'validateOffer']);
     Route::get('/{code}', [OfferController::class, 'showByCode']);
 });
+
 Route::prefix('categories')->group(function () {
     Route::get('/', [CategoryController::class, 'index']);
-    Route::get('/{id}', [CategoryController::class, 'show']);
-    Route::get('/{id}/meals', [CategoryController::class, 'meals']);
+    Route::get('/{category}/meals', [CategoryMealController::class, 'index']);
+    Route::get('/{category}', [CategoryController::class, 'show']);
 });
 
 // Subcategories routes

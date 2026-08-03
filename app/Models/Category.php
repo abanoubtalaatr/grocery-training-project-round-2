@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
@@ -41,7 +43,7 @@ class Category extends Model
     /**
      * Get the meals for the category.
      */
-    public function meals()
+    public function meals(): HasMany
     {
         return $this->hasMany(Meal::class);
     }
@@ -49,7 +51,7 @@ class Category extends Model
     /**
      * Get the subcategories for the category.
      */
-    public function subcategories()
+    public function subcategories(): HasMany
     {
         return $this->hasMany(Subcategory::class);
     }
@@ -57,7 +59,7 @@ class Category extends Model
     /**
      * Scope a query to only include active categories.
      */
-    public function scopeActive($query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
     }
@@ -65,7 +67,7 @@ class Category extends Model
     /**
      * Scope a query to order by sort order.
      */
-    public function scopeOrdered($query)
+    public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('sort_order', 'asc')->orderBy('name', 'asc');
     }
@@ -83,26 +85,7 @@ class Category extends Model
             return $this->image;
         }
 
-        return asset('storage/'.$this->image);
+        return asset('storage/' . $this->image);
     }
 
-    /**
-     * Boot the model.
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($category) {
-            if (! $category->slug) {
-                $category->slug = Str::slug($category->name);
-            }
-        });
-
-        static::updating(function ($category) {
-            if ($category->isDirty('name') && ! $category->isDirty('slug')) {
-                $category->slug = Str::slug($category->name);
-            }
-        });
-    }
 }

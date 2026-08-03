@@ -47,6 +47,6 @@ class SmartList extends Model
         }
 
         // Otherwise, generate URL from storage
-        return asset('/images/smart-lists/' . $this->image);
+        return asset('storage/' . $this->image);
     }
 }
