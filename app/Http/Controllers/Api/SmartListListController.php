@@ -3,76 +3,70 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreSmartListListRequest;
+use App\Http\Requests\UpdateSmartListListRequest;
+use App\Http\Resources\SmartListListResource;
+use App\Models\SmartListList;
+use Illuminate\Support\Facades\Auth;
 
 class SmartListListController extends Controller
 {
     public function index()
     {
-        $smartListLists = SmartListList::all();
+        $smartLists = Auth::user()->smartListLists()->paginate(10);
         
         return response()->json([
             'success' => true,
-            'message' => 'Smart List Lists',
-            'data' => SmartListList::all(),
+            'message' => 'Smart list list retrieved successfully',
+            'data' => SmartListListResource::collection($smartLists),
         ]);
     }
 
-    public function show(SmartList $smartList)
+    public function show(SmartListList $smartListList)
     {   
-        if($smartList->user_id !== auth()->user()->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized',
-            ], 401);
-        }
+        $this->authorize('view', $smartListList);
 
         return response()->json([
             'success' => true,
-            'message' => 'Smart List List',
-            'data' => $smartList,
+            'message' => 'Smart list list retrieved successfully',
+            'data' => new SmartListListResource($smartListList),
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreSmartListListRequest $request)
     {
-        $smartList = SmartList::create([
-            'user_id' => auth()->user()->id,
-            'name' => $request->name,
-            'description' => $request->description,
-            'is_active' => $request->is_active,
-            'is_public' => $request->is_public,
-            'is_deleted' => $request->is_deleted,
-            'is_archived' => $request->is_archived,
-            'is_pinned' => $request->is_pinned,
-            'is_favorite' => $request->is_favorite,
-        ]);
+        $smartList = Auth::user()->smartListLists()->create($request->validated());
         
         return response()->json([
             'success' => true,
-            'message' => 'Smart List List created',
-            'data' => $smartList,
+            'message' => 'Smart list list created',
+            'data' => new SmartListListResource($smartList),
         ]);
     }
 
-    public function update(Request $request, SmartList $smartList)
+    public function update(UpdateSmartListListRequest $request, SmartListList $smartListList)
     {
-        if($smartList->user_id !== auth()->user()->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized',
-            ], 401);
-        }
+        $this->authorize('update', $smartListList);
+
+        $smartListList->update($request->validated());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Smart list list updated',
+            'data' => new SmartListListResource($smartListList),
+        ]);
     }
 
-    public function destroy(SmartList $smartList)
+    public function destroy(SmartListList $smartListList)
     {
-        if($smartList->user_id !== auth()->user()->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized',
-            ], 401);
-        }
+        $this->authorize('delete', $smartListList);
+
+        $smartListList->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Smart list list deleted',
+        ]);
     }
 
 }

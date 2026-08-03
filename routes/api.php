@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SmartListController;
+use App\Http\Controllers\Api\SmartListListController;
 use App\Http\Controllers\Api\SpecialNoteController;
 use App\Http\Controllers\Api\StaticPageController;
 use App\Http\Controllers\Api\StripeCheckoutController;
@@ -166,6 +167,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Personalized "frequency" meals (requires auth — uses order history)
     Route::get('/frequency', [MealController::class, 'frequency']);
+
+    // Smart list
+    Route::apiResource('smart-list-lists', SmartListListController::class);
 });
 
 // Meals routes
@@ -219,5 +223,3 @@ Route::get('/health', function () {
         'timestamp' => now(),
     ]);
 });
-
-Route::apiResource('smart-list-lists', SmartListListController::class);
