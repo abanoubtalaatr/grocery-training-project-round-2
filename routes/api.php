@@ -80,8 +80,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{id}/set-default', [AddressController::class, 'setDefault']);
     });
 
-    Route::post('smart-lists/{id}/meals', [SmartListController::class, 'addMeal']);
-    Route::delete('smart-lists/{id}/meals/{mealId}', [SmartListController::class, 'removeMeal']);
+    //  updated to fit the model binding and controller methods for smart lists
+    Route::post('smart-lists/{smartList}/meals', [SmartListController::class, 'addMeal']);
+    Route::delete('smart-lists/{smartList}/meals/{mealId}', [SmartListController::class, 'removeMeal']);
+    
     Route::apiResource('smart-lists', SmartListController::class);
 
     Route::prefix('notification-settings')->group(function () {
