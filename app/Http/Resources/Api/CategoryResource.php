@@ -1,29 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SmartListResource extends JsonResource
+class CategoryResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'category' => $this->category,
+            'slug' => $this->slug,
             'description' => $this->description,
             'image_url' => $this->image_url,
-            'notify_on_price_drop' => (bool) ($this->notify_on_price_drop),
-            'notify_on_offers' => (bool) ($this->notify_on_offers),
-            'meals' => MealResource::collection($this->whenLoaded('meals')),
             'meals_count' => $this->whenCounted('meals'),
+            'sort_order' => $this->sort_order,
+            'meals' => CategoryMealResource::collection($this->whenLoaded('meals')),
+            'created_at' => $this->created_at,
         ];
     }
 }

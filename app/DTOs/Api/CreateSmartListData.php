@@ -1,21 +1,17 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\DTOs\Api;
 
-use Illuminate\Http\UploadedFile;
-
-final readonly class SmartListData
+final readonly class CreateSmartListData
 {
     public function __construct(
-        public string $name,
-        public ?string $category = null,
-        public ?string $description = null,
-        public ?UploadedFile $image = null,
-        public ?bool $notifyOnPriceDrop = true,
-        public ?bool $notifyOnOffers = true,
-        public ?array $mealIds = null,
+        public readonly string $name,
+        public readonly ?string $category = null,
+        public readonly ?string $description = null,
+        public readonly mixed $image = null, 
+        public readonly bool $notifyOnPriceDrop = true, 
+        public readonly bool $notifyOnOffers = true,   
+        public readonly array $mealIds = []
     ) {}
 
     public static function fromValidated(array $data): self
@@ -27,8 +23,7 @@ final readonly class SmartListData
             image: $data['image'] ?? null,
             notifyOnPriceDrop: $data['notify_on_price_drop'] ?? true,
             notifyOnOffers: $data['notify_on_offers'] ?? true,
-            mealIds: $data['meal_ids'] ?? null,
-
+            mealIds: $data['meal_ids'] ?? []
         );
     }
 }

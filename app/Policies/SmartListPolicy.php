@@ -21,7 +21,7 @@ class SmartListPolicy
      */
     public function view(User $user, SmartList $smartList): bool
     {
-        return $user->id == $smartList->user_id;
+        return $user->id === $smartList->user_id;
     }
 
     /**
@@ -37,7 +37,7 @@ class SmartListPolicy
      */
     public function update(User $user, SmartList $smartList): bool
     {
-        return $user->id == $smartList->user_id;
+        return $user->id === $smartList->user_id;
     }
 
     /**
@@ -45,7 +45,7 @@ class SmartListPolicy
      */
     public function delete(User $user, SmartList $smartList): bool
     {
-        return $user->id == $smartList->user_id;
+        return $user->id === $smartList->user_id;
     }
 
     

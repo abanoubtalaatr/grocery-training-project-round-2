@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 
 class Meal extends Model
 {
@@ -105,7 +106,7 @@ class Meal extends Model
     /**
      * Scope a query to only include today's meals.
      */
-    public function scopeToday($query)
+    public function scopeToday(Builder $query): Builder
     {
         return $query->where('available_date', Carbon::today())
             ->orWhere(function ($q) {
@@ -117,7 +118,7 @@ class Meal extends Model
     /**
      * Scope a query to only include featured meals.
      */
-    public function scopeFeatured($query)
+    public function scopeFeatured(Builder $query): Builder
     {
         return $query->where('is_featured', true);
     }
@@ -125,7 +126,7 @@ class Meal extends Model
     /**
      * Scope: only Ready-to-eat / Hot meals (for Hot Meals API).
      */
-    public function scopeHot($query)
+    public function scopeHot(Builder $query): Builder
     {
         return $query->where('is_hot', true);
     }
@@ -134,7 +135,7 @@ class Meal extends Model
      * Scope a query to only include meals with active discounts (today's deals).
      * Either has discount_price set or has offer_title (percentage discount can be calculated).
      */
-    public function scopeWithActiveDiscount($query)
+    public function scopeWithActiveDiscount(Builder $query): Builder
     {
         return $query->where(function ($q) {
             $q->whereNotNull('discount_price')
@@ -146,7 +147,7 @@ class Meal extends Model
     /**
      * Scope a query to only include available meals.
      */
-    public function scopeAvailable($query)
+    public function scopeAvailable(Builder $query): Builder
     {
         return $query->where('is_available', true);
     }
@@ -272,7 +273,7 @@ class Meal extends Model
     /**
      * Scope a query to only include in-stock meals.
      */
-    public function scopeInStock($query)
+    public function scopeInStock(Builder $query): Builder
     {
         return $query->where('stock_quantity', '>', 0);
     }
@@ -280,30 +281,11 @@ class Meal extends Model
     /**
      * Scope a query to only include out-of-stock meals.
      */
-    public function scopeOutOfStock($query)
+    public function scopeOutOfStock(Builder $query): Builder
     {
         return $query->where('stock_quantity', '<=', 0);
     }
 
-    /**
-     * Boot the model.
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($meal) {
-            if (!$meal->slug) {
-                $meal->slug = Str::slug($meal->title);
-            }
-        });
-
-        static::updating(function ($meal) {
-            if ($meal->isDirty('title') && !$meal->isDirty('slug')) {
-                $meal->slug = Str::slug($meal->title);
-            }
-        });
-    }
 
     public function reviews()
     {

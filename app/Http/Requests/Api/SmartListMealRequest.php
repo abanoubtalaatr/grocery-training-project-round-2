@@ -12,9 +12,7 @@ class SmartListMealRequest extends FormRequest
      */
     public function authorize(): bool
     {
-       $smartList = $this->route('smart_list');
-
-        return $smartList && $this->user()->can('update', $smartList);
+        return true;
     }
 
     /**
