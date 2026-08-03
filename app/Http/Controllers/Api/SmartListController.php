@@ -74,7 +74,7 @@ class SmartListController extends Controller
         return $this->successResponse('Wish list updated successfully', new SmartListResource($smart_list));
     }
 
-    public function destroy(Request $request, SmartList $smart_list)
+    public function destroy( SmartList $smart_list)
     {
         $this->authorize('manage', $smart_list);
 
@@ -84,29 +84,4 @@ class SmartListController extends Controller
         return $this->successResponse('Wish list deleted successfully');
     }
 
-    /**
-     * Add a meal to a wish list.
-     */
-    public function addMeal(AddMealRequest $request, SmartList $smart_list)
-    {
-        $this->authorize('manage', $smart_list);
-
-        $smart_list->meals()->syncWithoutDetaching([$request->meal_id]);
-        $smart_list->load('meals');
-
-        return $this->successResponse('Item added to wish list successfully', new SmartListResource($smart_list));
-    }
-
-    /**
-     * Remove a meal from a wish list.
-     */
-    public function removeMeal(Request $request, SmartList $smart_list, string $mealId)
-    {
-        $this->authorize('manage', $smart_list);
-
-        $smart_list->meals()->detach($mealId);
-        $smart_list->load('meals');
-
-        return $this->successResponse('Item removed from wish list successfully', new SmartListResource($smart_list));
-    }
 }
