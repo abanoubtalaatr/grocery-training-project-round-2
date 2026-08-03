@@ -22,8 +22,8 @@ class SmartListResource extends JsonResource
             'image_url' => $this->image_url,
             'notify_on_price_drop' => (bool) ($this->notify_on_price_drop ?? true),
             'notify_on_offers' => (bool) ($this->notify_on_offers ?? true),
-            'meals' => $this->whenLoaded('meals', fn () => $this->meals->map(fn ($meal) => new MealResource($meal))),
-            'meals_count' => $this->when(isset($this->meals_count), fn () => $this->meals_count),
+            'meals' => MealResource::collection($this->whenLoaded('meals')),
+            'meals_count' => $this->whenCounted('meals'),
         ];
     }
 }

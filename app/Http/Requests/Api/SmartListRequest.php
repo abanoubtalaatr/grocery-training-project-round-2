@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Api;
 
+use App\DTOs\Api\SmartListData;
+use App\Models\SmartList;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SmartListRequest extends FormRequest
@@ -11,7 +13,11 @@ class SmartListRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $smartList = $this->route('smart_list');
+
+        return $smartList
+            ? $this->user()->can('update', $smartList)
+            : $this->user()->can('create', SmartList::class);
     }
 
     /**
@@ -24,12 +30,17 @@ class SmartListRequest extends FormRequest
         return [
             'name' => ['required', 'string', 'max:255'],
             'category' => ['nullable', 'string', 'max:100'],
-            'description' => ['nullable', 'string', 'max:500'],
+            'description' => ['nullable', 'string', 'max:255'],
             'image' => ['nullable', 'image', 'max:2048'],
             'notify_on_price_drop' => ['sometimes', 'boolean'],
             'notify_on_offers' => ['sometimes', 'boolean'],
             'meal_ids' => ['sometimes', 'array'],
             'meal_ids.*' => ['required', 'exists:meals,id'],
         ];
+    }
+
+    public function toDto(): SmartListData
+    {
+        return SmartListData::fromValidated($this->validated());
     }
 }
