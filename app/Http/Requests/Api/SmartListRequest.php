@@ -2,16 +2,30 @@
 
 namespace App\Http\Requests\Api;
 
+
 use Illuminate\Foundation\Http\FormRequest;
+use App\Traits\ApiTrait;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\ValidationException;
+
 
 class SmartListRequest extends FormRequest
 {
+    use ApiTrait;
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        if ($this->is('api/*')) {
+            $response = $this->errorResponse($validator->errors(),"Validation error",422);
+            throw new ValidationException($validator,$response);
+        }
     }
 
     /**

@@ -19,7 +19,7 @@ class SmartListResource extends JsonResource
             'name' => $this->name,
             'category' => $this->category,
             'description' => $this->description,
-            'image_url' => $this->image_url,
+            'image_url' => url('images/smart-lists/'.$this->image),
             'notify_on_price_drop' => (bool) ($this->notify_on_price_drop ?? true),
             'notify_on_offers' => (bool) ($this->notify_on_offers ?? true),
             'meals' => $this->whenLoaded('meals', fn () => $this->meals->map(fn ($meal) => new MealResource($meal))),
