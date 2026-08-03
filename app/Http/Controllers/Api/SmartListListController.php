@@ -3,18 +3,19 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\SmartList;
 use Illuminate\Http\Request;
 
 class SmartListListController extends Controller
 {
     public function index()
     {
-        $smartListLists = SmartListList::all();
+        $smartListLists = SmartList::all();
         
         return response()->json([
             'success' => true,
             'message' => 'Smart List Lists',
-            'data' => SmartListList::all(),
+            'data' => SmartList::all(),
         ]);
     }
 

@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Http\Resources\Api;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class CategoryResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'id'          => $this->id,
+            'name'        => $this->name,
+            'slug'        => $this->slug,
+            'description' => $this->description,
+            'image_url'   => $this->image_url,
+            'meals_count' => $this->whenCounted('meals'),
+            'meals' => MealResource::collection($this->whenLoaded('meals')),
+            'sort_order'  => $this->sort_order,
+            'created_at'  => $this->created_at,
+        ];   
+    }
+}
