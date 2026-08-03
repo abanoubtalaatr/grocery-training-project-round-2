@@ -220,4 +220,4 @@ Route::get('/health', function () {
     ]);
 });
 
-Route::apiResource('smart-list-lists', SmartListListController::class);
+// Route::apiResource('smart-list-lists', SmartListListController::class);
