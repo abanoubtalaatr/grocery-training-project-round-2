@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\StripeCheckoutController;
 use App\Http\Controllers\Api\StripeController;
 use App\Http\Controllers\Api\StripeWebhookController;
 use App\Http\Controllers\Api\SubcategoryController;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,6 +38,9 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+
+Route::apiResource('categories', CategoryController::class);
 
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
 
