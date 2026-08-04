@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\StripePaymentCallbackController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\TaskCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,3 +28,6 @@ Route::prefix('payment')->group(function () {
     Route::get('/success', [StripePaymentCallbackController::class, 'success'])->name('payment.success');
     Route::get('/cancel', [StripePaymentCallbackController::class, 'cancel'])->name('payment.cancel');
 });
+
+
+Route::apiResource('task-categories', TaskCategoryController::class);
