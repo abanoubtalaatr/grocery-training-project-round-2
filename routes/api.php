@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\StripeCheckoutController;
 use App\Http\Controllers\Api\StripeController;
 use App\Http\Controllers\Api\StripeWebhookController;
 use App\Http\Controllers\Api\SubcategoryController;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,6 +38,9 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+
+Route::apiResource('categories', CategoryController::class);
 
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
 
@@ -80,8 +84,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{id}/set-default', [AddressController::class, 'setDefault']);
     });
 
-    Route::post('smart-lists/{id}/meals', [SmartListController::class, 'addMeal']);
-    Route::delete('smart-lists/{id}/meals/{mealId}', [SmartListController::class, 'removeMeal']);
+
     Route::apiResource('smart-lists', SmartListController::class);
 
     Route::prefix('notification-settings')->group(function () {
@@ -220,7 +223,7 @@ Route::get('/health', function () {
     ]);
 });
 
-Route::apiResource('smart-list-lists', SmartListListController::class);
+
 
 // Categories routes by mohammed-bashamekha
 use App\Http\Controllers\CategoryController as ControllersCategoryController;
