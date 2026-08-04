@@ -225,3 +225,519 @@ Stack trace:
 [stacktrace]
 #0 {main}
 "} 
+[2026-08-03 23:15:03] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
+[stacktrace]
+#0 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
+#1 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
+#2 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate/Log/LogManager->driver()
+#3 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate/Log/LogManager->error('Uncaught Error:...', Array)
+#4 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate/Foundation/Exceptions/Handler->reportThrowable(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#5 D:/grocery-training-project-round-2/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate/Foundation/Exceptions/Handler->report(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#6 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(183): NunoMaduro/Collision/Adapters/Laravel/ExceptionHandler->report(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#7 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(231): Illuminate/Foundation/Bootstrap/HandleExceptions->handleException(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#8 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate/Foundation/Bootstrap/HandleExceptions->handleShutdown()
+#9 [internal function]: Illuminate/Foundation/Bootstrap/HandleExceptions->{closure:Illuminate/Foundation/Bootstrap/HandleExceptions::forwardsTo():254}()
+#10 {main}
+"} 
+[2026-08-03 23:15:03] laravel.ERROR: Uncaught Error: Class "Illuminate\Http\Middleware\ValidateSignature" not found in D:\grocery-training-project-round-2\app\Http\Middleware\ValidateSignature.php:7
+Stack trace:
+#0 D:\grocery-training-project-round-2\vendor\composer\ClassLoader.php(576): include()
+#1 D:\grocery-training-project-round-2\vendor\composer\ClassLoader.php(427): {closure:Composer\Autoload\ClassLoader::initializeIncludeClosure():575}('D:\\grocery-trai...')
+#2 [internal function]: Composer\Autoload\ClassLoader->loadClass('App\\Http\\Middle...')
+#3 Command line code(1): ReflectionMethod->__construct('App\\Http\\Middle...', 'handle')
+#4 {main}
+  thrown {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Uncaught Error: Class \"Illuminate\\Http\\Middleware\\ValidateSignature\" not found in D:\\grocery-training-project-round-2\\app\\Http\\Middleware\\ValidateSignature.php:7
+Stack trace:
+#0 D:\\grocery-training-project-round-2\\vendor\\composer\\ClassLoader.php(576): include()
+#1 D:\\grocery-training-project-round-2\\vendor\\composer\\ClassLoader.php(427): {closure:Composer\\Autoload\\ClassLoader::initializeIncludeClosure():575}('D:\\\\grocery-trai...')
+#2 [internal function]: Composer\\Autoload\\ClassLoader->loadClass('App\\\\Http\\\\Middle...')
+#3 Command line code(1): ReflectionMethod->__construct('App\\\\Http\\\\Middle...', 'handle')
+#4 {main}
+  thrown at D:/grocery-training-project-round-2/app/Http/Middleware/ValidateSignature.php:7)
+[stacktrace]
+#0 {main}
+"} 
+[2026-08-04 11:23:17] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
+[stacktrace]
+#0 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
+#1 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
+#2 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate/Log/LogManager->driver()
+#3 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate/Log/LogManager->error('Uncaught Error:...', Array)
+#4 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate/Foundation/Exceptions/Handler->reportThrowable(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#5 D:/grocery-training-project-round-2/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate/Foundation/Exceptions/Handler->report(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#6 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(183): NunoMaduro/Collision/Adapters/Laravel/ExceptionHandler->report(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#7 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(231): Illuminate/Foundation/Bootstrap/HandleExceptions->handleException(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#8 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate/Foundation/Bootstrap/HandleExceptions->handleShutdown()
+#9 [internal function]: Illuminate/Foundation/Bootstrap/HandleExceptions->{closure:Illuminate/Foundation/Bootstrap/HandleExceptions::forwardsTo():254}()
+#10 {main}
+"} 
+[2026-08-04 11:23:17] laravel.ERROR: Uncaught Error: Class "Illuminate\Http\Middleware\ValidateSignature" not found in D:\grocery-training-project-round-2\app\Http\Middleware\ValidateSignature.php:7
+Stack trace:
+#0 D:\grocery-training-project-round-2\vendor\composer\ClassLoader.php(576): include()
+#1 D:\grocery-training-project-round-2\vendor\composer\ClassLoader.php(427): {closure:Composer\Autoload\ClassLoader::initializeIncludeClosure():575}('D:\\grocery-trai...')
+#2 [internal function]: Composer\Autoload\ClassLoader->loadClass('App\\Http\\Middle...')
+#3 Command line code(1): ReflectionMethod->__construct('App\\Http\\Middle...', 'handle')
+#4 {main}
+  thrown {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Uncaught Error: Class \"Illuminate\\Http\\Middleware\\ValidateSignature\" not found in D:\\grocery-training-project-round-2\\app\\Http\\Middleware\\ValidateSignature.php:7
+Stack trace:
+#0 D:\\grocery-training-project-round-2\\vendor\\composer\\ClassLoader.php(576): include()
+#1 D:\\grocery-training-project-round-2\\vendor\\composer\\ClassLoader.php(427): {closure:Composer\\Autoload\\ClassLoader::initializeIncludeClosure():575}('D:\\\\grocery-trai...')
+#2 [internal function]: Composer\\Autoload\\ClassLoader->loadClass('App\\\\Http\\\\Middle...')
+#3 Command line code(1): ReflectionMethod->__construct('App\\\\Http\\\\Middle...', 'handle')
+#4 {main}
+  thrown at D:/grocery-training-project-round-2/app/Http/Middleware/ValidateSignature.php:7)
+[stacktrace]
+#0 {main}
+"} 
+[2026-08-04 11:30:23] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
+[stacktrace]
+#0 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
+#1 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
+#2 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate/Log/LogManager->driver()
+#3 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate/Log/LogManager->error('Command \"make:t...', Array)
+#4 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate/Foundation/Exceptions/Handler->reportThrowable(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
+#5 D:/grocery-training-project-round-2/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate/Foundation/Exceptions/Handler->report(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
+#6 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(523): NunoMaduro/Collision/Adapters/Laravel/ExceptionHandler->report(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
+#7 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(203): Illuminate/Foundation/Console/Kernel->reportException(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
+#8 D:/grocery-training-project-round-2/artisan(35): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#9 {main}
+"} 
+[2026-08-04 11:30:23] laravel.ERROR: Command "make:trait" is not defined.
+
+Did you mean one of these?
+    make:cast
+    make:channel
+    make:command
+    make:component
+    make:controller
+    make:event
+    make:exception
+    make:factory
+    make:filament-cluster
+    make:filament-exporter
+    make:filament-importer
+    make:filament-issue
+    make:filament-page
+    make:filament-panel
+    make:filament-relation-manager
+    make:filament-resource
+    make:filament-theme
+    make:filament-user
+    make:filament-widget
+    make:form-field
+    make:form-layout
+    make:infolist-entry
+    make:infolist-layout
+    make:job
+    make:listener
+    make:livewire
+    make:livewire-form
+    make:livewire-table
+    make:mail
+    make:middleware
+    make:migration
+    make:model
+    make:notification
+    make:observer
+    make:policy
+    make:provider
+    make:request
+    make:resource
+    make:rule
+    make:scope
+    make:seeder
+    make:table-column
+    make:test
+    make:view {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"make:trait\" is not defined.
+
+Did you mean one of these?
+    make:cast
+    make:channel
+    make:command
+    make:component
+    make:controller
+    make:event
+    make:exception
+    make:factory
+    make:filament-cluster
+    make:filament-exporter
+    make:filament-importer
+    make:filament-issue
+    make:filament-page
+    make:filament-panel
+    make:filament-relation-manager
+    make:filament-resource
+    make:filament-theme
+    make:filament-user
+    make:filament-widget
+    make:form-field
+    make:form-layout
+    make:infolist-entry
+    make:infolist-layout
+    make:job
+    make:listener
+    make:livewire
+    make:livewire-form
+    make:livewire-table
+    make:mail
+    make:middleware
+    make:migration
+    make:model
+    make:notification
+    make:observer
+    make:policy
+    make:provider
+    make:request
+    make:resource
+    make:rule
+    make:scope
+    make:seeder
+    make:table-column
+    make:test
+    make:view at D:/grocery-training-project-round-2/vendor/symfony/console/Application.php:745)
+[stacktrace]
+#0 D:/grocery-training-project-round-2/vendor/symfony/console/Application.php(266): Symfony/Component/Console/Application->find('make:trait')
+#1 D:/grocery-training-project-round-2/vendor/symfony/console/Application.php(175): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#2 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(201): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#3 D:/grocery-training-project-round-2/artisan(35): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#4 {main}
+"} 
+[2026-08-04 12:07:33] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
+[stacktrace]
+#0 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
+#1 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
+#2 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate/Log/LogManager->driver()
+#3 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate/Log/LogManager->error('Command \"make:t...', Array)
+#4 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate/Foundation/Exceptions/Handler->reportThrowable(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
+#5 D:/grocery-training-project-round-2/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate/Foundation/Exceptions/Handler->report(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
+#6 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(523): NunoMaduro/Collision/Adapters/Laravel/ExceptionHandler->report(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
+#7 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(203): Illuminate/Foundation/Console/Kernel->reportException(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
+#8 D:/grocery-training-project-round-2/artisan(35): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#9 {main}
+"} 
+[2026-08-04 12:07:33] laravel.ERROR: Command "make:trait" is not defined.
+
+Did you mean one of these?
+    make:cast
+    make:channel
+    make:command
+    make:component
+    make:controller
+    make:event
+    make:exception
+    make:factory
+    make:filament-cluster
+    make:filament-exporter
+    make:filament-importer
+    make:filament-issue
+    make:filament-page
+    make:filament-panel
+    make:filament-relation-manager
+    make:filament-resource
+    make:filament-theme
+    make:filament-user
+    make:filament-widget
+    make:form-field
+    make:form-layout
+    make:infolist-entry
+    make:infolist-layout
+    make:job
+    make:listener
+    make:livewire
+    make:livewire-form
+    make:livewire-table
+    make:mail
+    make:middleware
+    make:migration
+    make:model
+    make:notification
+    make:observer
+    make:policy
+    make:provider
+    make:request
+    make:resource
+    make:rule
+    make:scope
+    make:seeder
+    make:table-column
+    make:test
+    make:view {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"make:trait\" is not defined.
+
+Did you mean one of these?
+    make:cast
+    make:channel
+    make:command
+    make:component
+    make:controller
+    make:event
+    make:exception
+    make:factory
+    make:filament-cluster
+    make:filament-exporter
+    make:filament-importer
+    make:filament-issue
+    make:filament-page
+    make:filament-panel
+    make:filament-relation-manager
+    make:filament-resource
+    make:filament-theme
+    make:filament-user
+    make:filament-widget
+    make:form-field
+    make:form-layout
+    make:infolist-entry
+    make:infolist-layout
+    make:job
+    make:listener
+    make:livewire
+    make:livewire-form
+    make:livewire-table
+    make:mail
+    make:middleware
+    make:migration
+    make:model
+    make:notification
+    make:observer
+    make:policy
+    make:provider
+    make:request
+    make:resource
+    make:rule
+    make:scope
+    make:seeder
+    make:table-column
+    make:test
+    make:view at D:/grocery-training-project-round-2/vendor/symfony/console/Application.php:745)
+[stacktrace]
+#0 D:/grocery-training-project-round-2/vendor/symfony/console/Application.php(266): Symfony/Component/Console/Application->find('make:trait')
+#1 D:/grocery-training-project-round-2/vendor/symfony/console/Application.php(175): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#2 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(201): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#3 D:/grocery-training-project-round-2/artisan(35): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#4 {main}
+"} 
+[2026-08-04 12:08:05] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
+[stacktrace]
+#0 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
+#1 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
+#2 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate/Log/LogManager->driver()
+#3 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate/Log/LogManager->error('Command \"make:t...', Array)
+#4 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate/Foundation/Exceptions/Handler->reportThrowable(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
+#5 D:/grocery-training-project-round-2/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate/Foundation/Exceptions/Handler->report(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
+#6 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(523): NunoMaduro/Collision/Adapters/Laravel/ExceptionHandler->report(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
+#7 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(203): Illuminate/Foundation/Console/Kernel->reportException(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
+#8 D:/grocery-training-project-round-2/artisan(35): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#9 {main}
+"} 
+[2026-08-04 12:08:05] laravel.ERROR: Command "make:trait" is not defined.
+
+Did you mean one of these?
+    make:cast
+    make:channel
+    make:command
+    make:component
+    make:controller
+    make:event
+    make:exception
+    make:factory
+    make:filament-cluster
+    make:filament-exporter
+    make:filament-importer
+    make:filament-issue
+    make:filament-page
+    make:filament-panel
+    make:filament-relation-manager
+    make:filament-resource
+    make:filament-theme
+    make:filament-user
+    make:filament-widget
+    make:form-field
+    make:form-layout
+    make:infolist-entry
+    make:infolist-layout
+    make:job
+    make:listener
+    make:livewire
+    make:livewire-form
+    make:livewire-table
+    make:mail
+    make:middleware
+    make:migration
+    make:model
+    make:notification
+    make:observer
+    make:policy
+    make:provider
+    make:request
+    make:resource
+    make:rule
+    make:scope
+    make:seeder
+    make:table-column
+    make:test
+    make:view {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"make:trait\" is not defined.
+
+Did you mean one of these?
+    make:cast
+    make:channel
+    make:command
+    make:component
+    make:controller
+    make:event
+    make:exception
+    make:factory
+    make:filament-cluster
+    make:filament-exporter
+    make:filament-importer
+    make:filament-issue
+    make:filament-page
+    make:filament-panel
+    make:filament-relation-manager
+    make:filament-resource
+    make:filament-theme
+    make:filament-user
+    make:filament-widget
+    make:form-field
+    make:form-layout
+    make:infolist-entry
+    make:infolist-layout
+    make:job
+    make:listener
+    make:livewire
+    make:livewire-form
+    make:livewire-table
+    make:mail
+    make:middleware
+    make:migration
+    make:model
+    make:notification
+    make:observer
+    make:policy
+    make:provider
+    make:request
+    make:resource
+    make:rule
+    make:scope
+    make:seeder
+    make:table-column
+    make:test
+    make:view at D:/grocery-training-project-round-2/vendor/symfony/console/Application.php:745)
+[stacktrace]
+#0 D:/grocery-training-project-round-2/vendor/symfony/console/Application.php(266): Symfony/Component/Console/Application->find('make:trait')
+#1 D:/grocery-training-project-round-2/vendor/symfony/console/Application.php(175): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#2 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(201): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#3 D:/grocery-training-project-round-2/artisan(35): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#4 {main}
+"} 
+[2026-08-04 12:11:41] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
+[stacktrace]
+#0 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
+#1 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
+#2 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate/Log/LogManager->driver()
+#3 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate/Log/LogManager->error('Command \"make:t...', Array)
+#4 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate/Foundation/Exceptions/Handler->reportThrowable(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
+#5 D:/grocery-training-project-round-2/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate/Foundation/Exceptions/Handler->report(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
+#6 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(523): NunoMaduro/Collision/Adapters/Laravel/ExceptionHandler->report(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
+#7 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(203): Illuminate/Foundation/Console/Kernel->reportException(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
+#8 D:/grocery-training-project-round-2/artisan(35): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#9 {main}
+"} 
+[2026-08-04 12:11:41] laravel.ERROR: Command "make:trait" is not defined.
+
+Did you mean one of these?
+    make:cast
+    make:channel
+    make:command
+    make:component
+    make:controller
+    make:event
+    make:exception
+    make:factory
+    make:filament-cluster
+    make:filament-exporter
+    make:filament-importer
+    make:filament-issue
+    make:filament-page
+    make:filament-panel
+    make:filament-relation-manager
+    make:filament-resource
+    make:filament-theme
+    make:filament-user
+    make:filament-widget
+    make:form-field
+    make:form-layout
+    make:infolist-entry
+    make:infolist-layout
+    make:job
+    make:listener
+    make:livewire
+    make:livewire-form
+    make:livewire-table
+    make:mail
+    make:middleware
+    make:migration
+    make:model
+    make:notification
+    make:observer
+    make:policy
+    make:provider
+    make:request
+    make:resource
+    make:rule
+    make:scope
+    make:seeder
+    make:table-column
+    make:test
+    make:view {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"make:trait\" is not defined.
+
+Did you mean one of these?
+    make:cast
+    make:channel
+    make:command
+    make:component
+    make:controller
+    make:event
+    make:exception
+    make:factory
+    make:filament-cluster
+    make:filament-exporter
+    make:filament-importer
+    make:filament-issue
+    make:filament-page
+    make:filament-panel
+    make:filament-relation-manager
+    make:filament-resource
+    make:filament-theme
+    make:filament-user
+    make:filament-widget
+    make:form-field
+    make:form-layout
+    make:infolist-entry
+    make:infolist-layout
+    make:job
+    make:listener
+    make:livewire
+    make:livewire-form
+    make:livewire-table
+    make:mail
+    make:middleware
+    make:migration
+    make:model
+    make:notification
+    make:observer
+    make:policy
+    make:provider
+    make:request
+    make:resource
+    make:rule
+    make:scope
+    make:seeder
+    make:table-column
+    make:test
+    make:view at D:/grocery-training-project-round-2/vendor/symfony/console/Application.php:745)
+[stacktrace]
+#0 D:/grocery-training-project-round-2/vendor/symfony/console/Application.php(266): Symfony/Component/Console/Application->find('make:trait')
+#1 D:/grocery-training-project-round-2/vendor/symfony/console/Application.php(175): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#2 D:/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(201): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#3 D:/grocery-training-project-round-2/artisan(35): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#4 {main}
+"} 

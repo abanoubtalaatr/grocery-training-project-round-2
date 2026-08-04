@@ -3,76 +3,95 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Api\SmartListRequest;
+use App\Http\Resources\Api\SmartListResource;
+use App\Models\SmartList;
+use App\Traits\ApiResponseTrait;
+use App\Traits\HandlesImageUploads;
+use Illuminate\Support\Facades\Storage;
 
 class SmartListListController extends Controller
 {
+    use ApiResponseTrait, HandlesImageUploads;
+
     public function index()
     {
-        $smartListLists = SmartListList::all();
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Smart List Lists',
-            'data' => SmartListList::all(),
-        ]);
+        $smartLists = SmartList::where('user_id', auth()->id())->get();
+
+        return $this->successResponse(
+            'Smart lists retrieved successfully',
+            SmartListResource::collection($smartLists)
+        );
     }
 
     public function show(SmartList $smartList)
-    {   
-        if($smartList->user_id !== auth()->user()->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized',
-            ], 401);
-        }
+    {
+        $this->authorize('view', $smartList);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Smart List List',
-            'data' => $smartList,
-        ]);
+        return $this->successResponse(
+            'Smart list retrieved successfully',
+            new SmartListResource($smartList->load('meals'))
+        );
     }
 
-    public function store(Request $request)
+    public function store(SmartListRequest $request)
     {
+        $this->authorize('create', SmartList::class);
+
         $smartList = SmartList::create([
-            'user_id' => auth()->user()->id,
-            'name' => $request->name,
-            'description' => $request->description,
-            'is_active' => $request->is_active,
-            'is_public' => $request->is_public,
-            'is_deleted' => $request->is_deleted,
-            'is_archived' => $request->is_archived,
-            'is_pinned' => $request->is_pinned,
-            'is_favorite' => $request->is_favorite,
+            ...$request->safe()->except(['image', 'meal_ids']),
+            'user_id' => auth()->id(),
         ]);
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Smart List List created',
-            'data' => $smartList,
-        ]);
+
+        if ($request->hasFile('image')) {
+            $smartList->update([
+                'image' => $this->storeImage($request->file('image'), 'smart-lists'),
+            ]);
+        }
+
+        if ($request->filled('meal_ids')) {
+            $smartList->meals()->sync($request->input('meal_ids'));
+        }
+
+        return $this->successResponse(
+            'Smart list created successfully.',
+            new SmartListResource($smartList->fresh('meals')),
+            201
+        );
     }
 
-    public function update(Request $request, SmartList $smartList)
+    public function update(SmartListRequest $request, SmartList $smartList)
     {
-        if($smartList->user_id !== auth()->user()->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized',
-            ], 401);
+        $this->authorize('update', $smartList);
+
+        $smartList->update($request->safe()->except(['image', 'meal_ids']));
+
+        if ($request->hasFile('image')) {
+            $smartList->update([
+                'image' => $this->storeImage($request->file('image'), 'smart-lists', $smartList->image),
+            ]);
         }
+
+        if ($request->has('meal_ids')) {
+            $smartList->meals()->sync($request->input('meal_ids', []));
+        }
+
+        return $this->successResponse(
+            'Smart list updated successfully.',
+            new SmartListResource($smartList->fresh('meals'))
+        );
     }
 
     public function destroy(SmartList $smartList)
     {
-        if($smartList->user_id !== auth()->user()->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Unauthorized',
-            ], 401);
-        }
-    }
+        $this->authorize('delete', $smartList);
 
+        if ($smartList->image) {
+            Storage::disk('public')->delete($smartList->image);
+        }
+
+        $smartList->delete();
+
+        return $this->successResponse('Smart list deleted successfully.');
+    }
 }
