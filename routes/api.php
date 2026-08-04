@@ -219,5 +219,3 @@ Route::get('/health', function () {
         'timestamp' => now(),
     ]);
 });
-
-Route::apiResource('smart-list-lists', SmartListListController::class);

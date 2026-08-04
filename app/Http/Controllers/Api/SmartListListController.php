@@ -45,7 +45,7 @@ class SmartListListController extends Controller
 
         if ($request->hasFile('image')) {
             $smartList->update([
-                'image' => $this->storeImage($request->file('image'), 'smart-lists'),
+                'image' => $this->storeUploadedImage($request->file('image'), 'smart-lists'),
             ]);
         }
 
@@ -68,7 +68,7 @@ class SmartListListController extends Controller
 
         if ($request->hasFile('image')) {
             $smartList->update([
-                'image' => $this->storeImage($request->file('image'), 'smart-lists', $smartList->image),
+                'image' => $this->storeUploadedImage($request->file('image'), 'smart-lists', $smartList->image),
             ]);
         }
 

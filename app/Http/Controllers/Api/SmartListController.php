@@ -2,116 +2,92 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\SmartList;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\SmartListRequest;
+use App\Http\Requests\Api\AddMealRequest;
 use App\Http\Resources\Api\SmartListResource;
 use App\Traits\ApiResponseTrait;
-use App\Traits\HandlesImageUploads;
-use App\Traits\ManagesPivotRelation;
+use App\Services\SmartListService;
 
 class SmartListController extends Controller
 {
-    use ApiResponseTrait, HandlesImageUploads, ManagesPivotRelation;
+    use ApiResponseTrait;
+
+    public function __construct(protected SmartListService $smartLists)
+    {
+    }
 
     public function index(Request $request)
     {
-        $smartLists = SmartList::where('user_id', $request->user()->id)->with('meals')->get();
+        $smartLists = $this->smartLists->listForUser($request->user()->id);
 
         return $this->successResponse(
             'Smart lists retrieved successfully',
             SmartListResource::collection($smartLists)
         );
     }
-public function store(SmartListRequest $request)
+
+    public function store(SmartListRequest $request)
     {
-        $data = $request->validated();
-        $data['user_id'] = $request->user()->id;
-        $data['description'] = $data['description'] ?? '';
+        $smartList = $this->smartLists->create(
+            $request->validated(),
+            $request->user()->id,
+            $request->file('image'),
+            $request->input('meal_ids', [])
+        );
 
-        $mealIds = $data['meal_ids'] ?? [];
-        unset($data['meal_ids']);
-
-        if ($request->hasFile('image')) {
-            $data['image'] = $this->storeUploadedImage($request->file('image'), 'smart-lists');
-        }
-
-        $smartList = SmartList::create($data);
-
-        if (!empty($mealIds)) {
-            $smartList->meals()->attach($mealIds);
-        }
-
-        $smartList->load('meals');
-
-        return $this->successResponse('Wish list created successfully', new SmartListResource($smartList));
+        return $this->successResponse('Smart list created successfully', new SmartListResource($smartList));
     }
 
-    public function show(Request $request, $id)
+    public function show(Request $request, int $id)
     {
-        $smartList = SmartList::where('user_id', $request->user()->id)->with('meals')->findOrFail($id);
+        $smartList = $this->smartLists->findForUser($request->user()->id, $id, withMeals: true);
 
         return $this->successResponse('Smart list retrieved successfully', new SmartListResource($smartList));
     }
 
-public function update(SmartListRequest $request, $id)
+    public function update(SmartListRequest $request, int $id)
     {
-        $smartList = SmartList::where('user_id', $request->user()->id)->findOrFail($id);
-        $data = $request->validated();
+        $smartList = $this->smartLists->findForUser($request->user()->id, $id);
 
-        if (array_key_exists('description', $data) && $data['description'] === null) {
-            $data['description'] = '';
-        }
+        $smartList = $this->smartLists->update(
+            $smartList,
+            $request->validated(),
+            $request->file('image'),
+            $request->has('meal_ids') ? $request->input('meal_ids', []) : null
+        );
 
-        $mealIds = $data['meal_ids'] ?? null;
-        unset($data['meal_ids']);
-
-        if ($request->hasFile('image')) {
-            $data['image'] = $this->storeUploadedImage($request->file('image'), 'smart-lists');
-        }
-
-        $smartList->update($data);
-
-        if ($mealIds !== null) {
-            $smartList->meals()->sync($mealIds);
-        }
-
-        $smartList->load('meals');
-
-        return $this->successResponse('Wish list updated successfully', new SmartListResource($smartList));
+        return $this->successResponse('Smart list updated successfully', new SmartListResource($smartList));
     }
 
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, int $id)
     {
-        $smartList = SmartList::where('user_id', $request->user()->id)->findOrFail($id);
-        $smartList->meals()->detach();
-        $smartList->delete();
+        $smartList = $this->smartLists->findForUser($request->user()->id, $id);
+        $this->smartLists->delete($smartList);
 
-        return $this->successResponse('Wish list deleted successfully');
+        return $this->successResponse('Smart list deleted successfully');
     }
 
     /**
-     * Add a meal to a wish list.
+     * Add a meal to a smart list.
      */
-    public function addMeal(Request $request, string $id)
+    public function addMeal(AddMealRequest $request, int $id)
     {
-        $request->validate(['meal_id' => ['required', 'exists:meals,id']]);
+        $smartList = $this->smartLists->findForUser($request->user()->id, $id);
+        $smartList = $this->smartLists->addMeal($smartList, (int) $request->validated('meal_id'));
 
-        $smartList = SmartList::where('user_id', $request->user()->id)->findOrFail($id);
-        $this->attachRelated($smartList, 'meals', $request->meal_id);
-
-        return $this->successResponse('Item added to wish list successfully', new SmartListResource($smartList));
+        return $this->successResponse('Meal added to smart list successfully', new SmartListResource($smartList));
     }
 
     /**
-     * Remove a meal from a wish list.
+     * Remove a meal from a smart list.
      */
-    public function removeMeal(Request $request, string $id, string $mealId)
+    public function removeMeal(Request $request, int $id, int $mealId)
     {
-        $smartList = SmartList::where('user_id', $request->user()->id)->findOrFail($id);
-        $this->detachRelated($smartList, 'meals', $mealId);
+        $smartList = $this->smartLists->findForUser($request->user()->id, $id);
+        $smartList = $this->smartLists->removeMeal($smartList, $mealId);
 
-        return $this->successResponse('Item removed from wish list successfully', new SmartListResource($smartList));
+        return $this->successResponse('Meal removed from smart list successfully', new SmartListResource($smartList));
     }
 }
