@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Responses\ApiResponse;
-use App\Http\Resources\CategoryResource;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Http\Resources\CategoryResource;
+use App\Http\Responses\ApiResponse;
+use App\Models\Category;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $categories = Category::query()
-            ->latest()
-            ->paginate(10);
+        $categories = Category::latest()->paginate(10);
 
         return ApiResponse::success(
             CategoryResource::collection($categories),
@@ -27,13 +25,9 @@ class CategoryController extends Controller
 
     public function store(StoreCategoryRequest $request)
     {
-        $category = Category::create([
-
-            ...$request->validated(),
-
-            'slug' => Str::slug($request->name),
-
-        ]);
+        $category = Category::create(
+            $this->prepareData($request->safe()->all())
+        );
 
         return ApiResponse::success(
             new CategoryResource($category),
@@ -52,18 +46,12 @@ class CategoryController extends Controller
 
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-
-        $data = $request->validated();
-
-        if (isset($data['name'])) {
-
-            $data['slug'] = Str::slug($data['name']);
-        }
-
-        $category->update($data);
+        $category->update(
+            $this->prepareData($request->safe()->all())
+        );
 
         return ApiResponse::success(
-            new CategoryResource($category),
+            new CategoryResource($category->fresh()),
             'Category updated successfully.'
         );
     }
@@ -76,5 +64,17 @@ class CategoryController extends Controller
             null,
             'Category deleted successfully.'
         );
+    }
+
+    /**
+     * Prepare category data before saving.
+     */
+    private function prepareData(array $data): array
+    {
+        if (!empty($data['name'])) {
+            $data['slug'] = Str::slug($data['name']);
+        }
+
+        return $data;
     }
 }
