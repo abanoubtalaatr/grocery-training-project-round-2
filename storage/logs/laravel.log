@@ -84,3 +84,195 @@
 #25 /home/mohammed-ouais/project-Huma-volve-Laravel/grocery-training-project-round-2/artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle()
 #26 {main}
 "} 
+[2026-08-02 17:32:05] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
+[stacktrace]
+#0 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate\\Log\\LogManager->resolve(NULL, NULL)
+#1 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate\\Log\\LogManager->get(NULL)
+#2 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate\\Log\\LogManager->driver()
+#3 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate\\Log\\LogManager->error('Please provide ...', Array)
+#4 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate\\Foundation\\Exceptions\\Handler->reportThrowable(Object(InvalidArgumentException))
+#5 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(InvalidArgumentException))
+#6 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(523): NunoMaduro\\Collision\\Adapters\\Laravel\\ExceptionHandler->report(Object(InvalidArgumentException))
+#7 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(203): Illuminate\\Foundation\\Console\\Kernel->reportException(Object(InvalidArgumentException))
+#8 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#9 {main}
+"} 
+[2026-08-02 17:32:05] laravel.ERROR: Please provide a valid cache path. {"exception":"[object] (InvalidArgumentException(code: 0): Please provide a valid cache path. at /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/View/Compilers/Compiler.php:67)
+[stacktrace]
+#0 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/View/ViewServiceProvider.php(97): Illuminate\\View\\Compilers\\Compiler->__construct(Object(Illuminate\\Filesystem\\Filesystem), false, '', true, 'php')
+#1 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(908): Illuminate\\View\\ViewServiceProvider->Illuminate\\View\\{closure}(Object(Illuminate\\Foundation\\Application), Array)
+#2 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(795): Illuminate\\Container\\Container->build(Object(Closure))
+#3 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(986): Illuminate\\Container\\Container->resolve('blade.compiler', Array, true)
+#4 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(731): Illuminate\\Foundation\\Application->resolve('blade.compiler', Array)
+#5 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(971): Illuminate\\Container\\Container->make('blade.compiler', Array)
+#6 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(1454): Illuminate\\Foundation\\Application->make('blade.compiler')
+#7 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(237): Illuminate\\Container\\Container->offsetGet('blade.compiler')
+#8 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(208): Illuminate\\Support\\Facades\\Facade::resolveFacadeInstance('blade.compiler')
+#9 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(349): Illuminate\\Support\\Facades\\Facade::getFacadeRoot()
+#10 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/blade-ui-kit/blade-icons/src/BladeIconsServiceProvider.php(106): Illuminate\\Support\\Facades\\Facade::__callStatic('directive', Array)
+#11 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/blade-ui-kit/blade-icons/src/BladeIconsServiceProvider.php(27): BladeUI\\Icons\\BladeIconsServiceProvider->bootDirectives()
+#12 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): BladeUI\\Icons\\BladeIconsServiceProvider->boot()
+#13 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#14 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
+#15 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
+#16 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(662): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
+#17 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1059): Illuminate\\Container\\Container->call(Array)
+#18 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1040): Illuminate\\Foundation\\Application->bootProvider(Object(BladeUI\\Icons\\BladeIconsServiceProvider))
+#19 [internal function]: Illuminate\\Foundation\\Application->Illuminate\\Foundation\\{closure}(Object(BladeUI\\Icons\\BladeIconsServiceProvider), 16)
+#20 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1039): array_walk(Array, Object(Closure))
+#21 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/BootProviders.php(17): Illuminate\\Foundation\\Application->boot()
+#22 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(286): Illuminate\\Foundation\\Bootstrap\\BootProviders->bootstrap(Object(Illuminate\\Foundation\\Application))
+#23 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(447): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#24 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(199): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#25 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#26 {main}
+"} 
+[2026-08-02 17:33:18] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
+[stacktrace]
+#0 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate\\Log\\LogManager->resolve(NULL, NULL)
+#1 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate\\Log\\LogManager->get(NULL)
+#2 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate\\Log\\LogManager->driver()
+#3 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate\\Log\\LogManager->error('Uncaught Invali...', Array)
+#4 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate\\Foundation\\Exceptions\\Handler->reportThrowable(Object(Symfony\\Component\\ErrorHandler\\Error\\FatalError))
+#5 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(Symfony\\Component\\ErrorHandler\\Error\\FatalError))
+#6 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(183): NunoMaduro\\Collision\\Adapters\\Laravel\\ExceptionHandler->report(Object(Symfony\\Component\\ErrorHandler\\Error\\FatalError))
+#7 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(231): Illuminate\\Foundation\\Bootstrap\\HandleExceptions->handleException(Object(Symfony\\Component\\ErrorHandler\\Error\\FatalError))
+#8 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\\Foundation\\Bootstrap\\HandleExceptions->handleShutdown()
+#9 [internal function]: Illuminate\\Foundation\\Bootstrap\\HandleExceptions->Illuminate\\Foundation\\Bootstrap\\{closure}()
+#10 {main}
+"} 
+[2026-08-02 17:33:18] laravel.ERROR: Uncaught InvalidArgumentException: Please provide a valid cache path. in /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/View/Compilers/Compiler.php:67
+Stack trace:
+#0 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/View/ViewServiceProvider.php(97): Illuminate\View\Compilers\Compiler->__construct(Object(Illuminate\Filesystem\Filesystem), false, '', true, 'php')
+#1 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(908): Illuminate\View\ViewServiceProvider->Illuminate\View\{closure}(Object(Illuminate\Foundation\Application), Array)
+#2 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(795): Illuminate\Container\Container->build(Object(Closure))
+#3 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(986): Illuminate\Container\Container->resolve('blade.compiler', Array, true)
+#4 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(731): Illuminate\Foundation\Application->resolve('blade.compiler', Array)
+#5 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(971): Illuminate\Container\Container->make('blade.compiler', Array)
+#6 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(1454): Illuminate\Foundation\Application->make('blade.compiler')
+#7 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(237): Illuminate\Container\Container->offsetGet('blade.compiler')
+#8 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(208): Illuminate\Support\Facades\Facade::resolveFacadeInstance('blade.compiler')
+#9 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(349): Illuminate\Support\Facades\Facade::getFacadeRoot()
+#10 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/blade-ui-kit/blade-icons/src/BladeIconsServiceProvider.php(106): Illuminate\Support\Facades\Facade::__callStatic('directive', Array)
+#11 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/blade-ui-kit/blade-icons/src/BladeIconsServiceProvider.php(27): BladeUI\Icons\BladeIconsServiceProvider->bootDirectives()
+#12 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): BladeUI\Icons\BladeIconsServiceProvider->boot()
+#13 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Util.php(41): Illuminate\Container\BoundMethod::Illuminate\Container\{closure}()
+#14 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(93): Illuminate\Container\Util::unwrapIfClosure(Object(Closure))
+#15 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\Container\BoundMethod::callBoundMethod(Object(Illuminate\Foundation\Application), Array, Object(Closure))
+#16 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(662): Illuminate\Container\BoundMethod::call(Object(Illuminate\Foundation\Application), Array, Array, NULL)
+#17 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1059): Illuminate\Container\Container->call(Array)
+#18 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1040): Illuminate\Foundation\Application->bootProvider(Object(BladeUI\Icons\BladeIconsServiceProvider))
+#19 [internal function]: Illuminate\Foundation\Application->Illuminate\Foundation\{closure}(Object(BladeUI\Icons\BladeIconsServiceProvider), 16)
+#20 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1039): array_walk(Array, Object(Closure))
+#21 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/BootProviders.php(17): Illuminate\Foundation\Application->boot()
+#22 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(286): Illuminate\Foundation\Bootstrap\BootProviders->bootstrap(Object(Illuminate\Foundation\Application))
+#23 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(447): Illuminate\Foundation\Application->bootstrapWith(Array)
+#24 Command line code(5): Illuminate\Foundation\Console\Kernel->bootstrap()
+#25 {main}
+  thrown {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Uncaught InvalidArgumentException: Please provide a valid cache path. in /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/View/Compilers/Compiler.php:67
+Stack trace:
+#0 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/View/ViewServiceProvider.php(97): Illuminate\\View\\Compilers\\Compiler->__construct(Object(Illuminate\\Filesystem\\Filesystem), false, '', true, 'php')
+#1 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(908): Illuminate\\View\\ViewServiceProvider->Illuminate\\View\\{closure}(Object(Illuminate\\Foundation\\Application), Array)
+#2 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(795): Illuminate\\Container\\Container->build(Object(Closure))
+#3 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(986): Illuminate\\Container\\Container->resolve('blade.compiler', Array, true)
+#4 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(731): Illuminate\\Foundation\\Application->resolve('blade.compiler', Array)
+#5 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(971): Illuminate\\Container\\Container->make('blade.compiler', Array)
+#6 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(1454): Illuminate\\Foundation\\Application->make('blade.compiler')
+#7 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(237): Illuminate\\Container\\Container->offsetGet('blade.compiler')
+#8 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(208): Illuminate\\Support\\Facades\\Facade::resolveFacadeInstance('blade.compiler')
+#9 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(349): Illuminate\\Support\\Facades\\Facade::getFacadeRoot()
+#10 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/blade-ui-kit/blade-icons/src/BladeIconsServiceProvider.php(106): Illuminate\\Support\\Facades\\Facade::__callStatic('directive', Array)
+#11 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/blade-ui-kit/blade-icons/src/BladeIconsServiceProvider.php(27): BladeUI\\Icons\\BladeIconsServiceProvider->bootDirectives()
+#12 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): BladeUI\\Icons\\BladeIconsServiceProvider->boot()
+#13 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#14 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
+#15 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
+#16 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(662): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
+#17 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1059): Illuminate\\Container\\Container->call(Array)
+#18 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1040): Illuminate\\Foundation\\Application->bootProvider(Object(BladeUI\\Icons\\BladeIconsServiceProvider))
+#19 [internal function]: Illuminate\\Foundation\\Application->Illuminate\\Foundation\\{closure}(Object(BladeUI\\Icons\\BladeIconsServiceProvider), 16)
+#20 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1039): array_walk(Array, Object(Closure))
+#21 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/BootProviders.php(17): Illuminate\\Foundation\\Application->boot()
+#22 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(286): Illuminate\\Foundation\\Bootstrap\\BootProviders->bootstrap(Object(Illuminate\\Foundation\\Application))
+#23 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(447): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#24 Command line code(5): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#25 {main}
+  thrown at /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/View/Compilers/Compiler.php:67)
+[stacktrace]
+#0 {main}
+"} 
+[2026-08-02 17:33:18] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
+[stacktrace]
+#0 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate\\Log\\LogManager->resolve(NULL, NULL)
+#1 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate\\Log\\LogManager->get(NULL)
+#2 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate\\Log\\LogManager->driver()
+#3 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate\\Log\\LogManager->error('Please provide ...', Array)
+#4 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate\\Foundation\\Exceptions\\Handler->reportThrowable(Object(InvalidArgumentException))
+#5 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(InvalidArgumentException))
+#6 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(523): NunoMaduro\\Collision\\Adapters\\Laravel\\ExceptionHandler->report(Object(InvalidArgumentException))
+#7 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(203): Illuminate\\Foundation\\Console\\Kernel->reportException(Object(InvalidArgumentException))
+#8 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#9 {main}
+"} 
+[2026-08-02 17:33:18] laravel.ERROR: Please provide a valid cache path. {"exception":"[object] (InvalidArgumentException(code: 0): Please provide a valid cache path. at /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/View/Compilers/Compiler.php:67)
+[stacktrace]
+#0 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/View/ViewServiceProvider.php(97): Illuminate\\View\\Compilers\\Compiler->__construct(Object(Illuminate\\Filesystem\\Filesystem), false, '', true, 'php')
+#1 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(908): Illuminate\\View\\ViewServiceProvider->Illuminate\\View\\{closure}(Object(Illuminate\\Foundation\\Application), Array)
+#2 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(795): Illuminate\\Container\\Container->build(Object(Closure))
+#3 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(986): Illuminate\\Container\\Container->resolve('blade.compiler', Array, true)
+#4 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(731): Illuminate\\Foundation\\Application->resolve('blade.compiler', Array)
+#5 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(971): Illuminate\\Container\\Container->make('blade.compiler', Array)
+#6 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(1454): Illuminate\\Foundation\\Application->make('blade.compiler')
+#7 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(237): Illuminate\\Container\\Container->offsetGet('blade.compiler')
+#8 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(208): Illuminate\\Support\\Facades\\Facade::resolveFacadeInstance('blade.compiler')
+#9 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(349): Illuminate\\Support\\Facades\\Facade::getFacadeRoot()
+#10 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/blade-ui-kit/blade-icons/src/BladeIconsServiceProvider.php(106): Illuminate\\Support\\Facades\\Facade::__callStatic('directive', Array)
+#11 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/blade-ui-kit/blade-icons/src/BladeIconsServiceProvider.php(27): BladeUI\\Icons\\BladeIconsServiceProvider->bootDirectives()
+#12 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): BladeUI\\Icons\\BladeIconsServiceProvider->boot()
+#13 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#14 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
+#15 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
+#16 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(662): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
+#17 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1059): Illuminate\\Container\\Container->call(Array)
+#18 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1040): Illuminate\\Foundation\\Application->bootProvider(Object(BladeUI\\Icons\\BladeIconsServiceProvider))
+#19 [internal function]: Illuminate\\Foundation\\Application->Illuminate\\Foundation\\{closure}(Object(BladeUI\\Icons\\BladeIconsServiceProvider), 16)
+#20 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1039): array_walk(Array, Object(Closure))
+#21 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/BootProviders.php(17): Illuminate\\Foundation\\Application->boot()
+#22 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(286): Illuminate\\Foundation\\Bootstrap\\BootProviders->bootstrap(Object(Illuminate\\Foundation\\Application))
+#23 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(447): Illuminate\\Foundation\\Application->bootstrapWith(Array)
+#24 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(199): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
+#25 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#26 {main}
+"} 
+[2026-08-02 18:32:54] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at D:/Laravel-Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
+[stacktrace]
+#0 D:/Laravel-Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
+#1 D:/Laravel-Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
+#2 D:/Laravel-Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate/Log/LogManager->driver()
+#3 D:/Laravel-Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate/Log/LogManager->error('Uncaught Error:...', Array)
+#4 D:/Laravel-Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate/Foundation/Exceptions/Handler->reportThrowable(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#5 D:/Laravel-Training/grocery-training-project-round-2/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate/Foundation/Exceptions/Handler->report(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#6 D:/Laravel-Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(183): NunoMaduro/Collision/Adapters/Laravel/ExceptionHandler->report(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#7 D:/Laravel-Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(231): Illuminate/Foundation/Bootstrap/HandleExceptions->handleException(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#8 D:/Laravel-Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate/Foundation/Bootstrap/HandleExceptions->handleShutdown()
+#9 [internal function]: Illuminate/Foundation/Bootstrap/HandleExceptions->{closure:Illuminate/Foundation/Bootstrap/HandleExceptions::forwardsTo():254}()
+#10 {main}
+"} 
+[2026-08-02 18:32:54] laravel.ERROR: Uncaught Error: Class "Illuminate\Http\Middleware\ValidateSignature" not found in D:\Laravel-Training\grocery-training-project-round-2\app\Http\Middleware\ValidateSignature.php:7
+Stack trace:
+#0 D:\Laravel-Training\grocery-training-project-round-2\vendor\composer\ClassLoader.php(576): include()
+#1 D:\Laravel-Training\grocery-training-project-round-2\vendor\composer\ClassLoader.php(427): {closure:Composer\Autoload\ClassLoader::initializeIncludeClosure():575}('D:\\Laravel-Trai...')
+#2 [internal function]: Composer\Autoload\ClassLoader->loadClass('App\\Http\\Middle...')
+#3 Command line code(1): ReflectionMethod->__construct('App\\Http\\Middle...', 'handle')
+#4 {main}
+  thrown {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Uncaught Error: Class \"Illuminate\\Http\\Middleware\\ValidateSignature\" not found in D:\\Laravel-Training\\grocery-training-project-round-2\\app\\Http\\Middleware\\ValidateSignature.php:7
+Stack trace:
+#0 D:\\Laravel-Training\\grocery-training-project-round-2\\vendor\\composer\\ClassLoader.php(576): include()
+#1 D:\\Laravel-Training\\grocery-training-project-round-2\\vendor\\composer\\ClassLoader.php(427): {closure:Composer\\Autoload\\ClassLoader::initializeIncludeClosure():575}('D:\\\\Laravel-Trai...')
+#2 [internal function]: Composer\\Autoload\\ClassLoader->loadClass('App\\\\Http\\\\Middle...')
+#3 Command line code(1): ReflectionMethod->__construct('App\\\\Http\\\\Middle...', 'handle')
+#4 {main}
+  thrown at D:/Laravel-Training/grocery-training-project-round-2/app/Http/Middleware/ValidateSignature.php:7)
+[stacktrace]
+#0 {main}
+"} 
