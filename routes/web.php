@@ -21,7 +21,7 @@ Route::get('/', function () {
         'version' => '1.0.0',
         'documentation' => '/api/documentation',
     ]);
-});
+});   
 
 Route::prefix('payment')->group(function () {
     Route::get('/success', [StripePaymentCallbackController::class, 'success'])->name('payment.success');
