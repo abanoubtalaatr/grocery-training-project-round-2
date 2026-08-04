@@ -45,9 +45,8 @@ class SmartListController extends Controller
         $smartList = SmartList::where('user_id', Auth::id())->with('meals')->findOrFail($id);
         return $this->dataResponse(new SmartListResource($smartList), 'Smart list retrieved successfully');
     }
-    public function update(Request $request, $id)
+    public function update(SmartListRequest $request, $id)
     {
-        dd(123);
         $smartList = SmartList::where('user_id', Auth::id())->findOrFail($id);
         $data = $request->validated();
         if (array_key_exists('description', $data) && $data['description'] === null) {
