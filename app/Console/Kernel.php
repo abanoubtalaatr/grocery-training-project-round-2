@@ -16,6 +16,18 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             app(\App\Services\OtpService::class)->cleanupExpired();
         })->daily();
+
+        // Example: run every 15 minutes
+        $schedule->job(new \App\Jobs\SendEmailJob([
+            'type' => 'scheduled',
+            'message' => 'runs every 15 minutes',
+        ]))->everyFifteenMinutes();
+
+        // Other useful intervals:
+        // ->everyMinute();
+        // ->everyFiveMinutes();
+        // ->hourly();
+        // ->dailyAt('14:30');
     }
 
     /**
