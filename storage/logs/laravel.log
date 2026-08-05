@@ -1,376 +1,4 @@
-[2026-08-02 17:32:05] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
-[stacktrace]
-#0 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate\\Log\\LogManager->resolve(NULL, NULL)
-#1 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate\\Log\\LogManager->get(NULL)
-#2 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate\\Log\\LogManager->driver()
-#3 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate\\Log\\LogManager->error('Please provide ...', Array)
-#4 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate\\Foundation\\Exceptions\\Handler->reportThrowable(Object(InvalidArgumentException))
-#5 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(InvalidArgumentException))
-#6 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(523): NunoMaduro\\Collision\\Adapters\\Laravel\\ExceptionHandler->report(Object(InvalidArgumentException))
-#7 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(203): Illuminate\\Foundation\\Console\\Kernel->reportException(Object(InvalidArgumentException))
-#8 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
-#9 {main}
-"} 
-[2026-08-02 17:32:05] laravel.ERROR: Please provide a valid cache path. {"exception":"[object] (InvalidArgumentException(code: 0): Please provide a valid cache path. at /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/View/Compilers/Compiler.php:67)
-[stacktrace]
-#0 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/View/ViewServiceProvider.php(97): Illuminate\\View\\Compilers\\Compiler->__construct(Object(Illuminate\\Filesystem\\Filesystem), false, '', true, 'php')
-#1 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(908): Illuminate\\View\\ViewServiceProvider->Illuminate\\View\\{closure}(Object(Illuminate\\Foundation\\Application), Array)
-#2 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(795): Illuminate\\Container\\Container->build(Object(Closure))
-#3 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(986): Illuminate\\Container\\Container->resolve('blade.compiler', Array, true)
-#4 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(731): Illuminate\\Foundation\\Application->resolve('blade.compiler', Array)
-#5 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(971): Illuminate\\Container\\Container->make('blade.compiler', Array)
-#6 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(1454): Illuminate\\Foundation\\Application->make('blade.compiler')
-#7 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(237): Illuminate\\Container\\Container->offsetGet('blade.compiler')
-#8 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(208): Illuminate\\Support\\Facades\\Facade::resolveFacadeInstance('blade.compiler')
-#9 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(349): Illuminate\\Support\\Facades\\Facade::getFacadeRoot()
-#10 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/blade-ui-kit/blade-icons/src/BladeIconsServiceProvider.php(106): Illuminate\\Support\\Facades\\Facade::__callStatic('directive', Array)
-#11 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/blade-ui-kit/blade-icons/src/BladeIconsServiceProvider.php(27): BladeUI\\Icons\\BladeIconsServiceProvider->bootDirectives()
-#12 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): BladeUI\\Icons\\BladeIconsServiceProvider->boot()
-#13 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
-#14 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
-#15 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
-#16 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(662): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
-#17 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1059): Illuminate\\Container\\Container->call(Array)
-#18 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1040): Illuminate\\Foundation\\Application->bootProvider(Object(BladeUI\\Icons\\BladeIconsServiceProvider))
-#19 [internal function]: Illuminate\\Foundation\\Application->Illuminate\\Foundation\\{closure}(Object(BladeUI\\Icons\\BladeIconsServiceProvider), 16)
-#20 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1039): array_walk(Array, Object(Closure))
-#21 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/BootProviders.php(17): Illuminate\\Foundation\\Application->boot()
-#22 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(286): Illuminate\\Foundation\\Bootstrap\\BootProviders->bootstrap(Object(Illuminate\\Foundation\\Application))
-#23 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(447): Illuminate\\Foundation\\Application->bootstrapWith(Array)
-#24 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(199): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
-#25 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
-#26 {main}
-"} 
-[2026-08-02 17:33:18] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
-[stacktrace]
-#0 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate\\Log\\LogManager->resolve(NULL, NULL)
-#1 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate\\Log\\LogManager->get(NULL)
-#2 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate\\Log\\LogManager->driver()
-#3 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate\\Log\\LogManager->error('Uncaught Invali...', Array)
-#4 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate\\Foundation\\Exceptions\\Handler->reportThrowable(Object(Symfony\\Component\\ErrorHandler\\Error\\FatalError))
-#5 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(Symfony\\Component\\ErrorHandler\\Error\\FatalError))
-#6 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(183): NunoMaduro\\Collision\\Adapters\\Laravel\\ExceptionHandler->report(Object(Symfony\\Component\\ErrorHandler\\Error\\FatalError))
-#7 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(231): Illuminate\\Foundation\\Bootstrap\\HandleExceptions->handleException(Object(Symfony\\Component\\ErrorHandler\\Error\\FatalError))
-#8 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate\\Foundation\\Bootstrap\\HandleExceptions->handleShutdown()
-#9 [internal function]: Illuminate\\Foundation\\Bootstrap\\HandleExceptions->Illuminate\\Foundation\\Bootstrap\\{closure}()
-#10 {main}
-"} 
-[2026-08-02 17:33:18] laravel.ERROR: Uncaught InvalidArgumentException: Please provide a valid cache path. in /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/View/Compilers/Compiler.php:67
-Stack trace:
-#0 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/View/ViewServiceProvider.php(97): Illuminate\View\Compilers\Compiler->__construct(Object(Illuminate\Filesystem\Filesystem), false, '', true, 'php')
-#1 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(908): Illuminate\View\ViewServiceProvider->Illuminate\View\{closure}(Object(Illuminate\Foundation\Application), Array)
-#2 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(795): Illuminate\Container\Container->build(Object(Closure))
-#3 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(986): Illuminate\Container\Container->resolve('blade.compiler', Array, true)
-#4 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(731): Illuminate\Foundation\Application->resolve('blade.compiler', Array)
-#5 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(971): Illuminate\Container\Container->make('blade.compiler', Array)
-#6 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(1454): Illuminate\Foundation\Application->make('blade.compiler')
-#7 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(237): Illuminate\Container\Container->offsetGet('blade.compiler')
-#8 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(208): Illuminate\Support\Facades\Facade::resolveFacadeInstance('blade.compiler')
-#9 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(349): Illuminate\Support\Facades\Facade::getFacadeRoot()
-#10 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/blade-ui-kit/blade-icons/src/BladeIconsServiceProvider.php(106): Illuminate\Support\Facades\Facade::__callStatic('directive', Array)
-#11 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/blade-ui-kit/blade-icons/src/BladeIconsServiceProvider.php(27): BladeUI\Icons\BladeIconsServiceProvider->bootDirectives()
-#12 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): BladeUI\Icons\BladeIconsServiceProvider->boot()
-#13 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Util.php(41): Illuminate\Container\BoundMethod::Illuminate\Container\{closure}()
-#14 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(93): Illuminate\Container\Util::unwrapIfClosure(Object(Closure))
-#15 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\Container\BoundMethod::callBoundMethod(Object(Illuminate\Foundation\Application), Array, Object(Closure))
-#16 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(662): Illuminate\Container\BoundMethod::call(Object(Illuminate\Foundation\Application), Array, Array, NULL)
-#17 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1059): Illuminate\Container\Container->call(Array)
-#18 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1040): Illuminate\Foundation\Application->bootProvider(Object(BladeUI\Icons\BladeIconsServiceProvider))
-#19 [internal function]: Illuminate\Foundation\Application->Illuminate\Foundation\{closure}(Object(BladeUI\Icons\BladeIconsServiceProvider), 16)
-#20 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1039): array_walk(Array, Object(Closure))
-#21 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/BootProviders.php(17): Illuminate\Foundation\Application->boot()
-#22 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(286): Illuminate\Foundation\Bootstrap\BootProviders->bootstrap(Object(Illuminate\Foundation\Application))
-#23 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(447): Illuminate\Foundation\Application->bootstrapWith(Array)
-#24 Command line code(5): Illuminate\Foundation\Console\Kernel->bootstrap()
-#25 {main}
-  thrown {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Uncaught InvalidArgumentException: Please provide a valid cache path. in /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/View/Compilers/Compiler.php:67
-Stack trace:
-#0 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/View/ViewServiceProvider.php(97): Illuminate\\View\\Compilers\\Compiler->__construct(Object(Illuminate\\Filesystem\\Filesystem), false, '', true, 'php')
-#1 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(908): Illuminate\\View\\ViewServiceProvider->Illuminate\\View\\{closure}(Object(Illuminate\\Foundation\\Application), Array)
-#2 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(795): Illuminate\\Container\\Container->build(Object(Closure))
-#3 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(986): Illuminate\\Container\\Container->resolve('blade.compiler', Array, true)
-#4 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(731): Illuminate\\Foundation\\Application->resolve('blade.compiler', Array)
-#5 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(971): Illuminate\\Container\\Container->make('blade.compiler', Array)
-#6 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(1454): Illuminate\\Foundation\\Application->make('blade.compiler')
-#7 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(237): Illuminate\\Container\\Container->offsetGet('blade.compiler')
-#8 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(208): Illuminate\\Support\\Facades\\Facade::resolveFacadeInstance('blade.compiler')
-#9 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(349): Illuminate\\Support\\Facades\\Facade::getFacadeRoot()
-#10 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/blade-ui-kit/blade-icons/src/BladeIconsServiceProvider.php(106): Illuminate\\Support\\Facades\\Facade::__callStatic('directive', Array)
-#11 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/blade-ui-kit/blade-icons/src/BladeIconsServiceProvider.php(27): BladeUI\\Icons\\BladeIconsServiceProvider->bootDirectives()
-#12 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): BladeUI\\Icons\\BladeIconsServiceProvider->boot()
-#13 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
-#14 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
-#15 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
-#16 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(662): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
-#17 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1059): Illuminate\\Container\\Container->call(Array)
-#18 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1040): Illuminate\\Foundation\\Application->bootProvider(Object(BladeUI\\Icons\\BladeIconsServiceProvider))
-#19 [internal function]: Illuminate\\Foundation\\Application->Illuminate\\Foundation\\{closure}(Object(BladeUI\\Icons\\BladeIconsServiceProvider), 16)
-#20 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1039): array_walk(Array, Object(Closure))
-#21 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/BootProviders.php(17): Illuminate\\Foundation\\Application->boot()
-#22 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(286): Illuminate\\Foundation\\Bootstrap\\BootProviders->bootstrap(Object(Illuminate\\Foundation\\Application))
-#23 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(447): Illuminate\\Foundation\\Application->bootstrapWith(Array)
-#24 Command line code(5): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
-#25 {main}
-  thrown at /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/View/Compilers/Compiler.php:67)
-[stacktrace]
-#0 {main}
-"} 
-[2026-08-02 17:33:18] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
-[stacktrace]
-#0 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate\\Log\\LogManager->resolve(NULL, NULL)
-#1 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate\\Log\\LogManager->get(NULL)
-#2 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate\\Log\\LogManager->driver()
-#3 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate\\Log\\LogManager->error('Please provide ...', Array)
-#4 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate\\Foundation\\Exceptions\\Handler->reportThrowable(Object(InvalidArgumentException))
-#5 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate\\Foundation\\Exceptions\\Handler->report(Object(InvalidArgumentException))
-#6 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(523): NunoMaduro\\Collision\\Adapters\\Laravel\\ExceptionHandler->report(Object(InvalidArgumentException))
-#7 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(203): Illuminate\\Foundation\\Console\\Kernel->reportException(Object(InvalidArgumentException))
-#8 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
-#9 {main}
-"} 
-[2026-08-02 17:33:18] laravel.ERROR: Please provide a valid cache path. {"exception":"[object] (InvalidArgumentException(code: 0): Please provide a valid cache path. at /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/View/Compilers/Compiler.php:67)
-[stacktrace]
-#0 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/View/ViewServiceProvider.php(97): Illuminate\\View\\Compilers\\Compiler->__construct(Object(Illuminate\\Filesystem\\Filesystem), false, '', true, 'php')
-#1 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(908): Illuminate\\View\\ViewServiceProvider->Illuminate\\View\\{closure}(Object(Illuminate\\Foundation\\Application), Array)
-#2 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(795): Illuminate\\Container\\Container->build(Object(Closure))
-#3 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(986): Illuminate\\Container\\Container->resolve('blade.compiler', Array, true)
-#4 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(731): Illuminate\\Foundation\\Application->resolve('blade.compiler', Array)
-#5 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(971): Illuminate\\Container\\Container->make('blade.compiler', Array)
-#6 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(1454): Illuminate\\Foundation\\Application->make('blade.compiler')
-#7 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(237): Illuminate\\Container\\Container->offsetGet('blade.compiler')
-#8 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(208): Illuminate\\Support\\Facades\\Facade::resolveFacadeInstance('blade.compiler')
-#9 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(349): Illuminate\\Support\\Facades\\Facade::getFacadeRoot()
-#10 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/blade-ui-kit/blade-icons/src/BladeIconsServiceProvider.php(106): Illuminate\\Support\\Facades\\Facade::__callStatic('directive', Array)
-#11 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/blade-ui-kit/blade-icons/src/BladeIconsServiceProvider.php(27): BladeUI\\Icons\\BladeIconsServiceProvider->bootDirectives()
-#12 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): BladeUI\\Icons\\BladeIconsServiceProvider->boot()
-#13 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Util.php(41): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
-#14 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
-#15 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
-#16 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Container/Container.php(662): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
-#17 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1059): Illuminate\\Container\\Container->call(Array)
-#18 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1040): Illuminate\\Foundation\\Application->bootProvider(Object(BladeUI\\Icons\\BladeIconsServiceProvider))
-#19 [internal function]: Illuminate\\Foundation\\Application->Illuminate\\Foundation\\{closure}(Object(BladeUI\\Icons\\BladeIconsServiceProvider), 16)
-#20 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1039): array_walk(Array, Object(Closure))
-#21 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/BootProviders.php(17): Illuminate\\Foundation\\Application->boot()
-#22 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(286): Illuminate\\Foundation\\Bootstrap\\BootProviders->bootstrap(Object(Illuminate\\Foundation\\Application))
-#23 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(447): Illuminate\\Foundation\\Application->bootstrapWith(Array)
-#24 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(199): Illuminate\\Foundation\\Console\\Kernel->bootstrap()
-#25 /Users/abanoubtalaat/projects/HumaVolve/Training/grocery-training-project-round-2/artisan(35): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
-#26 {main}
-"} 
-[2026-08-03 12:09:19] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
-[stacktrace]
-#0 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
-#1 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
-#2 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate/Log/LogManager->driver()
-#3 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate/Log/LogManager->error('Command \"make:R...', Array)
-#4 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate/Foundation/Exceptions/Handler->reportThrowable(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
-#5 C:/xampp/htdocs/githup/grocery/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate/Foundation/Exceptions/Handler->report(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
-#6 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(523): NunoMaduro/Collision/Adapters/Laravel/ExceptionHandler->report(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
-#7 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(203): Illuminate/Foundation/Console/Kernel->reportException(Object(Symfony/Component/Console/Exception/CommandNotFoundException))
-#8 C:/xampp/htdocs/githup/grocery/artisan(35): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
-#9 {main}
-"} 
-[2026-08-03 12:09:19] laravel.ERROR: Command "make:Responses" is not defined.
-
-Did you mean one of these?
-    make:cast
-    make:channel
-    make:command
-    make:component
-    make:controller
-    make:event
-    make:exception
-    make:factory
-    make:filament-cluster
-    make:filament-exporter
-    make:filament-importer
-    make:filament-issue
-    make:filament-page
-    make:filament-panel
-    make:filament-relation-manager
-    make:filament-resource
-    make:filament-theme
-    make:filament-user
-    make:filament-widget
-    make:form-field
-    make:form-layout
-    make:infolist-entry
-    make:infolist-layout
-    make:job
-    make:listener
-    make:livewire
-    make:livewire-form
-    make:livewire-table
-    make:mail
-    make:middleware
-    make:migration
-    make:model
-    make:notification
-    make:observer
-    make:policy
-    make:provider
-    make:request
-    make:resource
-    make:rule
-    make:scope
-    make:seeder
-    make:table-column
-    make:test
-    make:view {"exception":"[object] (Symfony\\Component\\Console\\Exception\\CommandNotFoundException(code: 0): Command \"make:Responses\" is not defined.
-
-Did you mean one of these?
-    make:cast
-    make:channel
-    make:command
-    make:component
-    make:controller
-    make:event
-    make:exception
-    make:factory
-    make:filament-cluster
-    make:filament-exporter
-    make:filament-importer
-    make:filament-issue
-    make:filament-page
-    make:filament-panel
-    make:filament-relation-manager
-    make:filament-resource
-    make:filament-theme
-    make:filament-user
-    make:filament-widget
-    make:form-field
-    make:form-layout
-    make:infolist-entry
-    make:infolist-layout
-    make:job
-    make:listener
-    make:livewire
-    make:livewire-form
-    make:livewire-table
-    make:mail
-    make:middleware
-    make:migration
-    make:model
-    make:notification
-    make:observer
-    make:policy
-    make:provider
-    make:request
-    make:resource
-    make:rule
-    make:scope
-    make:seeder
-    make:table-column
-    make:test
-    make:view at C:/xampp/htdocs/githup/grocery/vendor/symfony/console/Application.php:745)
-[stacktrace]
-#0 C:/xampp/htdocs/githup/grocery/vendor/symfony/console/Application.php(266): Symfony/Component/Console/Application->find('make:Responses')
-#1 C:/xampp/htdocs/githup/grocery/vendor/symfony/console/Application.php(175): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
-#2 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(201): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
-#3 C:/xampp/htdocs/githup/grocery/artisan(35): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
-#4 {main}
-"} 
-[2026-08-03 12:55:51] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
-[stacktrace]
-#0 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
-#1 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
-#2 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate/Log/LogManager->driver()
-#3 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate/Log/LogManager->error('Class \"App//Http...', Array)
-#4 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate/Foundation/Exceptions/Handler->reportThrowable(Object(Error))
-#5 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(49): Illuminate/Foundation/Exceptions/Handler->report(Object(Error))
-#6 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(146): Illuminate/Routing/Pipeline->handleException(Object(Illuminate/Http/Request), Object(Error))
-#7 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(50): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#8 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Routing/Middleware/SubstituteBindings->handle(Object(Illuminate/Http/Request), Object(Closure))
-#9 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(159): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#10 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(125): Illuminate/Routing/Middleware/ThrottleRequests->handleRequest(Object(Illuminate/Http/Request), Object(Closure), Array)
-#11 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(87): Illuminate/Routing/Middleware/ThrottleRequests->handleRequestUsingNamedLimiter(Object(Illuminate/Http/Request), Object(Closure), 'api', Object(Closure))
-#12 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Routing/Middleware/ThrottleRequests->handle(Object(Illuminate/Http/Request), Object(Closure), 'api')
-#13 C:/xampp/htdocs/githup/grocery/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(25): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#14 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->Laravel/Sanctum/Http/Middleware/{closure}(Object(Illuminate/Http/Request))
-#15 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#16 C:/xampp/htdocs/githup/grocery/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(24): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#17 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->handle(Object(Illuminate/Http/Request), Object(Closure))
-#18 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#19 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(805): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#20 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(784): Illuminate/Routing/Router->runRouteWithinStack(Object(Illuminate/Routing/Route), Object(Illuminate/Http/Request))
-#21 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(748): Illuminate/Routing/Router->runRoute(Object(Illuminate/Http/Request), Object(Illuminate/Routing/Route))
-#22 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(737): Illuminate/Routing/Router->dispatchToRoute(Object(Illuminate/Http/Request))
-#23 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(200): Illuminate/Routing/Router->dispatch(Object(Illuminate/Http/Request))
-#24 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate/Foundation/Http/Kernel->Illuminate/Foundation/Http/{closure}(Object(Illuminate/Http/Request))
-#25 C:/xampp/htdocs/githup/grocery/vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php(19): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#26 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Livewire/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware->handle(Object(Illuminate/Http/Request), Object(Closure))
-#27 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#28 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
-#29 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull->handle(Object(Illuminate/Http/Request), Object(Closure))
-#30 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#31 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(40): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
-#32 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/TrimStrings->handle(Object(Illuminate/Http/Request), Object(Closure))
-#33 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php(27): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#34 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/ValidatePostSize->handle(Object(Illuminate/Http/Request), Object(Closure))
-#35 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(99): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#36 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance->handle(Object(Illuminate/Http/Request), Object(Closure))
-#37 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(62): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#38 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Http/Middleware/HandleCors->handle(Object(Illuminate/Http/Request), Object(Closure))
-#39 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(39): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#40 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Http/Middleware/TrustProxies->handle(Object(Illuminate/Http/Request), Object(Closure))
-#41 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#42 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#43 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate/Foundation/Http/Kernel->sendRequestThroughRouter(Object(Illuminate/Http/Request))
-#44 C:/xampp/htdocs/githup/grocery/public/index.php(51): Illuminate/Foundation/Http/Kernel->handle(Object(Illuminate/Http/Request))
-#45 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(16): require_once('C://xampp//htdocs...')
-#46 {main}
-"} 
-[2026-08-03 12:55:51] laravel.ERROR: Class "App\Http\Responses\ApiResponse" not found {"exception":"[object] (Error(code: 0): Class \"App\\Http\\Responses\\ApiResponse\" not found at C:/xampp/htdocs/githup/grocery/app/Http/Controllers/Api/CategoryController.php:32)
-[stacktrace]
-#0 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Controller.php(54): App/Http/Controllers/Api/CategoryController->index(Object(Illuminate/Http/Request))
-#1 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php(43): Illuminate/Routing/Controller->callAction('index', Array)
-#2 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Route.php(259): Illuminate/Routing/ControllerDispatcher->dispatch(Object(Illuminate/Routing/Route), Object(App/Http/Controllers/Api/CategoryController), 'index')
-#3 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Route.php(205): Illuminate/Routing/Route->runController()
-#4 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(806): Illuminate/Routing/Route->run()
-#5 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate/Routing/Router->Illuminate/Routing/{closure}(Object(Illuminate/Http/Request))
-#6 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(50): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#7 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Routing/Middleware/SubstituteBindings->handle(Object(Illuminate/Http/Request), Object(Closure))
-#8 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(159): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#9 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(125): Illuminate/Routing/Middleware/ThrottleRequests->handleRequest(Object(Illuminate/Http/Request), Object(Closure), Array)
-#10 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(87): Illuminate/Routing/Middleware/ThrottleRequests->handleRequestUsingNamedLimiter(Object(Illuminate/Http/Request), Object(Closure), 'api', Object(Closure))
-#11 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Routing/Middleware/ThrottleRequests->handle(Object(Illuminate/Http/Request), Object(Closure), 'api')
-#12 C:/xampp/htdocs/githup/grocery/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(25): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#13 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->Laravel/Sanctum/Http/Middleware/{closure}(Object(Illuminate/Http/Request))
-#14 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#15 C:/xampp/htdocs/githup/grocery/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(24): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#16 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->handle(Object(Illuminate/Http/Request), Object(Closure))
-#17 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#18 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(805): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#19 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(784): Illuminate/Routing/Router->runRouteWithinStack(Object(Illuminate/Routing/Route), Object(Illuminate/Http/Request))
-#20 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(748): Illuminate/Routing/Router->runRoute(Object(Illuminate/Http/Request), Object(Illuminate/Routing/Route))
-#21 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(737): Illuminate/Routing/Router->dispatchToRoute(Object(Illuminate/Http/Request))
-#22 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(200): Illuminate/Routing/Router->dispatch(Object(Illuminate/Http/Request))
-#23 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate/Foundation/Http/Kernel->Illuminate/Foundation/Http/{closure}(Object(Illuminate/Http/Request))
-#24 C:/xampp/htdocs/githup/grocery/vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php(19): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#25 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Livewire/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware->handle(Object(Illuminate/Http/Request), Object(Closure))
-#26 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#27 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
-#28 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull->handle(Object(Illuminate/Http/Request), Object(Closure))
-#29 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#30 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(40): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
-#31 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/TrimStrings->handle(Object(Illuminate/Http/Request), Object(Closure))
-#32 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php(27): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#33 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/ValidatePostSize->handle(Object(Illuminate/Http/Request), Object(Closure))
-#34 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(99): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#35 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance->handle(Object(Illuminate/Http/Request), Object(Closure))
-#36 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(62): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#37 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Http/Middleware/HandleCors->handle(Object(Illuminate/Http/Request), Object(Closure))
-#38 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(39): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#39 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Http/Middleware/TrustProxies->handle(Object(Illuminate/Http/Request), Object(Closure))
-#40 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#41 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#42 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate/Foundation/Http/Kernel->sendRequestThroughRouter(Object(Illuminate/Http/Request))
-#43 C:/xampp/htdocs/githup/grocery/public/index.php(51): Illuminate/Foundation/Http/Kernel->handle(Object(Illuminate/Http/Request))
-#44 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(16): require_once('C://xampp//htdocs...')
-#45 {main}
-"} 
-[2026-08-03 12:56:18] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
+[2026-08-05 13:14:58] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
 [stacktrace]
 #0 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
 #1 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
@@ -383,186 +11,11 @@ Did you mean one of these?
 #8 [internal function]: Illuminate/Foundation/Bootstrap/HandleExceptions->Illuminate/Foundation/Bootstrap/{closure}()
 #9 {main}
 "} 
-[2026-08-03 12:56:18] laravel.ERROR: Maximum execution time of 30 seconds exceeded {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Maximum execution time of 30 seconds exceeded at C:/xampp/htdocs/githup/grocery/vendor/spatie/backtrace/src/Frame.php:104)
+[2026-08-05 13:14:58] laravel.ERROR: Maximum execution time of 30 seconds exceeded {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Maximum execution time of 30 seconds exceeded at C:/xampp/htdocs/githup/grocery/vendor/symfony/mailer/Transport/Smtp/Stream/AbstractStream.php:81)
 [stacktrace]
 #0 {main}
 "} 
-[2026-08-03 13:00:04] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
-[stacktrace]
-#0 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
-#1 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
-#2 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate/Log/LogManager->driver()
-#3 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate/Log/LogManager->error('Class \"SmartLis...', Array)
-#4 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate/Foundation/Exceptions/Handler->reportThrowable(Object(ReflectionException))
-#5 C:/xampp/htdocs/githup/grocery/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate/Foundation/Exceptions/Handler->report(Object(ReflectionException))
-#6 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(523): NunoMaduro/Collision/Adapters/Laravel/ExceptionHandler->report(Object(ReflectionException))
-#7 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(203): Illuminate/Foundation/Console/Kernel->reportException(Object(ReflectionException))
-#8 C:/xampp/htdocs/githup/grocery/artisan(35): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
-#9 {main}
-"} 
-[2026-08-03 13:00:04] laravel.ERROR: Class "SmartListListController" does not exist {"exception":"[object] (ReflectionException(code: -1): Class \"SmartListListController\" does not exist at C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/RouteListCommand.php:225)
-[stacktrace]
-#0 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/RouteListCommand.php(225): ReflectionClass->__construct('SmartListListCo...')
-#1 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/RouteListCommand.php(147): Illuminate/Foundation/Console/RouteListCommand->isVendorRoute(Object(Illuminate/Routing/Route))
-#2 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/RouteListCommand.php(116): Illuminate/Foundation/Console/RouteListCommand->getRouteInformation(Object(Illuminate/Routing/Route))
-#3 [internal function]: Illuminate/Foundation/Console/RouteListCommand->Illuminate/Foundation/Console/{closure}(Object(Illuminate/Routing/Route), 165)
-#4 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Collections/Arr.php(600): array_map(Object(Closure), Array, Array)
-#5 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Collections/Collection.php(778): Illuminate/Support/Arr::map(Array, Object(Closure))
-#6 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/RouteListCommand.php(115): Illuminate/Support/Collection->map(Object(Closure))
-#7 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/RouteListCommand.php(101): Illuminate/Foundation/Console/RouteListCommand->getRoutes()
-#8 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate/Foundation/Console/RouteListCommand->handle()
-#9 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/Util.php(41): Illuminate/Container/BoundMethod::Illuminate/Container/{closure}()
-#10 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(93): Illuminate/Container/Util::unwrapIfClosure(Object(Closure))
-#11 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate/Container/BoundMethod::callBoundMethod(Object(Illuminate/Foundation/Application), Array, Object(Closure))
-#12 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/Container.php(662): Illuminate/Container/BoundMethod::call(Object(Illuminate/Foundation/Application), Array, Array, NULL)
-#13 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Console/Command.php(211): Illuminate/Container/Container->call(Array)
-#14 C:/xampp/htdocs/githup/grocery/vendor/symfony/console/Command/Command.php(326): Illuminate/Console/Command->execute(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
-#15 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Console/Command.php(180): Symfony/Component/Console/Command/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
-#16 C:/xampp/htdocs/githup/grocery/vendor/symfony/console/Application.php(1106): Illuminate/Console/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
-#17 C:/xampp/htdocs/githup/grocery/vendor/symfony/console/Application.php(324): Symfony/Component/Console/Application->doRunCommand(Object(Illuminate/Foundation/Console/RouteListCommand), Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
-#18 C:/xampp/htdocs/githup/grocery/vendor/symfony/console/Application.php(175): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
-#19 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(201): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
-#20 C:/xampp/htdocs/githup/grocery/artisan(35): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
-#21 {main}
-"} 
-[2026-08-03 13:00:27] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
-[stacktrace]
-#0 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
-#1 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
-#2 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate/Log/LogManager->driver()
-#3 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate/Log/LogManager->error('Class \"SmartLis...', Array)
-#4 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate/Foundation/Exceptions/Handler->reportThrowable(Object(ReflectionException))
-#5 C:/xampp/htdocs/githup/grocery/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate/Foundation/Exceptions/Handler->report(Object(ReflectionException))
-#6 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(523): NunoMaduro/Collision/Adapters/Laravel/ExceptionHandler->report(Object(ReflectionException))
-#7 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(203): Illuminate/Foundation/Console/Kernel->reportException(Object(ReflectionException))
-#8 C:/xampp/htdocs/githup/grocery/artisan(35): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
-#9 {main}
-"} 
-[2026-08-03 13:00:27] laravel.ERROR: Class "SmartListListController" does not exist {"exception":"[object] (ReflectionException(code: -1): Class \"SmartListListController\" does not exist at C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/RouteListCommand.php:225)
-[stacktrace]
-#0 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/RouteListCommand.php(225): ReflectionClass->__construct('SmartListListCo...')
-#1 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/RouteListCommand.php(147): Illuminate/Foundation/Console/RouteListCommand->isVendorRoute(Object(Illuminate/Routing/Route))
-#2 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/RouteListCommand.php(116): Illuminate/Foundation/Console/RouteListCommand->getRouteInformation(Object(Illuminate/Routing/Route))
-#3 [internal function]: Illuminate/Foundation/Console/RouteListCommand->Illuminate/Foundation/Console/{closure}(Object(Illuminate/Routing/Route), 165)
-#4 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Collections/Arr.php(600): array_map(Object(Closure), Array, Array)
-#5 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Collections/Collection.php(778): Illuminate/Support/Arr::map(Array, Object(Closure))
-#6 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/RouteListCommand.php(115): Illuminate/Support/Collection->map(Object(Closure))
-#7 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/RouteListCommand.php(101): Illuminate/Foundation/Console/RouteListCommand->getRoutes()
-#8 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate/Foundation/Console/RouteListCommand->handle()
-#9 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/Util.php(41): Illuminate/Container/BoundMethod::Illuminate/Container/{closure}()
-#10 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(93): Illuminate/Container/Util::unwrapIfClosure(Object(Closure))
-#11 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate/Container/BoundMethod::callBoundMethod(Object(Illuminate/Foundation/Application), Array, Object(Closure))
-#12 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/Container.php(662): Illuminate/Container/BoundMethod::call(Object(Illuminate/Foundation/Application), Array, Array, NULL)
-#13 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Console/Command.php(211): Illuminate/Container/Container->call(Array)
-#14 C:/xampp/htdocs/githup/grocery/vendor/symfony/console/Command/Command.php(326): Illuminate/Console/Command->execute(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
-#15 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Console/Command.php(180): Symfony/Component/Console/Command/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
-#16 C:/xampp/htdocs/githup/grocery/vendor/symfony/console/Application.php(1106): Illuminate/Console/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
-#17 C:/xampp/htdocs/githup/grocery/vendor/symfony/console/Application.php(324): Symfony/Component/Console/Application->doRunCommand(Object(Illuminate/Foundation/Console/RouteListCommand), Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
-#18 C:/xampp/htdocs/githup/grocery/vendor/symfony/console/Application.php(175): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
-#19 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(201): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
-#20 C:/xampp/htdocs/githup/grocery/artisan(35): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
-#21 {main}
-"} 
-[2026-08-03 13:01:38] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
-[stacktrace]
-#0 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
-#1 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
-#2 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate/Log/LogManager->driver()
-#3 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate/Log/LogManager->error('Class \"App//Http...', Array)
-#4 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate/Foundation/Exceptions/Handler->reportThrowable(Object(Error))
-#5 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(49): Illuminate/Foundation/Exceptions/Handler->report(Object(Error))
-#6 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(146): Illuminate/Routing/Pipeline->handleException(Object(Illuminate/Http/Request), Object(Error))
-#7 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(50): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#8 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Routing/Middleware/SubstituteBindings->handle(Object(Illuminate/Http/Request), Object(Closure))
-#9 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(159): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#10 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(125): Illuminate/Routing/Middleware/ThrottleRequests->handleRequest(Object(Illuminate/Http/Request), Object(Closure), Array)
-#11 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(87): Illuminate/Routing/Middleware/ThrottleRequests->handleRequestUsingNamedLimiter(Object(Illuminate/Http/Request), Object(Closure), 'api', Object(Closure))
-#12 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Routing/Middleware/ThrottleRequests->handle(Object(Illuminate/Http/Request), Object(Closure), 'api')
-#13 C:/xampp/htdocs/githup/grocery/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(25): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#14 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->Laravel/Sanctum/Http/Middleware/{closure}(Object(Illuminate/Http/Request))
-#15 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#16 C:/xampp/htdocs/githup/grocery/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(24): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#17 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->handle(Object(Illuminate/Http/Request), Object(Closure))
-#18 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#19 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(805): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#20 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(784): Illuminate/Routing/Router->runRouteWithinStack(Object(Illuminate/Routing/Route), Object(Illuminate/Http/Request))
-#21 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(748): Illuminate/Routing/Router->runRoute(Object(Illuminate/Http/Request), Object(Illuminate/Routing/Route))
-#22 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(737): Illuminate/Routing/Router->dispatchToRoute(Object(Illuminate/Http/Request))
-#23 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(200): Illuminate/Routing/Router->dispatch(Object(Illuminate/Http/Request))
-#24 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate/Foundation/Http/Kernel->Illuminate/Foundation/Http/{closure}(Object(Illuminate/Http/Request))
-#25 C:/xampp/htdocs/githup/grocery/vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php(19): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#26 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Livewire/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware->handle(Object(Illuminate/Http/Request), Object(Closure))
-#27 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#28 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
-#29 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull->handle(Object(Illuminate/Http/Request), Object(Closure))
-#30 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#31 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(40): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
-#32 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/TrimStrings->handle(Object(Illuminate/Http/Request), Object(Closure))
-#33 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php(27): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#34 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/ValidatePostSize->handle(Object(Illuminate/Http/Request), Object(Closure))
-#35 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(99): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#36 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance->handle(Object(Illuminate/Http/Request), Object(Closure))
-#37 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(62): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#38 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Http/Middleware/HandleCors->handle(Object(Illuminate/Http/Request), Object(Closure))
-#39 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(39): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#40 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Http/Middleware/TrustProxies->handle(Object(Illuminate/Http/Request), Object(Closure))
-#41 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#42 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#43 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate/Foundation/Http/Kernel->sendRequestThroughRouter(Object(Illuminate/Http/Request))
-#44 C:/xampp/htdocs/githup/grocery/public/index.php(51): Illuminate/Foundation/Http/Kernel->handle(Object(Illuminate/Http/Request))
-#45 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(16): require_once('C://xampp//htdocs...')
-#46 {main}
-"} 
-[2026-08-03 13:01:38] laravel.ERROR: Class "App\Http\Responses\ApiResponse" not found {"exception":"[object] (Error(code: 0): Class \"App\\Http\\Responses\\ApiResponse\" not found at C:/xampp/htdocs/githup/grocery/app/Http/Controllers/Api/CategoryController.php:32)
-[stacktrace]
-#0 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Controller.php(54): App/Http/Controllers/Api/CategoryController->index(Object(Illuminate/Http/Request))
-#1 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php(43): Illuminate/Routing/Controller->callAction('index', Array)
-#2 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Route.php(259): Illuminate/Routing/ControllerDispatcher->dispatch(Object(Illuminate/Routing/Route), Object(App/Http/Controllers/Api/CategoryController), 'index')
-#3 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Route.php(205): Illuminate/Routing/Route->runController()
-#4 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(806): Illuminate/Routing/Route->run()
-#5 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate/Routing/Router->Illuminate/Routing/{closure}(Object(Illuminate/Http/Request))
-#6 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(50): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#7 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Routing/Middleware/SubstituteBindings->handle(Object(Illuminate/Http/Request), Object(Closure))
-#8 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(159): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#9 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(125): Illuminate/Routing/Middleware/ThrottleRequests->handleRequest(Object(Illuminate/Http/Request), Object(Closure), Array)
-#10 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(87): Illuminate/Routing/Middleware/ThrottleRequests->handleRequestUsingNamedLimiter(Object(Illuminate/Http/Request), Object(Closure), 'api', Object(Closure))
-#11 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Routing/Middleware/ThrottleRequests->handle(Object(Illuminate/Http/Request), Object(Closure), 'api')
-#12 C:/xampp/htdocs/githup/grocery/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(25): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#13 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->Laravel/Sanctum/Http/Middleware/{closure}(Object(Illuminate/Http/Request))
-#14 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#15 C:/xampp/htdocs/githup/grocery/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(24): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#16 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->handle(Object(Illuminate/Http/Request), Object(Closure))
-#17 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#18 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(805): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#19 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(784): Illuminate/Routing/Router->runRouteWithinStack(Object(Illuminate/Routing/Route), Object(Illuminate/Http/Request))
-#20 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(748): Illuminate/Routing/Router->runRoute(Object(Illuminate/Http/Request), Object(Illuminate/Routing/Route))
-#21 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(737): Illuminate/Routing/Router->dispatchToRoute(Object(Illuminate/Http/Request))
-#22 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(200): Illuminate/Routing/Router->dispatch(Object(Illuminate/Http/Request))
-#23 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate/Foundation/Http/Kernel->Illuminate/Foundation/Http/{closure}(Object(Illuminate/Http/Request))
-#24 C:/xampp/htdocs/githup/grocery/vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php(19): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#25 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Livewire/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware->handle(Object(Illuminate/Http/Request), Object(Closure))
-#26 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#27 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
-#28 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull->handle(Object(Illuminate/Http/Request), Object(Closure))
-#29 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#30 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(40): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
-#31 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/TrimStrings->handle(Object(Illuminate/Http/Request), Object(Closure))
-#32 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php(27): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#33 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/ValidatePostSize->handle(Object(Illuminate/Http/Request), Object(Closure))
-#34 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(99): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#35 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance->handle(Object(Illuminate/Http/Request), Object(Closure))
-#36 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(62): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#37 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Http/Middleware/HandleCors->handle(Object(Illuminate/Http/Request), Object(Closure))
-#38 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(39): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#39 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Http/Middleware/TrustProxies->handle(Object(Illuminate/Http/Request), Object(Closure))
-#40 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#41 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#42 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate/Foundation/Http/Kernel->sendRequestThroughRouter(Object(Illuminate/Http/Request))
-#43 C:/xampp/htdocs/githup/grocery/public/index.php(51): Illuminate/Foundation/Http/Kernel->handle(Object(Illuminate/Http/Request))
-#44 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(16): require_once('C://xampp//htdocs...')
-#45 {main}
-"} 
-[2026-08-03 13:02:06] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
+[2026-08-05 13:16:22] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
 [stacktrace]
 #0 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
 #1 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
@@ -575,205 +28,106 @@ Did you mean one of these?
 #8 [internal function]: Illuminate/Foundation/Bootstrap/HandleExceptions->Illuminate/Foundation/Bootstrap/{closure}()
 #9 {main}
 "} 
-[2026-08-03 13:02:06] laravel.ERROR: Maximum execution time of 30 seconds exceeded {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Maximum execution time of 30 seconds exceeded at C:/xampp/htdocs/githup/grocery/vendor/symfony/finder/Iterator/FileTypeFilterIterator.php:47)
+[2026-08-05 13:16:22] laravel.ERROR: Maximum execution time of 30 seconds exceeded {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Maximum execution time of 30 seconds exceeded at C:/xampp/htdocs/githup/grocery/vendor/symfony/mailer/Transport/Smtp/Stream/AbstractStream.php:81)
 [stacktrace]
 #0 {main}
 "} 
-[2026-08-03 13:02:24] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
+[2026-08-05 13:25:17] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
 [stacktrace]
 #0 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
 #1 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
 #2 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate/Log/LogManager->driver()
-#3 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate/Log/LogManager->error('Class \"App//Http...', Array)
-#4 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate/Foundation/Exceptions/Handler->reportThrowable(Object(Error))
-#5 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(49): Illuminate/Foundation/Exceptions/Handler->report(Object(Error))
-#6 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(146): Illuminate/Routing/Pipeline->handleException(Object(Illuminate/Http/Request), Object(Error))
-#7 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(50): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#8 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Routing/Middleware/SubstituteBindings->handle(Object(Illuminate/Http/Request), Object(Closure))
-#9 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(159): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#10 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(125): Illuminate/Routing/Middleware/ThrottleRequests->handleRequest(Object(Illuminate/Http/Request), Object(Closure), Array)
-#11 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(87): Illuminate/Routing/Middleware/ThrottleRequests->handleRequestUsingNamedLimiter(Object(Illuminate/Http/Request), Object(Closure), 'api', Object(Closure))
-#12 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Routing/Middleware/ThrottleRequests->handle(Object(Illuminate/Http/Request), Object(Closure), 'api')
-#13 C:/xampp/htdocs/githup/grocery/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(25): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#14 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->Laravel/Sanctum/Http/Middleware/{closure}(Object(Illuminate/Http/Request))
-#15 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#16 C:/xampp/htdocs/githup/grocery/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(24): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#17 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->handle(Object(Illuminate/Http/Request), Object(Closure))
-#18 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#19 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(805): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#20 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(784): Illuminate/Routing/Router->runRouteWithinStack(Object(Illuminate/Routing/Route), Object(Illuminate/Http/Request))
-#21 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(748): Illuminate/Routing/Router->runRoute(Object(Illuminate/Http/Request), Object(Illuminate/Routing/Route))
-#22 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(737): Illuminate/Routing/Router->dispatchToRoute(Object(Illuminate/Http/Request))
-#23 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(200): Illuminate/Routing/Router->dispatch(Object(Illuminate/Http/Request))
-#24 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate/Foundation/Http/Kernel->Illuminate/Foundation/Http/{closure}(Object(Illuminate/Http/Request))
-#25 C:/xampp/htdocs/githup/grocery/vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php(19): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#26 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Livewire/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware->handle(Object(Illuminate/Http/Request), Object(Closure))
-#27 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#28 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
-#29 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull->handle(Object(Illuminate/Http/Request), Object(Closure))
-#30 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#31 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(40): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
-#32 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/TrimStrings->handle(Object(Illuminate/Http/Request), Object(Closure))
-#33 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php(27): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#34 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/ValidatePostSize->handle(Object(Illuminate/Http/Request), Object(Closure))
-#35 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(99): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#36 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance->handle(Object(Illuminate/Http/Request), Object(Closure))
-#37 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(62): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#38 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Http/Middleware/HandleCors->handle(Object(Illuminate/Http/Request), Object(Closure))
-#39 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(39): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#40 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Http/Middleware/TrustProxies->handle(Object(Illuminate/Http/Request), Object(Closure))
-#41 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#42 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#43 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate/Foundation/Http/Kernel->sendRequestThroughRouter(Object(Illuminate/Http/Request))
-#44 C:/xampp/htdocs/githup/grocery/public/index.php(51): Illuminate/Foundation/Http/Kernel->handle(Object(Illuminate/Http/Request))
-#45 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(16): require_once('C://xampp//htdocs...')
-#46 {main}
+#3 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate/Log/LogManager->error('Maximum executi...', Array)
+#4 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate/Foundation/Exceptions/Handler->reportThrowable(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#5 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(183): Illuminate/Foundation/Exceptions/Handler->report(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#6 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(231): Illuminate/Foundation/Bootstrap/HandleExceptions->handleException(Object(Symfony/Component/ErrorHandler/Error/FatalError))
+#7 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Bootstrap/HandleExceptions.php(255): Illuminate/Foundation/Bootstrap/HandleExceptions->handleShutdown()
+#8 [internal function]: Illuminate/Foundation/Bootstrap/HandleExceptions->Illuminate/Foundation/Bootstrap/{closure}()
+#9 {main}
 "} 
-[2026-08-03 13:02:24] laravel.ERROR: Class "App\Http\Responses\ApiResponse" not found {"exception":"[object] (Error(code: 0): Class \"App\\Http\\Responses\\ApiResponse\" not found at C:/xampp/htdocs/githup/grocery/app/Http/Controllers/Api/CategoryController.php:32)
+[2026-08-05 13:25:17] laravel.ERROR: Maximum execution time of 30 seconds exceeded {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Maximum execution time of 30 seconds exceeded at C:/xampp/htdocs/githup/grocery/vendor/symfony/mailer/Transport/Smtp/Stream/AbstractStream.php:81)
 [stacktrace]
-#0 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Controller.php(54): App/Http/Controllers/Api/CategoryController->index(Object(Illuminate/Http/Request))
-#1 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php(43): Illuminate/Routing/Controller->callAction('index', Array)
-#2 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Route.php(259): Illuminate/Routing/ControllerDispatcher->dispatch(Object(Illuminate/Routing/Route), Object(App/Http/Controllers/Api/CategoryController), 'index')
-#3 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Route.php(205): Illuminate/Routing/Route->runController()
-#4 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(806): Illuminate/Routing/Route->run()
-#5 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate/Routing/Router->Illuminate/Routing/{closure}(Object(Illuminate/Http/Request))
-#6 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(50): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#7 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Routing/Middleware/SubstituteBindings->handle(Object(Illuminate/Http/Request), Object(Closure))
-#8 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(159): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#9 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(125): Illuminate/Routing/Middleware/ThrottleRequests->handleRequest(Object(Illuminate/Http/Request), Object(Closure), Array)
-#10 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(87): Illuminate/Routing/Middleware/ThrottleRequests->handleRequestUsingNamedLimiter(Object(Illuminate/Http/Request), Object(Closure), 'api', Object(Closure))
-#11 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Routing/Middleware/ThrottleRequests->handle(Object(Illuminate/Http/Request), Object(Closure), 'api')
-#12 C:/xampp/htdocs/githup/grocery/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(25): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#13 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->Laravel/Sanctum/Http/Middleware/{closure}(Object(Illuminate/Http/Request))
-#14 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#15 C:/xampp/htdocs/githup/grocery/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(24): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#16 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->handle(Object(Illuminate/Http/Request), Object(Closure))
-#17 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#18 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(805): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#19 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(784): Illuminate/Routing/Router->runRouteWithinStack(Object(Illuminate/Routing/Route), Object(Illuminate/Http/Request))
-#20 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(748): Illuminate/Routing/Router->runRoute(Object(Illuminate/Http/Request), Object(Illuminate/Routing/Route))
-#21 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(737): Illuminate/Routing/Router->dispatchToRoute(Object(Illuminate/Http/Request))
-#22 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(200): Illuminate/Routing/Router->dispatch(Object(Illuminate/Http/Request))
-#23 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate/Foundation/Http/Kernel->Illuminate/Foundation/Http/{closure}(Object(Illuminate/Http/Request))
-#24 C:/xampp/htdocs/githup/grocery/vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php(19): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#25 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Livewire/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware->handle(Object(Illuminate/Http/Request), Object(Closure))
-#26 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#27 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
-#28 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull->handle(Object(Illuminate/Http/Request), Object(Closure))
-#29 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#30 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(40): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
-#31 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/TrimStrings->handle(Object(Illuminate/Http/Request), Object(Closure))
-#32 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php(27): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#33 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/ValidatePostSize->handle(Object(Illuminate/Http/Request), Object(Closure))
-#34 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(99): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#35 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance->handle(Object(Illuminate/Http/Request), Object(Closure))
-#36 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(62): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#37 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Http/Middleware/HandleCors->handle(Object(Illuminate/Http/Request), Object(Closure))
-#38 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(39): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#39 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Http/Middleware/TrustProxies->handle(Object(Illuminate/Http/Request), Object(Closure))
-#40 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#41 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#42 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate/Foundation/Http/Kernel->sendRequestThroughRouter(Object(Illuminate/Http/Request))
-#43 C:/xampp/htdocs/githup/grocery/public/index.php(51): Illuminate/Foundation/Http/Kernel->handle(Object(Illuminate/Http/Request))
-#44 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(16): require_once('C://xampp//htdocs...')
-#45 {main}
+#0 {main}
 "} 
-[2026-08-03 13:03:25] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
+[2026-08-05 13:33:00] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
 [stacktrace]
 #0 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
 #1 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
 #2 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(681): Illuminate/Log/LogManager->driver()
-#3 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate/Log/LogManager->error('Class \"App//Http...', Array)
-#4 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate/Foundation/Exceptions/Handler->reportThrowable(Object(Error))
-#5 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Pipeline.php(49): Illuminate/Foundation/Exceptions/Handler->report(Object(Error))
-#6 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(146): Illuminate/Routing/Pipeline->handleException(Object(Illuminate/Http/Request), Object(Error))
-#7 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(50): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#8 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Routing/Middleware/SubstituteBindings->handle(Object(Illuminate/Http/Request), Object(Closure))
-#9 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(159): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#10 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(125): Illuminate/Routing/Middleware/ThrottleRequests->handleRequest(Object(Illuminate/Http/Request), Object(Closure), Array)
-#11 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(87): Illuminate/Routing/Middleware/ThrottleRequests->handleRequestUsingNamedLimiter(Object(Illuminate/Http/Request), Object(Closure), 'api', Object(Closure))
-#12 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Routing/Middleware/ThrottleRequests->handle(Object(Illuminate/Http/Request), Object(Closure), 'api')
-#13 C:/xampp/htdocs/githup/grocery/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(25): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#14 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->Laravel/Sanctum/Http/Middleware/{closure}(Object(Illuminate/Http/Request))
-#15 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#16 C:/xampp/htdocs/githup/grocery/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(24): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#17 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->handle(Object(Illuminate/Http/Request), Object(Closure))
-#18 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#19 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(805): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#20 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(784): Illuminate/Routing/Router->runRouteWithinStack(Object(Illuminate/Routing/Route), Object(Illuminate/Http/Request))
-#21 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(748): Illuminate/Routing/Router->runRoute(Object(Illuminate/Http/Request), Object(Illuminate/Routing/Route))
-#22 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(737): Illuminate/Routing/Router->dispatchToRoute(Object(Illuminate/Http/Request))
-#23 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(200): Illuminate/Routing/Router->dispatch(Object(Illuminate/Http/Request))
-#24 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate/Foundation/Http/Kernel->Illuminate/Foundation/Http/{closure}(Object(Illuminate/Http/Request))
-#25 C:/xampp/htdocs/githup/grocery/vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php(19): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#26 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Livewire/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware->handle(Object(Illuminate/Http/Request), Object(Closure))
-#27 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#28 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
-#29 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull->handle(Object(Illuminate/Http/Request), Object(Closure))
-#30 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#31 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(40): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
-#32 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/TrimStrings->handle(Object(Illuminate/Http/Request), Object(Closure))
-#33 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php(27): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#34 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/ValidatePostSize->handle(Object(Illuminate/Http/Request), Object(Closure))
-#35 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(99): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#36 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance->handle(Object(Illuminate/Http/Request), Object(Closure))
-#37 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(62): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#38 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Http/Middleware/HandleCors->handle(Object(Illuminate/Http/Request), Object(Closure))
-#39 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(39): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#40 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Http/Middleware/TrustProxies->handle(Object(Illuminate/Http/Request), Object(Closure))
-#41 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#42 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#43 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate/Foundation/Http/Kernel->sendRequestThroughRouter(Object(Illuminate/Http/Request))
-#44 C:/xampp/htdocs/githup/grocery/public/index.php(51): Illuminate/Foundation/Http/Kernel->handle(Object(Illuminate/Http/Request))
-#45 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(16): require_once('C://xampp//htdocs...')
-#46 {main}
+#3 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(317): Illuminate/Log/LogManager->error('array_key_exist...', Array)
+#4 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(278): Illuminate/Foundation/Exceptions/Handler->reportThrowable(Object(TypeError))
+#5 C:/xampp/htdocs/githup/grocery/vendor/nunomaduro/collision/src/Adapters/Laravel/ExceptionHandler.php(46): Illuminate/Foundation/Exceptions/Handler->report(Object(TypeError))
+#6 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(523): NunoMaduro/Collision/Adapters/Laravel/ExceptionHandler->report(Object(TypeError))
+#7 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(203): Illuminate/Foundation/Console/Kernel->reportException(Object(TypeError))
+#8 C:/xampp/htdocs/githup/grocery/artisan(35): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#9 {main}
 "} 
-[2026-08-03 13:03:25] laravel.ERROR: Class "App\Http\Responses\ApiResponse" not found {"exception":"[object] (Error(code: 0): Class \"App\\Http\\Responses\\ApiResponse\" not found at C:/xampp/htdocs/githup/grocery/app/Http/Controllers/Api/CategoryController.php:32)
+[2026-08-05 13:33:00] laravel.ERROR: array_key_exists(): Argument #2 ($array) must be of type array, null given {"exception":"[object] (TypeError(code: 0): array_key_exists(): Argument #2 ($array) must be of type array, null given at C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Queue/QueueServiceProvider.php:251)
 [stacktrace]
-#0 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Controller.php(54): App/Http/Controllers/Api/CategoryController->index(Object(Illuminate/Http/Request))
-#1 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php(43): Illuminate/Routing/Controller->callAction('index', Array)
-#2 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Route.php(259): Illuminate/Routing/ControllerDispatcher->dispatch(Object(Illuminate/Routing/Route), Object(App/Http/Controllers/Api/CategoryController), 'index')
-#3 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Route.php(205): Illuminate/Routing/Route->runController()
-#4 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(806): Illuminate/Routing/Route->run()
-#5 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate/Routing/Router->Illuminate/Routing/{closure}(Object(Illuminate/Http/Request))
-#6 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(50): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#7 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Routing/Middleware/SubstituteBindings->handle(Object(Illuminate/Http/Request), Object(Closure))
-#8 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(159): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#9 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(125): Illuminate/Routing/Middleware/ThrottleRequests->handleRequest(Object(Illuminate/Http/Request), Object(Closure), Array)
-#10 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Middleware/ThrottleRequests.php(87): Illuminate/Routing/Middleware/ThrottleRequests->handleRequestUsingNamedLimiter(Object(Illuminate/Http/Request), Object(Closure), 'api', Object(Closure))
-#11 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Routing/Middleware/ThrottleRequests->handle(Object(Illuminate/Http/Request), Object(Closure), 'api')
-#12 C:/xampp/htdocs/githup/grocery/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(25): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#13 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->Laravel/Sanctum/Http/Middleware/{closure}(Object(Illuminate/Http/Request))
-#14 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#15 C:/xampp/htdocs/githup/grocery/vendor/laravel/sanctum/src/Http/Middleware/EnsureFrontendRequestsAreStateful.php(24): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#16 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Laravel/Sanctum/Http/Middleware/EnsureFrontendRequestsAreStateful->handle(Object(Illuminate/Http/Request), Object(Closure))
-#17 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#18 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(805): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#19 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(784): Illuminate/Routing/Router->runRouteWithinStack(Object(Illuminate/Routing/Route), Object(Illuminate/Http/Request))
-#20 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(748): Illuminate/Routing/Router->runRoute(Object(Illuminate/Http/Request), Object(Illuminate/Routing/Route))
-#21 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Routing/Router.php(737): Illuminate/Routing/Router->dispatchToRoute(Object(Illuminate/Http/Request))
-#22 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(200): Illuminate/Routing/Router->dispatch(Object(Illuminate/Http/Request))
-#23 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate/Foundation/Http/Kernel->Illuminate/Foundation/Http/{closure}(Object(Illuminate/Http/Request))
-#24 C:/xampp/htdocs/githup/grocery/vendor/livewire/livewire/src/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware.php(19): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#25 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Livewire/Features/SupportDisablingBackButtonCache/DisableBackButtonCacheMiddleware->handle(Object(Illuminate/Http/Request), Object(Closure))
-#26 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#27 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull.php(31): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
-#28 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/ConvertEmptyStringsToNull->handle(Object(Illuminate/Http/Request), Object(Closure))
-#29 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TransformsRequest.php(21): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#30 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/TrimStrings.php(40): Illuminate/Foundation/Http/Middleware/TransformsRequest->handle(Object(Illuminate/Http/Request), Object(Closure))
-#31 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/TrimStrings->handle(Object(Illuminate/Http/Request), Object(Closure))
-#32 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/ValidatePostSize.php(27): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#33 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/ValidatePostSize->handle(Object(Illuminate/Http/Request), Object(Closure))
-#34 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(99): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#35 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance->handle(Object(Illuminate/Http/Request), Object(Closure))
-#36 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Http/Middleware/HandleCors.php(62): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#37 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Http/Middleware/HandleCors->handle(Object(Illuminate/Http/Request), Object(Closure))
-#38 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Http/Middleware/TrustProxies.php(39): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#39 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate/Http/Middleware/TrustProxies->handle(Object(Illuminate/Http/Request), Object(Closure))
-#40 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(Illuminate/Http/Request))
-#41 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate/Pipeline/Pipeline->then(Object(Closure))
-#42 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate/Foundation/Http/Kernel->sendRequestThroughRouter(Object(Illuminate/Http/Request))
-#43 C:/xampp/htdocs/githup/grocery/public/index.php(51): Illuminate/Foundation/Http/Kernel->handle(Object(Illuminate/Http/Request))
-#44 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/resources/server.php(16): require_once('C://xampp//htdocs...')
-#45 {main}
+#0 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Queue/QueueServiceProvider.php(251): array_key_exists('driver', NULL)
+#1 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/Container.php(908): Illuminate/Queue/QueueServiceProvider->Illuminate/Queue/{closure}(Object(Illuminate/Foundation/Application), Array)
+#2 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/Container.php(795): Illuminate/Container/Container->build(Object(Closure))
+#3 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(986): Illuminate/Container/Container->resolve('queue.failer', Array, true)
+#4 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/Container.php(731): Illuminate/Foundation/Application->resolve('queue.failer', Array)
+#5 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(971): Illuminate/Container/Container->make('queue.failer', Array)
+#6 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/Container.php(1454): Illuminate/Foundation/Application->make('queue.failer')
+#7 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Queue/Console/ListFailedCommand.php(56): Illuminate/Container/Container->offsetGet('queue.failer')
+#8 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Queue/Console/ListFailedCommand.php(40): Illuminate/Queue/Console/ListFailedCommand->getFailedJobs()
+#9 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate/Queue/Console/ListFailedCommand->handle()
+#10 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/Util.php(41): Illuminate/Container/BoundMethod::Illuminate/Container/{closure}()
+#11 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(93): Illuminate/Container/Util::unwrapIfClosure(Object(Closure))
+#12 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate/Container/BoundMethod::callBoundMethod(Object(Illuminate/Foundation/Application), Array, Object(Closure))
+#13 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/Container.php(662): Illuminate/Container/BoundMethod::call(Object(Illuminate/Foundation/Application), Array, Array, NULL)
+#14 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Console/Command.php(211): Illuminate/Container/Container->call(Array)
+#15 C:/xampp/htdocs/githup/grocery/vendor/symfony/console/Command/Command.php(326): Illuminate/Console/Command->execute(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#16 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Console/Command.php(180): Symfony/Component/Console/Command/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#17 C:/xampp/htdocs/githup/grocery/vendor/symfony/console/Application.php(1106): Illuminate/Console/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#18 C:/xampp/htdocs/githup/grocery/vendor/symfony/console/Application.php(324): Symfony/Component/Console/Application->doRunCommand(Object(Illuminate/Queue/Console/ListFailedCommand), Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#19 C:/xampp/htdocs/githup/grocery/vendor/symfony/console/Application.php(175): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#20 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(201): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#21 C:/xampp/htdocs/githup/grocery/artisan(35): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#22 {main}
 "} 
+[2026-08-05 13:36:48] laravel.EMERGENCY: Unable to create configured logger. Using emergency logger. {"exception":"[object] (InvalidArgumentException(code: 0): Log [] is not defined. at C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php:212)
+[stacktrace]
+#0 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(137): Illuminate/Log/LogManager->resolve(NULL, NULL)
+#1 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(124): Illuminate/Log/LogManager->get(NULL)
+#2 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Log/LogManager.php(722): Illuminate/Log/LogManager->driver()
+#3 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php(355): Illuminate/Log/LogManager->info('SendInvoiceJob ...')
+#4 C:/xampp/htdocs/githup/grocery/app/Jobs/SendInvoiceJob.php(35): Illuminate/Support/Facades/Facade::__callStatic('info', Array)
+#5 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): App/Jobs/SendInvoiceJob->handle(Object(App/Services/InvoicePdfService))
+#6 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/Util.php(41): Illuminate/Container/BoundMethod::Illuminate/Container/{closure}()
+#7 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(93): Illuminate/Container/Util::unwrapIfClosure(Object(Closure))
+#8 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate/Container/BoundMethod::callBoundMethod(Object(Illuminate/Foundation/Application), Array, Object(Closure))
+#9 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/Container.php(662): Illuminate/Container/BoundMethod::call(Object(Illuminate/Foundation/Application), Array, Array, NULL)
+#10 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Bus/Dispatcher.php(128): Illuminate/Container/Container->call(Array)
+#11 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate/Bus/Dispatcher->Illuminate/Bus/{closure}(Object(App/Jobs/SendInvoiceJob))
+#12 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(App/Jobs/SendInvoiceJob))
+#13 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Bus/Dispatcher.php(132): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#14 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Queue/CallQueuedHandler.php(123): Illuminate/Bus/Dispatcher->dispatchNow(Object(App/Jobs/SendInvoiceJob), false)
+#15 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate/Queue/CallQueuedHandler->Illuminate/Queue/{closure}(Object(App/Jobs/SendInvoiceJob))
+#16 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate/Pipeline/Pipeline->Illuminate/Pipeline/{closure}(Object(App/Jobs/SendInvoiceJob))
+#17 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Queue/CallQueuedHandler.php(122): Illuminate/Pipeline/Pipeline->then(Object(Closure))
+#18 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Queue/CallQueuedHandler.php(70): Illuminate/Queue/CallQueuedHandler->dispatchThroughMiddleware(Object(Illuminate/Queue/Jobs/DatabaseJob), Object(App/Jobs/SendInvoiceJob))
+#19 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Queue/Jobs/Job.php(102): Illuminate/Queue/CallQueuedHandler->call(Object(Illuminate/Queue/Jobs/DatabaseJob), Array)
+#20 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(439): Illuminate/Queue/Jobs/Job->fire()
+#21 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(389): Illuminate/Queue/Worker->process('database', Object(Illuminate/Queue/Jobs/DatabaseJob), Object(Illuminate/Queue/WorkerOptions))
+#22 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Queue/Worker.php(176): Illuminate/Queue/Worker->runJob(Object(Illuminate/Queue/Jobs/DatabaseJob), 'database', Object(Illuminate/Queue/WorkerOptions))
+#23 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(137): Illuminate/Queue/Worker->daemon('database', 'default', Object(Illuminate/Queue/WorkerOptions))
+#24 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Queue/Console/WorkCommand.php(120): Illuminate/Queue/Console/WorkCommand->runWorker('database', 'default')
+#25 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(36): Illuminate/Queue/Console/WorkCommand->handle()
+#26 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/Util.php(41): Illuminate/Container/BoundMethod::Illuminate/Container/{closure}()
+#27 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(93): Illuminate/Container/Util::unwrapIfClosure(Object(Closure))
+#28 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/BoundMethod.php(35): Illuminate/Container/BoundMethod::callBoundMethod(Object(Illuminate/Foundation/Application), Array, Object(Closure))
+#29 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Container/Container.php(662): Illuminate/Container/BoundMethod::call(Object(Illuminate/Foundation/Application), Array, Array, NULL)
+#30 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Console/Command.php(211): Illuminate/Container/Container->call(Array)
+#31 C:/xampp/htdocs/githup/grocery/vendor/symfony/console/Command/Command.php(326): Illuminate/Console/Command->execute(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#32 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Console/Command.php(180): Symfony/Component/Console/Command/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Illuminate/Console/OutputStyle))
+#33 C:/xampp/htdocs/githup/grocery/vendor/symfony/console/Application.php(1106): Illuminate/Console/Command->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#34 C:/xampp/htdocs/githup/grocery/vendor/symfony/console/Application.php(324): Symfony/Component/Console/Application->doRunCommand(Object(Illuminate/Queue/Console/WorkCommand), Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#35 C:/xampp/htdocs/githup/grocery/vendor/symfony/console/Application.php(175): Symfony/Component/Console/Application->doRun(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#36 C:/xampp/htdocs/githup/grocery/vendor/laravel/framework/src/Illuminate/Foundation/Console/Kernel.php(201): Symfony/Component/Console/Application->run(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#37 C:/xampp/htdocs/githup/grocery/artisan(35): Illuminate/Foundation/Console/Kernel->handle(Object(Symfony/Component/Console/Input/ArgvInput), Object(Symfony/Component/Console/Output/ConsoleOutput))
+#38 {main}
+"} 
+[2026-08-05 13:36:48] laravel.INFO: SendInvoiceJob Started  

@@ -25,6 +25,7 @@ use App\Http\Controllers\Api\StripeCheckoutController;
 use App\Http\Controllers\Api\StripeController;
 use App\Http\Controllers\Api\StripeWebhookController;
 use App\Http\Controllers\Api\SubcategoryController;
+use App\Http\Controllers\Api\InvoiceController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -221,3 +222,16 @@ Route::get('/health', function () {
 });
 
 // Route::apiResource('smart-list-lists', SmartListListController::class);
+Route::post('/orders/{order}/send-invoice', [InvoiceController::class, 'send']);
+
+use Illuminate\Support\Facades\Mail;
+
+Route::get('/mail-test', function () {
+
+    Mail::raw('Hello from Laravel', function ($message) {
+        $message->to('ahmedabdeldaem01000@gmail.com')
+                ->subject('Mail Test');
+    });
+
+    return 'Done';
+});
