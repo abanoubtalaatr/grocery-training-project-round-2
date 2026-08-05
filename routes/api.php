@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SmartListController;
+use App\Http\Controllers\Api\SmartListListController;
 use App\Http\Controllers\Api\SpecialNoteController;
 use App\Http\Controllers\Api\StaticPageController;
 use App\Http\Controllers\Api\StripeCheckoutController;
@@ -26,6 +27,7 @@ use App\Http\Controllers\Api\StripeController;
 use App\Http\Controllers\Api\StripeWebhookController;
 use App\Http\Controllers\Api\SubcategoryController;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -38,7 +40,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+
+
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
+
+
 
 // Public routes - Authentication
 Route::prefix('auth')->group(function () {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Jobs\SendInvoiceEmailJob;
 use Stripe\Stripe;
 use App\Models\Cart;
 use App\Models\Meal;
@@ -120,9 +121,11 @@ class OrderController extends Controller
                     'notes' => $validated['notes'],
                 ]);
             }
-            DB::commit();
+    DB::commit();
 
-            $order->load(['items.meal', 'address']);
+    SendInvoiceEmailJob::dispatch($order);
+
+    $order->load(['items.meal', 'address']);
 
             return response()->json([
                 'success' => true,
