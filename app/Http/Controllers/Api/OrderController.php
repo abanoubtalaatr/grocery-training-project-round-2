@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
 use App\Services\ShippingService;
+use App\Services\SendInvoiceToEmail;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrderController extends Controller
 {
@@ -541,5 +543,51 @@ class OrderController extends Controller
             'schedule_delivery' => $order->schedule_delivery,
             'delivery_speed' => $order->delivery_speed,
         ];
+    }
+
+    /**
+     * Send invoice email for a specific order.
+     */
+    public function sendInvoice(Request $request, $id): JsonResponse
+    {
+        try {
+            $user = $request->user();
+            
+            $order = Order::where('user_id', $user->id)
+                ->where('id', $id)
+                ->first();
+
+            if (!$order) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Order not found',
+                ], 404);
+            }
+
+            $order->loadMissing(['items.meal', 'address', 'user']);
+
+            if (!$user->email) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User does not have an email address.',
+                ], 400);
+            }
+
+            $pdf = Pdf::loadView('pdf.invoice', ['order' => $order]);
+            $pdfContent = $pdf->output();
+
+            app(SendInvoiceToEmail::class)->send($user->email, $pdfContent);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Invoice email dispatch has been queued successfully.',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to send invoice email',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

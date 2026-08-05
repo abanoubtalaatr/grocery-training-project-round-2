@@ -151,6 +151,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', [OrderController::class, 'index']);
         Route::get('/track', [OrderController::class, 'track']);
         Route::get('/{id}', [OrderController::class, 'show']);
+        Route::post('/{id}/send-invoice', [OrderController::class, 'sendInvoice']);
     });
 
     // Payment routes
