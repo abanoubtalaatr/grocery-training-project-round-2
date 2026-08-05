@@ -2,16 +2,20 @@
 
 namespace App\Jobs;
 
+use App\Mail\SendInvoiceMail;
 use App\Models\Order;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Mail;
 
-class ProcessOrderJob implements ShouldQueue
+class SendInvoiceEmailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public $tries = 3;
 
     public function __construct(protected Order $order)
     {
@@ -19,10 +23,6 @@ class ProcessOrderJob implements ShouldQueue
 
     public function handle(): void
     {
-        sleep(5);
-
-        $this->order->update([
-            'invoice_path' => 'invoices/invoice_' . $this->order->order_number . '.pdf',
-        ]);
+        Mail::to($this->order->user->email)->send(new SendInvoiceMail($this->order));
     }
 }

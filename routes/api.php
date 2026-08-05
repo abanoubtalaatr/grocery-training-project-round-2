@@ -19,13 +19,13 @@ use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SmartListController;
+use App\Http\Controllers\Api\SmartListListController;
 use App\Http\Controllers\Api\SpecialNoteController;
 use App\Http\Controllers\Api\StaticPageController;
 use App\Http\Controllers\Api\StripeCheckoutController;
 use App\Http\Controllers\Api\StripeController;
 use App\Http\Controllers\Api\StripeWebhookController;
 use App\Http\Controllers\Api\SubcategoryController;
-use App\Http\Controllers\Api\OrderProcessingController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -42,10 +42,7 @@ use Illuminate\Support\Facades\Route;
 
 
 
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/orders/process', [OrderProcessingController::class, 'store']);
-    Route::get('/orders/process/{order}', [OrderProcessingController::class, 'show']);
-});
+
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
 
 
@@ -230,7 +227,7 @@ Route::get('/health', function () {
     ]);
 });
 
-
+Route::apiResource('smart-list-lists', SmartListListController::class);
 
 // Categories routes by mohammed-bashamekha
 use App\Http\Controllers\CategoryController as ControllersCategoryController;
