@@ -13,7 +13,6 @@ use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\MealController;
 use App\Http\Controllers\Api\NotificationController;
-use App\Http\Controllers\Api\NotificationSettingsController;
 use App\Http\Controllers\Api\OfferController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\PaymentController;
@@ -26,6 +25,7 @@ use App\Http\Controllers\Api\StripeCheckoutController;
 use App\Http\Controllers\Api\StripeController;
 use App\Http\Controllers\Api\StripeWebhookController;
 use App\Http\Controllers\Api\SubcategoryController;
+use App\Http\Controllers\Api\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,9 +33,7 @@ use Illuminate\Support\Facades\Route;
 | API Routes
 |--------------------------------------------------------------------------
 |
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
+| These routes map to the refactored thin controllers and actions.
 |
 */
 
@@ -49,6 +47,52 @@ Route::prefix('auth')->group(function () {
     Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
     Route::post('/google', [GoogleAuthController::class, 'login']);
+});
+
+// Public content
+Route::get('/meals/today', [MealController::class, 'today']);
+Route::get('/meals/hot', [MealController::class, 'hot']);
+Route::get('/meals/recommendations', [MealController::class, 'recommendations']);
+Route::get('/meals', [MealController::class, 'index']);
+Route::get('/meals/{id}', [MealController::class, 'show']);
+Route::get('/sliders', [MealController::class, 'slider']);
+Route::get('/new-products', [MealController::class, 'newProducts']);
+Route::get('/best-sells', [MealController::class, 'bestSells']);
+Route::get('/brands', [MealController::class, 'brands']);
+Route::get('/more-to-explore', [MealController::class, 'moreToExplore']);
+
+Route::prefix('offers')->group(function () {
+    Route::get('/', [OfferController::class, 'index']);
+    Route::get('/featured', [OfferController::class, 'featured']);
+    Route::get('/validate', [OfferController::class, 'validateOffer']);
+    Route::get('/{code}', [OfferController::class, 'showByCode']);
+});
+
+Route::prefix('categories')->group(function () {
+    Route::get('/', [CategoryController::class, 'index']);
+    Route::get('/{id}', [CategoryController::class, 'show']);
+    Route::get('/{id}/meals', [CategoryController::class, 'meals']);
+});
+
+Route::prefix('subcategories')->group(function () {
+    Route::get('/', [SubcategoryController::class, 'index']);
+    Route::get('/{id}', [SubcategoryController::class, 'show']);
+    Route::get('/{id}/meals', [SubcategoryController::class, 'meals']);
+});
+
+Route::get('/faqs', [FaqController::class, 'index']);
+Route::get('/pages', [StaticPageController::class, 'index']);
+Route::get('/pages/slug/{slug}', [StaticPageController::class, 'showBySlug']);
+Route::get('/pages/important', [StaticPageController::class, 'importantPages']);
+Route::post('/contact', [ContactController::class, 'submit']);
+
+// Health check route
+Route::get('/health', function () {
+    return response()->json([
+        'success' => true,
+        'message' => 'API is running',
+        'timestamp' => now(),
+    ]);
 });
 
 // Protected routes - Require authentication
@@ -81,40 +125,15 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/{id}/set-default', [AddressController::class, 'setDefault']);
     });
 
+    // Smart lists
     Route::post('smart-lists/{id}/meals', [SmartListController::class, 'addMeal']);
     Route::delete('smart-lists/{id}/meals/{mealId}', [SmartListController::class, 'removeMeal']);
     Route::apiResource('smart-lists', SmartListController::class);
 
-    Route::prefix('notification-settings')->group(function () {
-        Route::get('/', [NotificationSettingsController::class, 'index']);
-        Route::put('/', [NotificationSettingsController::class, 'update']);
-        Route::put('/category/{category}', [NotificationSettingsController::class, 'updateCategory']);
-    });
-
-    Route::prefix('notifications')->group(function () {
-        // Get notifications
-        Route::get('/', [NotificationController::class, 'index']);
-        Route::get('/with-resources', [NotificationController::class, 'indexWithResources']);
-
-        // Statistics
-        Route::get('/stats', [NotificationController::class, 'stats']);
-        Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
-        Route::get('/recent', [NotificationController::class, 'recent']);
-
-        // Single notification operations
-        Route::get('/{id}', [NotificationController::class, 'show']);
-        Route::put('/{id}/read', [NotificationController::class, 'markAsRead']);
-        Route::put('/{id}/unread', [NotificationController::class, 'markAsUnread']);
-        Route::delete('/{id}', [NotificationController::class, 'destroy']);
-
-        // Bulk operations
-        Route::put('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
-        Route::delete('/delete-multiple', [NotificationController::class, 'destroyMultiple']);
-        Route::delete('/clear-all', [NotificationController::class, 'clearAll']);
-
-        // Filtered notifications
-        Route::get('/type/{type}', [NotificationController::class, 'byType']);
-    });
+    // Notifications (simplified to match refactor)
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::put('/notifications/{id}/read', [NotificationController::class, 'markRead']);
+    Route::put('/notifications/settings', [NotificationController::class, 'updateSettings']);
 
     // Cart routes
     Route::prefix('cart')->group(function () {
@@ -125,39 +144,32 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/clear', [CartController::class, 'clear']);
     });
 
-    // Favorites routes
-    Route::prefix('favorites')->group(function () {
-        Route::get('/', [FavoriteController::class, 'index']);
-        Route::post('/{mealId}/toggle', [FavoriteController::class, 'toggle']);
-        Route::get('/{mealId}/check', [FavoriteController::class, 'check']);
-        Route::delete('/{mealId}', [FavoriteController::class, 'remove']);
-    });
+    // Favorites (refactored)
+    Route::get('/favorites', [FavoriteController::class, 'index']);
+    Route::post('/favorites', [FavoriteController::class, 'store']);
+    Route::delete('/favorites/{mealId}', [FavoriteController::class, 'destroy']);
 
-    // Chatbot routes
-    Route::prefix('chatbot')->group(function () {
-        Route::post('/', [ChatbotController::class, 'chat']);
-        Route::get('/history', [ChatbotController::class, 'history']);
-        Route::get('/suggestions', [ChatbotController::class, 'suggestions']);
-    });
+    // Chatbot
+    Route::post('/chatbot', [ChatbotController::class, 'chat']);
 
+    // Stripe saved cards
     Route::get('/cards', [StripeController::class, 'listCards']);
     Route::post('/setup-intent', [StripeController::class, 'createSetupIntent']);
     Route::post('/charge-card', [StripeController::class, 'chargeSavedCard']);
     Route::delete('/cards/{id}', [StripeController::class, 'deleteCard']);
 
-    // Order routes
+    // Orders
     Route::prefix('orders')->group(function () {
         Route::post('/', [OrderController::class, 'store']);
         Route::get('/', [OrderController::class, 'index']);
         Route::get('/track', [OrderController::class, 'track']);
         Route::get('/{id}', [OrderController::class, 'show']);
-        Route::prefix('{order}')->group(function () {
-    Route::post('/send-invoice', [InvoiceController::class, 'sendInvoice']);
-    Route::get('/download-invoice', [InvoiceController::class, 'downloadInvoice']);
-    });
+
+        Route::post('/{order}/send-invoice', [InvoiceController::class, 'sendInvoice']);
+        Route::get('/{order}/download-invoice', [InvoiceController::class, 'downloadInvoice']);
     });
 
-    // Payment routes
+    // Payments
     Route::prefix('payments')->group(function () {
         Route::post('/stripe/checkout-session', [StripeCheckoutController::class, 'store']);
         Route::get('/stripe/verify-session/{session_id}', [StripeCheckoutController::class, 'verifySession']);
@@ -166,61 +178,14 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/invoice/{order}', [PaymentController::class, 'invoice']);
     });
 
-    // Dashboard route
+    // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index']);
 
-    // Personalized "frequency" meals (requires auth — uses order history)
+    // Frequency meals (requires auth)
     Route::get('/frequency', [MealController::class, 'frequency']);
-});
 
-// Meals routes
-Route::prefix('meals')->group(function () {
-    Route::get('/today', [MealController::class, 'today']);
-    Route::get('hot', [MealController::class, 'hot']);
-
-    Route::get('/recommendations', [MealController::class, 'recommendations']);
-    Route::get('/', [MealController::class, 'index']);
-    Route::get('/{id}', [MealController::class, 'show']);
-
-});
-Route::get('/new-products', [MealController::class, 'newProducts']);
-Route::get('best-sells', [MealController::class, 'bestSells']);
-Route::get('sliders', [MealController::class, 'slider']);
-Route::get('brands', [MealController::class, 'brands']);
-Route::get('more-to-explore', [MealController::class, 'moreToExplore']);
-Route::get('settings', [SettingController::class, 'index']);
-Route::get('special-notes', [SpecialNoteController::class, 'index']);
-// Categories routes
-
-Route::prefix('offers')->group(function () {
-    Route::get('/', [OfferController::class, 'index']);
-    Route::get('/featured', [OfferController::class, 'featured']);
-    Route::get('/validate', [OfferController::class, 'validateOffer']);
-    Route::get('/{code}', [OfferController::class, 'showByCode']);
-});
-Route::prefix('categories')->group(function () {
-    Route::get('/', [CategoryController::class, 'index']);
-    Route::get('/{id}', [CategoryController::class, 'show']);
-    Route::get('/{id}/meals', [CategoryController::class, 'meals']);
-});
-
-// Subcategories routes
-Route::prefix('subcategories')->group(function () {
-    Route::get('/', [SubcategoryController::class, 'index']);
-    Route::get('/{id}', [SubcategoryController::class, 'show']);
-    Route::get('/{id}/meals', [SubcategoryController::class, 'meals']);
-});
-Route::get('/faqs', [FaqController::class, 'index']);
-Route::get('/pages', [StaticPageController::class, 'index']);
-Route::get('/pages/slug/{slug}', [StaticPageController::class, 'showBySlug']);
-Route::get('/pages/important', [StaticPageController::class, 'importantPages']);
-Route::post('/contact', [ContactController::class, 'submit']);
-
-// Health check route
-Route::get('/health', function () {
-    return response()->json([
-        'success' => true,
-        'message' => 'API is running',
-        'timestamp' => now(),
-    ]);
+    // Reviews
+    Route::get('/meals/{mealId}/reviews', [ReviewController::class, 'index']);
+    Route::post('/reviews', [ReviewController::class, 'store']);
+    Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
 });
