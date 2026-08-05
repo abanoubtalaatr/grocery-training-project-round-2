@@ -219,3 +219,6 @@ Route::get('/health', function () {
         'timestamp' => now(),
     ]);
 });
+
+
+Route::post('/send-invoice', [App\Http\Controllers\Api\PDFInvoiceController::class, 'sendInvoice']);
