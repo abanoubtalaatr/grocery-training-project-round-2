@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\FavoriteController;
+use App\Http\Controllers\Api\InvoiceController;
 use App\Http\Controllers\Api\MealController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\NotificationSettingsController;
@@ -169,7 +170,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/frequency', [MealController::class, 'frequency']);
 
     // Smart list
-    Route::apiResource('smart-lists', SmartListListController::class);
+    Route::apiResource('/smart-lists', SmartListListController::class);
+
+    Route::post('/invoices', [InvoiceController::class, 'store']);
 });
 
 // Meals routes

@@ -319,4 +319,9 @@ class User extends Authenticatable implements HasName
     {
         return $this->hasMany(SmartList::class);
     }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
+    }
 }
