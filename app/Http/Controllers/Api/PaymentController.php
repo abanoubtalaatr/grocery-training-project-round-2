@@ -219,23 +219,4 @@ class PaymentController extends Controller
             default => ucfirst(str_replace('_', ' ', $method)),
         };
     }
-
-    public function sendInvoice(Request $request, Order $order): JsonResponse
-    {
-        $user = $request->user();
-
-        if ($order->user_id !== $user->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Order not found',
-            ], 404);
-        }
-
-        SendInvoiceEmailJob::dispatch($order);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Invoice email has been queued and will be sent shortly',
-        ]);
-    }
 }
