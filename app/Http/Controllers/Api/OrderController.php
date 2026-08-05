@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
-use Stripe\Stripe;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreOrderRequest;
+use App\Jobs\ProcessInvoiceJob;
+use App\Models\Address;
 use App\Models\Cart;
 use App\Models\Meal;
 use App\Models\Order;
-use App\Models\Address;
 use App\Models\OrderItem;
 use App\Models\OrderNote;
-use Stripe\PaymentIntent;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreOrderRequest;
 use App\Services\ShippingService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
 
 class OrderController extends Controller
 {
@@ -36,107 +38,97 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request): JsonResponse
     {
-        try {
-            $user = $request->user();
-            $validated = $request->validated();
+       try {
+    $user = $request->user();
+    $validated = $request->validated();
 
-            // Get user's active cart
-            $cart = $user->activeCart()->with('items.meal')->first();
+    // 1. Get user's active cart
+    $cart = $user->activeCart()->with('items.meal')->first();
 
-            if (!$cart || $cart->isEmpty()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Your cart is empty. Please add items to your cart before placing an order.',
-                ], 400);
-            }
+    if (!$cart || $cart->isEmpty()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Your cart is empty. Please add items to your cart before placing an order.',
+        ], 400);
+    }
 
-            // Validate and process items from cart
-            $itemsResult = $this->validateAndProcessCartItems($cart->items);
-            if (!$itemsResult['success']) {
-                return response()->json($itemsResult['response'], 400);
-            }
+    // 2. Validate and process cart items
+    $itemsResult = $this->validateAndProcessCartItems($cart->items);
+    if (!$itemsResult['success']) {
+        return response()->json($itemsResult['response'], 400);
+    }
 
-            $items = $itemsResult['items'];
+    $items = $itemsResult['items'];
 
-            // Calculate totals and shipping (use cart totals; add shipping for delivery)
-            $cart->calculateTotals();
-            $shippingService = app(ShippingService::class);
-            $shippingFee = $shippingService->calculateShippingFee((float) $cart->subtotal, $validated['delivery_type']);
-            $totals = [
-                'subtotal' => $cart->subtotal,
-                'tax' => $cart->tax,
-                'discount' => $cart->discount,
-                'shipping_fee' => $shippingFee,
-                'total' => (float) $cart->subtotal + (float) $cart->tax + $shippingFee,
-            ];
-            $total = $totals['total'];
+    // 3. Calculate totals & shipping
+    $cart->calculateTotals();
+    $shippingService = app(ShippingService::class);
+    $shippingFee = $shippingService->calculateShippingFee((float) $cart->subtotal, $validated['delivery_type']);
+    
+    $totals = [
+        'subtotal'     => $cart->subtotal,
+        'tax'          => $cart->tax,
+        'discount'     => $cart->discount,
+        'shipping_fee' => $shippingFee,
+        'total'        => (float) $cart->subtotal + (float) $cart->tax + $shippingFee,
+    ];
 
-            // Validate amount matches cart total
-            // if (abs($total - $validated['amount']) > 0.01) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => 'Amount mismatch. Please recalculate your order.',
-            //         'calculated_total' => $total,
-            //         'provided_amount' => $validated['amount'],
-            //     ], 400);
-            // }
+    DB::beginTransaction();
 
-            DB::beginTransaction();
+    // Safely assign Stripe Payment Intent ID if payment logic is disabled
+    $stripePaymentIntentId = null;
 
-            // $paymentResult = match ($validated['payment_method']) {
-            //     'stripe_checkout' => ['success' => true],
-            //     default => $this->processPayment($user, $validated, $total),
-            // };
+    // 4. Create order & order items
+    $order = $this->createOrder($user, $validated, $totals['subtotal'], $totals, $stripePaymentIntentId);
+    $this->createOrderItems($order, $items);
 
-            // if (! $paymentResult['success']) {
-            //     DB::rollBack();
+    // 5. Clear user's active cart
+    $this->clearUserCart($user);
 
-            //     return response()->json($paymentResult['response'], 400);
-            // }
+    // 6. Handle Special Notes
+    if (isset($validated['special_note_id'])) {
+        OrderNote::create([
+            'order_id'        => $order->id,
+            'special_note_id' => $validated['special_note_id'],
+            'notes'           => $validated['notes'] ?? null,
+        ]);
+    } elseif (isset($validated['notes'])) {
+        OrderNote::create([
+            'order_id'        => $order->id,
+            'special_note_id' => null,
+            'notes'           => $validated['notes'],
+        ]);
+    }
 
-            $stripePaymentIntentId = $paymentResult['stripe_payment_intent_id'] ?? null;
+    DB::commit();
 
-            // Create order
-            $order = $this->createOrder($user, $validated, $totals['subtotal'], $totals, $stripePaymentIntentId);
+    // 7. Dispatch Invoice Job to Queue (After DB Commit)
+    Log::info('Order Created with ID: ' . $order->id);
+    
+    ProcessInvoiceJob::dispatch($order);
+    
+    Log::info('ProcessInvoiceJob Dispatched!');
 
-            // Create order items and update stock
-            $this->createOrderItems($order, $items);
+    // 8. Load response relations and return JSON
+    $order->load(['items.meal', 'address']);
 
-            // Clear user's active cart
-            $this->clearUserCart($user);
+    return response()->json([
+        'success' => true,
+        'message' => 'Order created successfully',
+        'data'    => $this->formatOrder($order),
+    ], 201);
 
-            
-            if(isset($validated['special_note_id'])) {
-                OrderNote::create([
-                    'order_id' => $order->id,
-                    'special_note_id' => $validated['special_note_id'],
-                    'notes' => $validated['notes'] ?? null,
-                ]);
-            }
-            if(isset($validated['notes'])   ) {
-                OrderNote::create([
-                    'order_id' => $order->id,
-                    'special_note_id' => null,
-                    'notes' => $validated['notes'],
-                ]);
-            }
-            DB::commit();
+} catch (\Exception $e) {
+    DB::rollBack();
 
-            $order->load(['items.meal', 'address']);
+    Log::error('Order creation failed: ' . $e->getMessage());
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Order created successfully',
-                'data' => $this->formatOrder($order),
-            ], 201);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to create order',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+    return response()->json([
+        'success' => false,
+        'message' => 'Failed to create order',
+        'error'   => $e->getMessage(),
+    ], 500);
+}
     }
 
     /**

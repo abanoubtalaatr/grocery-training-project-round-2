@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\SmartListRequest;
+use App\Http\Controllers\Controller; 
 use App\Http\Requests\StoreSmartListRequest;
 use App\Http\Requests\UpdateSmartListRequest;
 use App\Http\Resources\Api\SmartListResource;
@@ -12,7 +11,6 @@ use App\Services\MediaUploadService;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
 
 class SmartListController extends Controller
@@ -21,7 +19,7 @@ class SmartListController extends Controller
     protected MediaUploadService $mediaService;
     public function __construct(MediaUploadService $mediaService)
     {
-        // $this->me;
+         $this->mediaService=$mediaService;
     }
     public function index(Request $request)
     {
@@ -61,16 +59,16 @@ class SmartListController extends Controller
         );
     }
 
-    public function show(Request $request, SmartList $smartList)
+   public function show(Request $request, SmartList $smartList)
     {
         $this->authorize('view', $smartList);
 
-        $smartList = SmartList::where('user_id', $request->user()->id)->with('meals')->findOrFail($id);
-        return response()->json([
-            'success' => true,
-            'message' => 'Smart list retrieved successfully',
-            'data' => new SmartListResource($smartList),
-        ]);
+        $smartList->load('meals:id,name,price,image');
+
+        return $this->successResponse(
+            new SmartListResource($smartList),
+            'Smart list retrieved successfully'
+        );
     }
     public function update(UpdateSmartListRequest $request, SmartList $smartList)
     {
@@ -108,6 +106,37 @@ class SmartListController extends Controller
             'Smart list deleted successfully'
         );
     }
+public function addMeal(Request $request, SmartList $smartList)
+    {
+        $this->authorize('update', $smartList);
 
+        $validated = $request->validate([
+            'meal_id' => ['required', 'integer', 'exists:meals,id'],
+        ]);
+
+        $smartList->meals()->syncWithoutDetaching([$validated['meal_id']]);
+        $smartList->load('meals:id,name,price,image');
+
+        return $this->successResponse(
+            new SmartListResource($smartList),
+            'Meal added successfully'
+        );
+    }
+
+    /**
+     * Remove a meal from a smart list.
+     */
+    public function removeMeal(Request $request, SmartList $smartList, int $mealId)
+    {
+        $this->authorize('update', $smartList);
+
+        $smartList->meals()->detach($mealId);
+        $smartList->load('meals:id,name,price,image');
+
+        return $this->successResponse(
+            new SmartListResource($smartList),
+            'Meal removed successfully'
+        );
+    }
    
 }
