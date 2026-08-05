@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Jobs\SendInvoiceEmailJob;
 use Carbon\Carbon;
 
 class PaymentController extends Controller
@@ -217,5 +218,24 @@ class PaymentController extends Controller
             'stripe' => 'Stripe',
             default => ucfirst(str_replace('_', ' ', $method)),
         };
+    }
+
+    public function sendInvoice(Request $request, Order $order): JsonResponse
+    {
+        $user = $request->user();
+
+        if ($order->user_id !== $user->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found',
+            ], 404);
+        }
+
+        SendInvoiceEmailJob::dispatch($order);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Invoice email has been queued and will be sent shortly',
+        ]);
     }
 }
