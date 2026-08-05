@@ -27,6 +27,10 @@ use App\Http\Controllers\Api\StripeWebhookController;
 use App\Http\Controllers\Api\SubcategoryController;
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Api\InvoiceController;
+
+Route::post('/invoice', [InvoiceController::class, 'store']);
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
