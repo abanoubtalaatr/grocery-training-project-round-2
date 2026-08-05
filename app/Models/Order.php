@@ -73,7 +73,7 @@ class Order extends Model
     public static function generateOrderNumber(): string
     {
         do {
-            $orderNumber = 'ORD-' . strtoupper(uniqid());
+            $orderNumber = 'ORD-'.strtoupper(uniqid());
         } while (static::where('order_number', $orderNumber)->exists());
 
         return $orderNumber;
@@ -108,7 +108,7 @@ class Order extends Model
      */
     public function getStatusPositionAttribute(): int
     {
-        return match($this->status) {
+        return match ($this->status) {
             'awaiting_payment' => 0,
             'placed' => 1,
             'processing' => 2,
@@ -125,7 +125,7 @@ class Order extends Model
      */
     public function getStatusDescriptionAttribute(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             'awaiting_payment' => 'Awaiting payment',
             'placed' => 'Order placed',
             'processing' => 'Processing',
@@ -160,10 +160,12 @@ class Order extends Model
     {
         return $query->whereNotIn('status', ['cancelled', 'delivered']);
     }
+
     public function notes(): HasMany
     {
         return $this->hasMany(OrderNote::class);
     }
+
     public function specialNote(): BelongsTo
     {
         return $this->belongsTo(SpecialNote::class);
@@ -172,7 +174,7 @@ class Order extends Model
     public function getSpecialNoteAttribute(): ?string
     {
         // Check if the main order 'notes' field exists and return it if present.
-        if (!empty($this->notes)) {
+        if (! empty($this->notes)) {
             return $this->notes;
         }
 
@@ -184,7 +186,7 @@ class Order extends Model
                 return $orderNote->specialNote->name;
             }
             // Otherwise return the notes field from OrderNote if present
-            if (!empty($orderNote->notes)) {
+            if (! empty($orderNote->notes)) {
                 return $orderNote->notes;
             }
         }
