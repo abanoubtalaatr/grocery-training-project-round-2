@@ -23,6 +23,7 @@ class StoreOrderRequest extends FormRequest
      */
     public function rules(): array
     {
+        
         $userId = $this->user()->id;
 
         return [

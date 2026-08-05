@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
-use Stripe\Stripe;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreOrderRequest;
+use App\Jobs\SendInvoiceJob;
+use App\Models\Address;
 use App\Models\Cart;
 use App\Models\Meal;
 use App\Models\Order;
-use App\Models\Address;
 use App\Models\OrderItem;
 use App\Models\OrderNote;
-use Stripe\PaymentIntent;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreOrderRequest;
 use App\Services\ShippingService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
 
 class OrderController extends Controller
 {
@@ -37,6 +39,7 @@ class OrderController extends Controller
     public function store(StoreOrderRequest $request): JsonResponse
     {
         try {
+
             $user = $request->user();
             $validated = $request->validated();
 
@@ -121,6 +124,10 @@ class OrderController extends Controller
                 ]);
             }
             DB::commit();
+
+            $id = $order->id;
+            SendInvoiceJob::dispatch($id)
+                ->onQueue('invoices');
 
             $order->load(['items.meal', 'address']);
 

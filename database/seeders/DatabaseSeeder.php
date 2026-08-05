@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             ContactMessageSeeder::class,
             SettingSeeder::class,
             SpecialNoteSeeder::class,
+            CartSeeder::class,
+            AddressSeeder::class,
         ]);
     }
 }
