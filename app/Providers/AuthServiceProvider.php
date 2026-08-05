@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\SmartListList;
+use App\Models\SmartList;
 use App\Policies\SmartListListPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -14,7 +14,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        SmartListList::class => SmartListListPolicy::class
+        SmartList::class => SmartListListPolicy::class
     ];
 
     /**

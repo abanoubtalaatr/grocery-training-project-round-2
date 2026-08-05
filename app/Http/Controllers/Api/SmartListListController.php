@@ -6,14 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSmartListListRequest;
 use App\Http\Requests\UpdateSmartListListRequest;
 use App\Http\Resources\SmartListListResource;
-use App\Models\SmartListList;
+use App\Models\SmartList;
 use Illuminate\Support\Facades\Auth;
 
 class SmartListListController extends Controller
 {
     public function index()
     {
-        $smartLists = Auth::user()->smartListLists()->paginate(10);
+        $smartLists = Auth::user()->smartLists()->paginate(10);
         
         return response()->json([
             'success' => true,
@@ -22,20 +22,20 @@ class SmartListListController extends Controller
         ]);
     }
 
-    public function show(SmartListList $smartListList)
+    public function show(SmartList $smartList)
     {   
-        $this->authorize('view', $smartListList);
+        $this->authorize('view', $smartList);
 
         return response()->json([
             'success' => true,
             'message' => 'Smart list list retrieved successfully',
-            'data' => new SmartListListResource($smartListList),
+            'data' => new SmartListListResource($smartList),
         ]);
     }
 
     public function store(StoreSmartListListRequest $request)
     {
-        $smartList = Auth::user()->smartListLists()->create($request->validated());
+        $smartList = Auth::user()->smartLists()->create($request->validated());
         
         return response()->json([
             'success' => true,
@@ -44,24 +44,24 @@ class SmartListListController extends Controller
         ]);
     }
 
-    public function update(UpdateSmartListListRequest $request, SmartListList $smartListList)
+    public function update(UpdateSmartListListRequest $request, SmartList $smartList)
     {
-        $this->authorize('update', $smartListList);
+        $this->authorize('update', $smartList);
 
-        $smartListList->update($request->validated());
+        $smartList->update($request->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Smart list list updated',
-            'data' => new SmartListListResource($smartListList),
+            'data' => new SmartListListResource($smartList),
         ]);
     }
 
-    public function destroy(SmartListList $smartListList)
+    public function destroy(SmartList $smartList)
     {
-        $this->authorize('delete', $smartListList);
+        $this->authorize('delete', $smartList);
 
-        $smartListList->delete();
+        $smartList->delete();
 
         return response()->json([
             'success' => true,

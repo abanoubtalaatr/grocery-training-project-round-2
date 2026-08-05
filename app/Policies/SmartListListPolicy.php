@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Models\SmartListList;
+use App\Models\SmartList;
 use App\Models\User;
 
 class SmartListListPolicy
@@ -10,24 +10,24 @@ class SmartListListPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, SmartListList $smartListList): bool
+    public function view(User $user, SmartList $smartList): bool
     {
-        return $smartListList->user_id == $user->id;
+        return $smartList->user_id == $user->id;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, SmartListList $smartListList): bool
+    public function update(User $user, SmartList $smartList): bool
     {
-        return $smartListList->user_id == $user->id;
+        return $smartList->user_id == $user->id;
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, SmartListList $smartListList): bool
+    public function delete(User $user, SmartList $smartList): bool
     {
-        return $smartListList->user_id == $user->id;
+        return $smartList->user_id == $user->id;
     }
 }

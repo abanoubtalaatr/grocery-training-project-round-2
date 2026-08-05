@@ -169,7 +169,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/frequency', [MealController::class, 'frequency']);
 
     // Smart list
-    Route::apiResource('smart-list-lists', SmartListListController::class);
+    Route::apiResource('smart-lists', SmartListListController::class);
 });
 
 // Meals routes
