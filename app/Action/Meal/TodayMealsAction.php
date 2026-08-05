@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Action\Meal;
+
+use App\Models\Meal;
+
+class TodayMealsAction
+{
+    public function handle(array $filters = [])
+    {
+        $query = Meal::with('category')
+            ->available()
+            ->withActiveDiscount()
+            ->orderBy('created_at', 'desc');
+
+        if (!empty($filters['limit'])) {
+            $query->limit((int) $filters['limit']);
+        }
+
+        return $query->get();
+    }
+}
