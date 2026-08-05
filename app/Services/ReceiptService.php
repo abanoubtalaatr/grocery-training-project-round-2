@@ -1,113 +1,13 @@
 <?php
+namespace App\Services;
 
-namespace App\Http\Controllers\Api;
-
-use App\Http\Controllers\Controller;
 use App\Models\Order;
-use App\Services\ReceiptService;
-use Carbon\Carbon;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
-class PaymentController extends Controller
+
+class ReceiptService
 {
-
-public function __construct(
-    private ReceiptService $receiptService
-) {}
-    /**
-     * Get payment history for the authenticated user.
-     */
-    public function paymentHistory(Request $request): JsonResponse
-    {
-        try {
-            $user = $request->user();
-
-            $orders = Order::where('user_id', $user->id)
-                ->where('status', '!=', 'cancelled')
-                ->with(['items.meal.category', 'address'])
-                ->orderBy('created_at', 'desc')
-                ->get();
-
-            $paymentHistory = $orders->map(function ($order) {
-                return [
-                    'id' => $order->id,
-                    'order_number' => $order->order_number,
-                    'payment_method' => $order->payment_method,
-                    'stripe_payment_intent_id' => $order->stripe_payment_intent_id,
-                    'amount' => (float) $order->total,
-                    'subtotal' => (float) $order->subtotal,
-                    'tax' => (float) $order->tax,
-                    'discount' => (float) $order->discount,
-                    'status' => $order->status,
-                    'status_description' => $order->status_description,
-                    'payment_date' => $order->placed_at ?? $order->created_at,
-                    'created_at' => $order->created_at,
-                    'items_count' => $order->items->sum('quantity'),
-                ];
-            });
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Payment history retrieved successfully',
-                'data' => $paymentHistory,
-                'total_count' => $paymentHistory->count(),
-                'total_amount' => (float) $orders->sum('total'),
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to retrieve payment history',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    /**
-     * Get receipt/invoice for a specific order.
-     */
-    public function receipt(Request $request, Order $order): JsonResponse
-    {
-        try {
-            $user = $request->user();
-
-            // Verify order belongs to user
-            if ($order->user_id !== $user->id) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Order not found',
-                ], 404);
-            }
-
-            $order->load(['items.meal.category', 'items.meal.subcategory', 'address', 'user']);
-
-$receipt = $this->receiptService->format($order);
-            return response()->json([
-                'success' => true,
-                'message' => 'Receipt retrieved successfully',
-                'data' => $receipt,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to retrieve receipt',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    /**
-     * Get invoice for a specific order (alias for receipt).
-     */
-    public function invoice(Request $request, Order $order): JsonResponse
-    {
-        return $this->receipt($request, $order);
-    }
-
-    /**
-     * Format order as receipt/invoice.
-     */
-    private function formatReceipt(Order $order): array
+    
+        public  function format(Order $order): array
     {
         $user = $order->user;
         $address = $order->address;
@@ -207,9 +107,15 @@ $receipt = $this->receiptService->format($order);
             'updated_at' => $order->updated_at,
         ];
     }
-
-    /**
-     * Get payment method display name.
-     */
-
+        private function getPaymentMethodDisplay(string $method): string
+    {
+        return match($method) {
+            'card' => 'Credit/Debit Card',
+            'stripe_checkout' => 'Card (Stripe Checkout)',
+            'cash_on_delivery' => 'Cash on Delivery',
+            'cash' => 'Cash',
+            'stripe' => 'Stripe',
+            default => ucfirst(str_replace('_', ' ', $method)),
+        };
+    }
 }

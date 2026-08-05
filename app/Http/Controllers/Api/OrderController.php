@@ -2,26 +2,34 @@
 
 namespace App\Http\Controllers\Api;
 
-use Stripe\Stripe;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreOrderRequest;
+use App\Jobs\GenerateInvoiceJob;
+use App\Models\Address;
 use App\Models\Cart;
 use App\Models\Meal;
 use App\Models\Order;
-use App\Models\Address;
 use App\Models\OrderItem;
 use App\Models\OrderNote;
-use Stripe\PaymentIntent;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreOrderRequest;
 use App\Services\ShippingService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
 
 class OrderController extends Controller
 {
 
     public function show(Request $request, Order $order)
     {
+        if ($order->user_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found',
+            ], 404);
+        }
+
         $order = $order->load(['items.meal', 'address']);
 
         return response()->json([
@@ -94,7 +102,7 @@ class OrderController extends Controller
             //     return response()->json($paymentResult['response'], 400);
             // }
 
-            $stripePaymentIntentId = $paymentResult['stripe_payment_intent_id'] ?? null;
+            $stripePaymentIntentId = null;
 
             // Create order
             $order = $this->createOrder($user, $validated, $totals['subtotal'], $totals, $stripePaymentIntentId);
@@ -121,6 +129,10 @@ class OrderController extends Controller
                 ]);
             }
             DB::commit();
+
+            if ($order->status === 'placed') {
+    GenerateInvoiceJob::dispatch($order);
+}
 
             $order->load(['items.meal', 'address']);
 
@@ -347,8 +359,8 @@ class OrderController extends Controller
         try {
             $user = $request->user();
 
-            $orders = Order::
-                with(['items.meal.category', 'items.meal.subcategory', 'address'])
+            $orders = Order::where('user_id', $user->id)
+                ->with(['items.meal.category', 'items.meal.subcategory', 'address'])
                 ->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function ($order) {

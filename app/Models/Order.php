@@ -192,4 +192,8 @@ class Order extends Model
         // Nothing found
         return null;
     }
+    public function invoice()
+{
+    return $this->hasOne(Invoice::class);
+}
 }
