@@ -222,4 +222,9 @@ Route::get('/health', function () {
     ]);
 });
 
-Route::post('create-an-order', [CreateOrderController::class, 'createAnOrder']);
+
+// Route::apiResource('smart-list-lists', SmartListListController::class);
+
+// Categories routes by mohammed-bashamekha
+use App\Http\Controllers\CategoryController as ControllersCategoryController;
+Route::apiResource('categories-ver2', ControllersCategoryController::class);
