@@ -3,10 +3,12 @@
 namespace App\Mail;
 
 use App\Models\Order;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Queue\SerializesModels;
 
 class InvoiceMail extends Mailable
@@ -39,6 +41,15 @@ class InvoiceMail extends Mailable
 
     public function attachments(): array
     {
-        return [];
+        return [
+            Attachment::fromData(
+                function () {
+                    return Pdf::loadView('pdf.invoice', [
+                        'order' => $this->order,
+                    ])->output();
+                },
+                'invoice-'.$this->order->id.'.pdf'
+            )->withMime('application/pdf'),
+        ];
     }
 }

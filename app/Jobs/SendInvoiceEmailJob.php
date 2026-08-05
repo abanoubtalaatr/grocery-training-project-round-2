@@ -1,14 +1,15 @@
 <?php
 
 namespace App\Jobs;
-use App\Models\Order;
+
 use App\Mail\InvoiceMail;
+use App\Models\Order;
 use Illuminate\Bus\Queueable;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Mail;
 
 class SendInvoiceEmailJob implements ShouldQueue
 {
@@ -18,14 +19,18 @@ class SendInvoiceEmailJob implements ShouldQueue
         public Order $order
     ) {}
 
-public function handle()
-{
-    $this->order->load([
-        'user',
-        'items.meal'
-    ]);
+    public function handle(): void
+    {
+        $this->order->load([
+            'user',
+            'items.meal',
+        ]);
 
-    Mail::to($this->order->user->email) //minamaherwanis@gamil.com
-        ->send(new InvoiceMail($this->order));
-}
+        if (! $this->order->user?->email) {
+            return;
+        }
+
+        Mail::to($this->order->user->email)
+            ->send(new InvoiceMail($this->order));
+    }
 }
