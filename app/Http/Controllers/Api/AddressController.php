@@ -12,8 +12,6 @@ use App\Models\Address;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
 class AddressController extends Controller
 {
@@ -35,12 +33,8 @@ class AddressController extends Controller
     /**
      * Get single address
     */
-    public function show(Request $request, $address): JsonResponse
+    public function show(Request $request, Address $address): JsonResponse
     {
-        $address = Address::find($address);
-        if (!$address) {
-            return $this->errorResponse('Address not found', 404);
-        }
         $this->authorize('view', $address);
         return $this->successResponse('Address retrieved successfully', new AddressResource($address));
     }
@@ -49,9 +43,9 @@ class AddressController extends Controller
      */
     public function store(StoreAddressRequest $request , StoreAddressAction $action): JsonResponse
     {
-            $address = $action->execute($request->validated());
+        $address = $action->execute($request->validated());
 
-            return $this->successResponse('Address created successfully',new AddressResource($address), 201);
+        return $this->successResponse('Address created successfully',new AddressResource($address), 201);
         
     }
 
