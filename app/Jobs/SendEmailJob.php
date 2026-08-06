@@ -10,6 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class SendEmailJob implements ShouldQueue
 {
@@ -29,5 +30,20 @@ class SendEmailJob implements ShouldQueue
 
         Mail::to($this->emailData->to)
             ->send($mail);
+    }
+}
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    public function __construct(public array $payload = [])
+    {
+    }
+
+    /**
+     * Execute the job.
+     */
+    public function handle(): void
+    {
+        Log::info('Sending email to the user', $this->payload);
     }
 }
