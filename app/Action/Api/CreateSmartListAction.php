@@ -3,11 +3,12 @@
 namespace App\Action\Api;
 
 use App\Models\SmartList;
-use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class CreateSmartListAction
 {
-    public function execute($user, array $data, Request $request): SmartList
+    public function execute($user, array $data, ?UploadedFile $image = null): SmartList
     {
         $data['user_id'] = $user->id;
         $data['description'] = $data['description'] ?? '';
@@ -15,11 +16,10 @@ class CreateSmartListAction
         $mealIds = $data['meal_ids'] ?? [];
         unset($data['meal_ids']);
 
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
+        if ($image) {
             $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('images/smart-lists'), $imageName);
-            $data['image'] = $imageName;
+            $path = $image->storeAs('smart-lists', $imageName, 'public');
+            $data['image'] = $path;
         }
 
         $smartList = SmartList::create($data);

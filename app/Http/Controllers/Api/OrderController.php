@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Action\Api\CreateOrderAction;
+use App\Action\Api\GetOrderAction;
 use App\Action\Api\GetOrderTrackingAction;
 use App\Action\Api\GetUserOrdersAction;
 use App\Http\Controllers\Controller;
@@ -25,9 +26,9 @@ class OrderController extends Controller
         return $this->success(OrderResource::collection($orders),'Orders retrieved successfully');
     }
 
-    public function show(Request $request, Order $order): JsonResponse
+    public function show(Request $request, Order $order, GetOrderAction $action): JsonResponse
     {
-        $order->load(['items.meal', 'address']);
+        $order = $action->execute($request->user(), $order);
 
         return $this->success(new OrderResource($order),'Order retrieved successfully');
     }

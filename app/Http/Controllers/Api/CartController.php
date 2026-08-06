@@ -1,8 +1,10 @@
 <?php
 
 namespace App\Http\Controllers\Api;
+
 use App\Action\Api\AddToCartAction;
 use App\Action\Api\ClearCartAction;
+use App\Action\Api\GetCartAction;
 use App\Action\Api\RemoveFromCartAction;
 use App\Action\Api\UpdateCartItemAction;
 use App\Http\Controllers\Controller;
@@ -17,26 +19,12 @@ class CartController extends Controller
 {
     use ApiResponse;
 
-    public function index(Request $request): JsonResponse
+    public function index(Request $request, GetCartAction $action): JsonResponse
     {
-        $user = $request->user();
-        $cart = $user->getOrCreateCart();
-        $cart->load(['items.meal.category', 'items.meal.subcategory']);
-
         $deliveryType = $request->query('delivery_type');
-        $shippingFee = null;
-        $totalWithShipping = null;
+        $result = $action->execute($request->user(), $deliveryType);
 
-        if ($deliveryType && in_array($deliveryType, ['delivery', 'pickup'], true)) {
-            $shippingService = app(\App\Services\ShippingService::class);
-            $shippingFee = $shippingService->calculateShippingFee((float) $cart->subtotal, $deliveryType);
-            $totalWithShipping = (float) $cart->total + $shippingFee;
-        }
-
-        return $this->success(
-            new CartResource($cart, $shippingFee, $totalWithShipping),
-            'Cart retrieved successfully'
-        );
+        return $this->success(new CartResource($result['cart'], $result['shipping_fee'], $result['total_with_shipping']),'Cart retrieved successfully');
     }
 
     public function addItem(AddToCartRequest $request, AddToCartAction $action): JsonResponse
@@ -44,10 +32,7 @@ class CartController extends Controller
         $cart = $action->execute($request->user(), $request->validated());
         $cart->load(['items.meal.category', 'items.meal.subcategory']);
 
-        return $this->success(
-            new CartResource($cart),
-            'Item added to cart successfully'
-        );
+        return $this->success(new CartResource($cart),'Item added to cart successfully');
     }
 
     public function updateItem(UpdateCartItemRequest $request, string $itemId, UpdateCartItemAction $action): JsonResponse
@@ -55,10 +40,7 @@ class CartController extends Controller
         $cart = $action->execute($request->user(), $itemId, $request->validated());
         $cart->load(['items.meal.category', 'items.meal.subcategory']);
 
-        return $this->success(
-            new CartResource($cart),
-            'Cart item updated successfully'
-        );
+        return $this->success(new CartResource($cart),'Cart item updated successfully');
     }
 
     public function removeItem(Request $request, string $itemId, RemoveFromCartAction $action): JsonResponse
@@ -66,19 +48,13 @@ class CartController extends Controller
         $cart = $action->execute($request->user(), $itemId);
         $cart->load(['items.meal.category', 'items.meal.subcategory']);
 
-        return $this->success(
-            new CartResource($cart),
-            'Item removed from cart successfully'
-        );
+        return $this->success(new CartResource($cart),'Item removed from cart successfully');
     }
 
     public function clear(Request $request, ClearCartAction $action): JsonResponse
     {
         $cart = $action->execute($request->user());
 
-        return $this->success(
-            new CartResource($cart),
-            'Cart cleared successfully'
-        );
+        return $this->success(new CartResource($cart),'Cart cleared successfully');
     }
 }
