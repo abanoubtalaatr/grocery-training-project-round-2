@@ -13,7 +13,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+         $this->app->bind(
+
+            \App\Services\Email\Contracts\EmailServiceInterface::class,
+
+            \App\Services\Email\EmailService::class
+
+        );
     }
 
     /**

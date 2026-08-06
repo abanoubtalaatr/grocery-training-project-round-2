@@ -4,41 +4,35 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
-use App\Models\CartItem;
-use App\Models\Meal;
-use App\Services\ShippingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Actions\Cart\GetCartAction;
+use App\Actions\Cart\AddCartItemAction;
+use App\Actions\Cart\UpdateCartItemAction;
+use App\Actions\Cart\RemoveCartItemAction;
+use App\Actions\Cart\ClearCartAction;
+use App\Http\Requests\Cart\AddToCartRequest;
+use App\Http\Requests\Cart\UpdateCartItemRequest;
+use Exception;
 
 class CartController extends Controller
 {
     /**
      * Get user's cart
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request, GetCartAction $action): JsonResponse
     {
         try {
-            $user = $request->user();
-            $cart = $user->getOrCreateCart();
-            $cart->load(['items.meal.category', 'items.meal.subcategory']);
             $deliveryType = $request->query('delivery_type');
-            if ($deliveryType && in_array($deliveryType, ['delivery', 'pickup'], true)) {
-                $shippingService = app(ShippingService::class);
-                $shippingFee = $shippingService->calculateShippingFee((float) $cart->subtotal, $deliveryType);
-                $totalWithShipping = (float) $cart->total + $shippingFee;
-            } else {
-                $shippingFee = null;
-                $totalWithShipping = null;
-            }
+            $result = $action->execute($request->user(), $deliveryType);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Cart retrieved successfully',
-                'data' => $this->formatCart($cart, $shippingFee, $totalWithShipping),
+                'data' => $this->formatCart($result['cart'], $result['shipping_fee'], $result['total_with_shipping']),
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve cart',
@@ -50,217 +44,71 @@ class CartController extends Controller
     /**
      * Add item to cart
      */
-    public function addItem(Request $request): JsonResponse
+    public function addItem(AddToCartRequest $request, AddCartItemAction $action): JsonResponse
     {
         try {
-            $maxPerProduct = config('cart.max_quantity_per_product', 10);
-            $validated = $request->validate([
-                'meal_id' => ['required', 'exists:meals,id'],
-                'quantity' => ['required', 'integer', 'min:1', 'max:' . $maxPerProduct],
-            ], [
-                'quantity.max' => "Maximum {$maxPerProduct} units per product allowed.",
-            ]);
-
-            $user = $request->user();
-            $cart = $user->getOrCreateCart();
-            $meal = Meal::findOrFail($validated['meal_id']);
-
-            // Check if meal is available
-            if (!$meal->is_available) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'This meal is currently unavailable',
-                ], 400);
-            }
-
-            // Check if meal is in stock
-            if (!$meal->isInStock()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'This meal is out of stock',
-                ], 400);
-            }
-
-            // Check if meal has expired
-            // if ($meal->isExpired()) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => 'This meal has expired',
-            //     ], 400);
-            // }
-
-            // Check stock quantity
-            if ($meal->stock_quantity < $validated['quantity']) {
-                return response()->json([
-                    'success' => false,
-                    'message' => "Only {$meal->stock_quantity} items available in stock",
-                ], 400);
-            }
-
-            DB::beginTransaction();
-
-            // Check if item already exists in cart
-            $cartItem = $cart->items()->where('meal_id', $meal->id)->first();
-
-            if ($cartItem) {
-                // Update quantity (enforce max per product per user)
-                $newQuantity = $cartItem->quantity + $validated['quantity'];
-                $effectiveMax = min($maxPerProduct, $meal->stock_quantity);
-                if ($newQuantity > $effectiveMax) {
-                    DB::rollBack();
-                    return response()->json([
-                        'success' => false,
-                        'message' => "Maximum {$maxPerProduct} units per product. You already have {$cartItem->quantity} in cart; maximum total is {$effectiveMax}.",
-                    ], 400);
-                }
-                if ($meal->stock_quantity < $newQuantity) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => "Only {$meal->stock_quantity} items available in stock",
-                    ], 400);
-                }
-
-                $cartItem->update([
-                    'quantity' => $newQuantity,
-                ]);
-            } else {
-                // Create new cart item
-                $discountAmount = 0;
-                if ($meal->resolved_discount_price) {
-                    $discountAmount = ($meal->price - $meal->resolved_discount_price) * $validated['quantity'];
-                }
-
-                $cartItem = $cart->items()->create([
-                    'meal_id' => $meal->id,
-                    'quantity' => $validated['quantity'],
-                    'unit_price' => $meal->final_price,
-                    'discount_amount' => $discountAmount,
-                    'subtotal' => $meal->final_price * $validated['quantity'],
-                ]);
-            }
-
-            $cart->calculateTotals();
-            $cart->load(['items.meal.category', 'items.meal.subcategory']);
-
-            DB::commit();
+            $validated = $request->validated();
+            $cart = $action->execute($request->user(), $validated['meal_id'], $validated['quantity']);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Item added to cart successfully',
                 'data' => $this->formatCart($cart),
             ]);
-        } catch (ValidationException $e) {
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $e->errors(),
-            ], 422);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to add item to cart',
-                'error' => $e->getMessage(),
-            ], 500);
+                'message' => $e->getMessage(),
+            ], 400);
         }
     }
 
     /**
      * Update cart item quantity
      */
-    public function updateItem(Request $request, string $itemId): JsonResponse
+    public function updateItem(UpdateCartItemRequest $request, string $itemId, UpdateCartItemAction $action): JsonResponse
     {
         try {
-            $maxPerProduct = config('cart.max_quantity_per_product', 10);
-            $validated = $request->validate([
-                'quantity' => ['required', 'integer', 'min:1', 'max:' . $maxPerProduct],
-            ], [
-                'quantity.max' => "Maximum {$maxPerProduct} units per product allowed.",
-            ]);
-
-            $user = $request->user();
-            $cart = $user->getOrCreateCart();
-            
-            $cartItem = $cart->items()->findOrFail($itemId);
-            $meal = $cartItem->meal;
-
-            // Check stock quantity
-            if ($meal->stock_quantity < $validated['quantity']) {
-                return response()->json([
-                    'success' => false,
-                    'message' => "Only {$meal->stock_quantity} items available in stock",
-                ], 400);
-            }
-
-            DB::beginTransaction();
-
-            $cartItem->update([
-                'quantity' => $validated['quantity'],
-            ]);
-
-            $cart->calculateTotals();
-            $cart->load(['items.meal.category', 'items.meal.subcategory']);
-
-            DB::commit();
+            $validated = $request->validated();
+            $cart = $action->execute($request->user(), $itemId, $validated['quantity']);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Cart item updated successfully',
                 'data' => $this->formatCart($cart),
             ]);
-        } catch (ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validation failed',
-                'errors' => $e->errors(),
-            ], 422);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Cart item not found',
             ], 404);
-        } catch (\Exception $e) {
-            DB::rollBack();
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update cart item',
-                'error' => $e->getMessage(),
-            ], 500);
+                'message' => $e->getMessage(),
+            ], 400);
         }
     }
 
     /**
      * Remove item from cart
      */
-    public function removeItem(Request $request, string $itemId): JsonResponse
+    public function removeItem(Request $request, string $itemId, RemoveCartItemAction $action): JsonResponse
     {
         try {
-            $user = $request->user();
-            $cart = $user->getOrCreateCart();
-            
-            $cartItem = $cart->items()->findOrFail($itemId);
-
-            DB::beginTransaction();
-
-            $cartItem->delete();
-
-            $cart->calculateTotals();
-            $cart->load(['items.meal.category', 'items.meal.subcategory']);
-
-            DB::commit();
+            $cart = $action->execute($request->user(), $itemId);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Item removed from cart successfully',
                 'data' => $this->formatCart($cart),
             ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Cart item not found',
             ], 404);
-        } catch (\Exception $e) {
-            DB::rollBack();
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to remove item from cart',
@@ -272,26 +120,17 @@ class CartController extends Controller
     /**
      * Clear cart
      */
-    public function clear(Request $request): JsonResponse
+    public function clear(Request $request, ClearCartAction $action): JsonResponse
     {
         try {
-            $user = $request->user();
-            $cart = $user->getOrCreateCart();
-
-            DB::beginTransaction();
-
-            $cart->items()->delete();
-            $cart->calculateTotals();
-
-            DB::commit();
+            $cart = $action->execute($request->user());
 
             return response()->json([
                 'success' => true,
                 'message' => 'Cart cleared successfully',
                 'data' => $this->formatCart($cart),
             ]);
-        } catch (\Exception $e) {
-            DB::rollBack();
+        } catch (Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to clear cart',
