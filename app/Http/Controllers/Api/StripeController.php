@@ -2,82 +2,51 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Action\Api\ChargeSavedCardAction;
+use App\Action\Api\CreateSetupIntentAction;
+use App\Action\Api\DeleteStripeCardAction;
+use App\Action\Api\ListStripeCardsAction;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\ChargeSavedCardRequest;
+use App\Http\Resources\Api\StripeCardResource;
+use App\Http\Resources\Api\StripeChargeResource;
+use App\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Stripe\Stripe;
-use Stripe\Customer;
-use Stripe\SetupIntent;
-use Stripe\PaymentMethod;
-use Stripe\PaymentIntent;
 
 class StripeController extends Controller
 {
-    public function createSetupIntent(Request $request)
+    use ApiResponse;
+
+    public function createSetupIntent(Request $request, CreateSetupIntentAction $action): JsonResponse
     {
-        Stripe::setApiKey(config('services.stripe.secret'));
-        $user = $request->user();
+        $result = $action->execute($request->user());
 
-        if (!$user->stripe_customer_id) {
-            $customer = Customer::create([
-                'email' => $user->email,
-                'name' => $user->name,
-            ]);
-            $user->update(['stripe_customer_id' => $customer->id]);
-        }
-
-        $intent = SetupIntent::create([
-            'customer' => $user->stripe_customer_id,
-            'payment_method_types' => ['card'],
-        ]);
-
-        return response()->json(['clientSecret' => $intent->client_secret]);
+        return $this->success(['client_secret' => $result['client_secret']],'Setup intent created successfully');
     }
 
-    public function listCards(Request $request)
+    public function listCards(Request $request, ListStripeCardsAction $action): JsonResponse
     {
-        Stripe::setApiKey(config('services.stripe.secret'));
-        $user = $request->user();
+        $cards = $action->execute($request->user());
 
-        if (!$user->stripe_customer_id) return response()->json([]);
-
-        $cards = PaymentMethod::all([
-            'customer' => $user->stripe_customer_id,
-            'type' => 'card',
-        ]);
-
-        return response()->json($cards->data);
+        return $this->success(StripeCardResource::collection($cards),'Cards retrieved successfully');
     }
 
-
-    public function chargeSavedCard(Request $request)
+    public function chargeSavedCard(ChargeSavedCardRequest $request, ChargeSavedCardAction $action): JsonResponse
     {
-        $request->validate([
-            'payment_method_id' => 'required|string',
-            'amount' => 'required|numeric',
-        ]);
+        $result = $action->execute(
+            $request->user(),
+            $request->payment_method_id,
+            $request->amount
+        );
 
-        Stripe::setApiKey(config('services.stripe.secret'));
-        $user = $request->user();
-
-        $paymentIntent = PaymentIntent::create([
-            'amount' => $request->amount * 100,
-            'currency' => 'usd',
-            'customer' => $user->stripe_customer_id,
-            'payment_method' => $request->payment_method_id,
-            'off_session' => true,
-            'confirm' => true,
-        ]);
-
-        return response()->json(['status' => 'success', 'payment_intent' => $paymentIntent]);
+        return $this->success(new StripeChargeResource($result),'Payment processed successfully');
     }
 
-    public function deleteCard(Request $request, $id)
+    public function deleteCard(Request $request, string $id, DeleteStripeCardAction $action): JsonResponse
     {
-        Stripe::setApiKey(config('services.stripe.secret'));
+        $action->execute($id);
 
-        $paymentMethod = PaymentMethod::retrieve($id);
-        $paymentMethod->detach();
-
-        return response()->json(['status' => 'deleted']);
+        return $this->success(null, 'Card deleted successfully');
     }
 }

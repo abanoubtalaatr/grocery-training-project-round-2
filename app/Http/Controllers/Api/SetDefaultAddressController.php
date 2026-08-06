@@ -2,53 +2,23 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Action\Api\SetDefaultAddressAction;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\AddressResource;
 use App\Models\Address;
+use App\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class SetDefaultAddressController extends Controller
 {
-    public function __invoke(Request $request, Address $address)
+    use ApiResponse;
+
+    public function __invoke(Request $request, Address $address, SetDefaultAddressAction $action): JsonResponse
     {
-        try {
-            $user = $request->user();
-            $address = $user->addresses()->findOrFail($id);
+        $user = $request->user();
+        $result = $action->execute($user, $address);
 
-            if ($address->is_default) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'This address is already your default.',
-                    'already_default' => true,
-                    'data' => $this->formatAddress($address),
-                ]);
-            }
-
-            DB::beginTransaction();
-
-            $user->addresses()->where('id', '!=', $address->id)->update(['is_default' => false]);
-            $address->update(['is_default' => true]);
-
-            DB::commit();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Default address updated successfully',
-                'data' => $this->formatAddress($address->fresh()),
-            ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Address not found',
-            ], 404);
-        } catch (\Exception $e) {
-            DB::rollBack();
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to set default address',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        return $this->success( new AddressResource($result['address']),$result['message']);
     }
 }
