@@ -2,124 +2,75 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Actions\Category\DeleteCategoryAction;
+use App\Actions\Category\GetAllCategoriesAction;
+use App\Actions\Category\GetSingleCategoryAction;
+use App\Actions\Category\StoreCategoryAction;
+use App\Actions\Category\UpdateCategoryAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\StoreCategoryRequest;
 use App\Http\Requests\Api\UpdateCategoryRequest;
 use App\Http\Resources\Api\CategoryResource;
 use App\Models\Category;
+use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
+    use ApiResponse;
+
     /**
      * Display a listing of active categories with meals count.
      */
-    public function index(): JsonResponse
+    public function index(GetAllCategoriesAction $action): JsonResponse
     {
-        $categories = Category::active()
-            ->ordered()
-            ->withCount('meals')
-            ->get();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Categories retrieved successfully',
-            'data'    => CategoryResource::collection($categories),
-        ]);
+        $categories = $action->execute();
+        
+        return $this->Success(CategoryResource::collection($categories), 'Categories retrieved successfully');
     }
 
     /**
      * Store a newly created category in storage.
      */
-    public function store(StoreCategoryRequest $request): JsonResponse
+    public function store(StoreCategoryRequest $request, StoreCategoryAction $action): JsonResponse
     {
-        $data = $request->validated();
-
-        if (isset($data['image_url'])) {
-            $data['image'] = $data['image_url'];
-        }
-
-        $category = Category::create($data);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Category created successfully',
-            'data'    => new CategoryResource($category),
-        ], 201);
+        $category = $action->execute($request->validated());
+        
+        return $this->Success(new CategoryResource($category), 'Category created successfully', 201);
     }
 
     /**
      * Display the specified category.
      */
-    public function show(string $id): JsonResponse
+    public function show(Request $request, string $id, GetSingleCategoryAction $action): JsonResponse
     {
-        $category = Category::with(['meals' => fn ($query) => $query->available()->latest()])
-            ->find($id);
-
-        if (!$category) {
-            return response()->json([
-                'success' => false,
-                'message' => "Category with ID [{$id}] not found",
-            ], 404);
+        $category = $action->execute($id);
+        
+        if ($request->user() && $request->user()->cannot('view', $category)) {
+            return $this->Error(null, 'This action is unauthorized.', 403);
         }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Category retrieved successfully',
-            'data'    => new CategoryResource($category),
-        ]);
+        
+        return $this->Success(new CategoryResource($category), 'Category retrieved successfully');
     }
 
     /**
      * Update the specified category in storage.
      */
-    public function update(UpdateCategoryRequest $request, string $id): JsonResponse
+    public function update(UpdateCategoryRequest $request, string $id, UpdateCategoryAction $action): JsonResponse
     {
-        $category = Category::find($id);
-
-        if (!$category) {
-            return response()->json([
-                'success' => false,
-                'message' => "Category with ID [{$id}] not found",
-            ], 404);
-        }
-
-        $data = $request->validated();
-
-        if (isset($data['image_url'])) {
-            $data['image'] = $data['image_url'];
-        }
-
-        $category->update($data);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Category updated successfully',
-            'data'    => new CategoryResource($category),
-        ]);
+        $category = Category::findOrFail($id);
+        $updatedCategory = $action->execute($category, $request->validated());
+        return $this->Success(new CategoryResource($updatedCategory), 'Category updated successfully');
     }
 
     /**
      * Remove the specified category from storage.
      */
-    public function destroy(string $id): JsonResponse
+    public function destroy(string $id, DeleteCategoryAction $action): JsonResponse
     {
-        $category = Category::find($id);
-
-        if (!$category) {
-            return response()->json([
-                'success' => false,
-                'message' => "Category with ID [{$id}] not found",
-            ], 404);
-        }
-
-        $category->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Category deleted successfully',
-        ]);
+        $category = Category::findOrFail($id);
+        $action->execute($category);
+        return $this->Success(null, 'Category deleted successfully');
     }
 }

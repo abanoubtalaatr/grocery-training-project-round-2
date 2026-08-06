@@ -1,9 +1,11 @@
 <?php
 
 use App\Http\Controllers\Api\AddressController;
+use App\Http\Controllers\Api\SetDefaultAddressController;
 use App\Http\Controllers\Api\Auth\GoogleAuthController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\ClearCartController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ChatbotController;
 use App\Http\Controllers\Api\ContactController;
@@ -78,7 +80,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{id}', [AddressController::class, 'show']);
         Route::put('/{id}', [AddressController::class, 'update']);
         Route::delete('/{id}', [AddressController::class, 'destroy']);
-        Route::post('/{id}/set-default', [AddressController::class, 'setDefault']);
+        Route::post('/{id}/set-default', SetDefaultAddressController::class);
     });
 
     Route::post('smart-lists/{id}/meals', [SmartListController::class, 'addMeal']);
@@ -119,10 +121,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // Cart routes
     Route::prefix('cart')->group(function () {
         Route::get('/', [CartController::class, 'index']);
-        Route::post('/items', [CartController::class, 'addItem']);
-        Route::put('/items/{itemId}', [CartController::class, 'updateItem']);
-        Route::delete('/items/{itemId}', [CartController::class, 'removeItem']);
-        Route::delete('/clear', [CartController::class, 'clear']);
+        
+        Route::get('/items/{id}', [CartController::class, 'show']);
+        Route::post('/items', [CartController::class, 'store']);
+        Route::put('/items/{id}', [CartController::class, 'update']);
+        Route::delete('/items/{id}', [CartController::class, 'destroy']);
+        
+        Route::delete('/clear', ClearCartController::class);
     });
 
     // Favorites routes
@@ -201,7 +206,7 @@ Route::prefix('categories')->group(function () {
     Route::get('/{id}/meals', [CategoryController::class, 'meals']);
 });
 
-Route::apiResource('categories-v2' , CategoryController::class);
+Route::apiResource('v2/categories' , CategoryController::class);
 
 // Subcategories routes
 Route::prefix('subcategories')->group(function () {
