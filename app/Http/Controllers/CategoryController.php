@@ -1,80 +1,54 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Models\Category;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
+use App\Action\Api\CreateCategoryAction;
+use App\Action\Api\UpdateCategoryAction;
 use App\Http\Controllers\Controller;
-use App\Http\Responses\ApiResponse;
-use App\Http\Resources\CategoryResource;
-use App\Http\Requests\StoreCategoryRequest;
-use App\Http\Requests\UpdateCategoryRequest;
+use App\Http\Requests\Api\StoreCategoryRequest;
+use App\Http\Requests\Api\UpdateCategoryRequest;
+use App\Http\Resources\Api\CategoryResource;
+use App\Models\Category;
+use App\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function index(Request $request)
+    use ApiResponse;
+
+    public function index(Request $request): JsonResponse
     {
         $categories = Category::query()
             ->latest()
             ->paginate(10);
 
-        return ApiResponse::success(
-            CategoryResource::collection($categories),
-            'Categories retrieved successfully.'
-        );
+        return $this->success(CategoryResource::collection($categories),'Categories retrieved successfully');
     }
 
-    public function store(StoreCategoryRequest $request)
+    public function store(StoreCategoryRequest $request, CreateCategoryAction $action): JsonResponse
     {
-        $category = Category::create([
+        $category = $action->execute($request->validated());
 
-            ...$request->validated(),
-
-            'slug' => Str::slug($request->name),
-
-        ]);
-
-        return ApiResponse::success(
-            new CategoryResource($category),
-            'Category created successfully.',
-            201
-        );
+        return $this->success(new CategoryResource($category),'Category created successfully',201);
     }
 
-    public function show(Category $category)
+    public function show(Category $category): JsonResponse
     {
-        return ApiResponse::success(
-            new CategoryResource($category),
-            'Category retrieved successfully.'
-        );
+        return $this->success(new CategoryResource($category),'Category retrieved successfully');
     }
 
-    public function update(UpdateCategoryRequest $request, Category $category)
+    public function update(UpdateCategoryRequest $request, Category $category, UpdateCategoryAction $action): JsonResponse
     {
+        $action->execute($category, $request->validated());
 
-        $data = $request->validated();
-
-        if (isset($data['name'])) {
-
-            $data['slug'] = Str::slug($data['name']);
-        }
-
-        $category->update($data);
-
-        return ApiResponse::success(
-            new CategoryResource($category),
-            'Category updated successfully.'
-        );
+        return $this->success(new CategoryResource($category),'Category updated successfully');
     }
 
-    public function destroy(Category $category)
+    public function destroy(Category $category): JsonResponse
     {
         $category->delete();
 
-        return ApiResponse::success(
-            null,
-            'Category deleted successfully.'
-        );
+        return $this->success(null, 'Category deleted successfully');
     }
 }
