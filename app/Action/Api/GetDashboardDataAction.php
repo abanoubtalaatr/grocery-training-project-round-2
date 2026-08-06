@@ -1,50 +1,27 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Action\Api;
 
-use App\Http\Controllers\Controller;
-use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\Meal;
-use App\Models\Category;
 use Carbon\Carbon;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class DashboardController extends Controller
+class GetDashboardDataAction
 {
-    /**
-     * Get dashboard statistics and insights.
-     */
-    public function index(Request $request, \App\Action\Api\GetDashboardDataAction $action): JsonResponse
+    public function execute($user): array
     {
-        try {
-            $user = $request->user();
-
-            $data = $action->execute($user);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Dashboard data retrieved successfully',
-                'data' => $data,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to retrieve dashboard data',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        return [
+            'overview' => $this->getOverview($user),
+            'shopping_insights' => $this->getShoppingInsights($user),
+            'category_distribution' => $this->getCategoryDistribution($user),
+            'recent_orders' => $this->getRecentOrders($user),
+            'top_purchases' => $this->getTopPurchases($user),
+        ];
     }
 
-    /**
-     * Get overview statistics.
-     */
     private function getOverview($user): array
     {
-        // Active order tracking
         $activeOrder = Order::where('user_id', $user->id)
             ->whereNotIn('status', ['cancelled', 'delivered'])
             ->with(['items.meal', 'address'])
@@ -62,7 +39,6 @@ class DashboardController extends Controller
             ];
         }
 
-        // Current cart
         $cart = $user->activeCart()->with('items')->first();
         $cartData = null;
         if ($cart) {
@@ -80,7 +56,6 @@ class DashboardController extends Controller
             ];
         }
 
-        // Upcoming delivery
         $upcomingDelivery = Order::where('user_id', $user->id)
             ->whereIn('status', ['placed', 'processing', 'shipping', 'out_for_delivery'])
             ->whereNotNull('estimated_delivery_time')
@@ -107,22 +82,17 @@ class DashboardController extends Controller
         ];
     }
 
-    /**
-     * Get shopping insights.
-     */
     private function getShoppingInsights($user): array
     {
         $now = Carbon::now();
         $startOfMonth = $now->copy()->startOfMonth();
         $endOfMonth = $now->copy()->endOfMonth();
 
-        // Monthly spend
         $monthlySpend = Order::where('user_id', $user->id)
             ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
             ->where('status', '!=', 'cancelled')
             ->sum('total');
 
-        // Orders this month
         $ordersThisMonth = Order::where('user_id', $user->id)
             ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
             ->where('status', '!=', 'cancelled')
@@ -130,7 +100,6 @@ class DashboardController extends Controller
 
         $ordersCount = $ordersThisMonth->count();
 
-        // Average days between orders
         $averageDaysBetweenOrders = 0;
         if ($ordersCount > 1) {
             $orderDates = $ordersThisMonth->pluck('created_at')->sort();
@@ -146,16 +115,14 @@ class DashboardController extends Controller
             $averageDaysBetweenOrders = $intervals > 0 ? round($totalDays / $intervals, 1) : 0;
         }
 
-        // Total savings (from discounts in orders)
         $totalSavings = Order::where('user_id', $user->id)
             ->where('status', '!=', 'cancelled')
             ->sum('discount');
 
-        // Also calculate savings from meal discount prices
         $mealSavings = OrderItem::whereHas('order', function ($query) use ($user) {
-                $query->where('user_id', $user->id)
-                      ->where('status', '!=', 'cancelled');
-            })
+            $query->where('user_id', $user->id)
+                  ->where('status', '!=', 'cancelled');
+        })
             ->with('meal')
             ->get()
             ->sum(function ($item) {
@@ -167,7 +134,6 @@ class DashboardController extends Controller
 
         $totalSavings += $mealSavings;
 
-        // Average order value
         $averageOrderValue = 0;
         if ($ordersCount > 0) {
             $averageOrderValue = (float) ($monthlySpend / $ordersCount);
@@ -184,15 +150,12 @@ class DashboardController extends Controller
         ];
     }
 
-    /**
-     * Get category distribution percentage.
-     */
     private function getCategoryDistribution($user): array
     {
         $orderItems = OrderItem::whereHas('order', function ($query) use ($user) {
-                $query->where('user_id', $user->id)
-                      ->where('status', '!=', 'cancelled');
-            })
+            $query->where('user_id', $user->id)
+                  ->where('status', '!=', 'cancelled');
+        })
             ->with('meal.category')
             ->get();
 
@@ -218,7 +181,6 @@ class DashboardController extends Controller
             }
         }
 
-        // Calculate percentages
         $distribution = [];
         foreach ($categoryTotals as $categoryId => $data) {
             $percentage = $totalItems > 0 ? round(($data['total_quantity'] / $totalItems) * 100, 1) : 0;
@@ -230,7 +192,6 @@ class DashboardController extends Controller
             ];
         }
 
-        // Sort by percentage descending
         usort($distribution, function ($a, $b) {
             return $b['percentage'] <=> $a['percentage'];
         });
@@ -238,9 +199,6 @@ class DashboardController extends Controller
         return $distribution;
     }
 
-    /**
-     * Get recent orders.
-     */
     private function getRecentOrders($user, int $limit = 5): array
     {
         $orders = Order::where('user_id', $user->id)
@@ -262,15 +220,12 @@ class DashboardController extends Controller
         })->toArray();
     }
 
-    /**
-     * Get top purchases (most purchased meals).
-     */
     private function getTopPurchases($user, int $limit = 10): array
     {
         $topMeals = OrderItem::whereHas('order', function ($query) use ($user) {
-                $query->where('user_id', $user->id)
-                      ->where('status', '!=', 'cancelled');
-            })
+            $query->where('user_id', $user->id)
+                  ->where('status', '!=', 'cancelled');
+        })
             ->with('meal.category', 'meal.subcategory')
             ->select('meal_id', DB::raw('SUM(quantity) as total_quantity'), DB::raw('SUM(subtotal) as total_spent'))
             ->groupBy('meal_id')
