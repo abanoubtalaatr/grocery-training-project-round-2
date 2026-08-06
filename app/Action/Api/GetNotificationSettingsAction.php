@@ -1,80 +1,24 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Action\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\UpdateNotificationCategoryRequest;
-use App\Http\Requests\Api\UpdateNotificationSettingsRequest;
-use App\Models\UserNotificationSetting;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
-use App\Action\Api\GetNotificationSettingsAction;
-use App\Action\Api\UpdateNotificationSettingsAction;
-
-class NotificationSettingsController extends Controller
+class GetNotificationSettingsAction
 {
-    /**
-     * Get user notification settings
-     */
-    public function index(GetNotificationSettingsAction $action)
+    public function execute($user): array
     {
-        $user = Auth::user();
+        try {
+            $settings = $user->initializeNotificationSettings();
 
-        $result = $action->execute($user);
+            if (! $settings) {
+                return ['data' => $this->defaultSettingsStructure()];
+            }
 
-        return response()->json([
-            'success' => true,
-            'data' => $result['data'],
-        ]);
-    }
-
-    /**
-     * Update notification settings.
-     * Only accepts true, false, 0, or 1 for each setting; invalid values (e.g. 4) return 422.
-     */
-    public function update(UpdateNotificationSettingsRequest $request, UpdateNotificationSettingsAction $action): JsonResponse
-    {
-        $validated = $request->validated();
-
-        $user = Auth::user();
-        $settings = $action->execute($user, $validated);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Notification settings updated successfully',
-            'data' => $this->formatSettings($settings),
-        ]);
-    }
-
-    /**
-     * Update specific category settings.
-     * Only accepts true, false, 0, or 1 for enabled; invalid values return 422.
-     */
-    public function updateCategory(UpdateNotificationCategoryRequest $request, string $category, UpdateNotificationSettingsAction $action): JsonResponse
-    {
-        $validated = $request->validated();
-
-        $user = Auth::user();
-
-        $settings = $action->updateCategory($user, $category, (bool) $validated['enabled']);
-
-        if ($settings === null) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid category',
-            ], 400);
+            return ['data' => $this->formatSettings($settings)];
+        } catch (\Throwable $e) {
+            return ['data' => $this->defaultSettingsStructure()];
         }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Notification settings updated successfully',
-            'data' => $this->formatSettings($settings),
-        ]);
     }
 
-    /**
-     * Default settings structure (matches migration defaults) when no record exists or on error.
-     */
     private function defaultSettingsStructure(): array
     {
         return [
@@ -117,10 +61,7 @@ class NotificationSettingsController extends Controller
         ];
     }
 
-    /**
-     * Format settings for response
-     */
-    private function formatSettings(UserNotificationSetting $settings)
+    private function formatSettings($settings): array
     {
         return [
             'order_delivery_updates' => [
@@ -160,20 +101,5 @@ class NotificationSettingsController extends Controller
                 ]
             ]
         ];
-    }
-
-    /**
-     * Get fields for a category
-     */
-    private function getCategoryFields(string $category): array
-    {
-        $categories = [
-            'order_delivery' => ['order_confirmation', 'order_shipped', 'delivery_updates', 'out_of_stock_alerts'],
-            'deals_promotions' => ['weekly_discounts', 'exclusive_member_offers', 'seasonal_campaigns'],
-            'account_reminders' => ['cart_reminders', 'payment_billing'],
-            'channels' => ['email_notifications', 'push_notifications', 'sms_notifications'],
-        ];
-
-        return $categories[$category] ?? [];
     }
 }
