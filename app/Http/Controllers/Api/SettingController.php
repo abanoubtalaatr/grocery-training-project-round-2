@@ -3,19 +3,22 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SettingRequest;
+use App\Http\Requests\Api\SettingRequest as ApiSettingRequest;
 use App\Http\Resources\SettingResource;
 use App\Models\Setting;
 use Illuminate\Http\JsonResponse;
+use App\Action\Api\GetSettingsAction;
+use App\Action\Api\UpdateSettingsAction;
 
 class SettingController extends Controller
 {
     /**
      * Get settings
      */
-    public function index(): JsonResponse
+    public function index(GetSettingsAction $action): JsonResponse
     {
-        $settings = Setting::getSettings();
+        $settings = $action->execute();
+
         return response()->json([
             'success' => true,
             'data' => new SettingResource($settings)
@@ -25,23 +28,20 @@ class SettingController extends Controller
     /**
      * Update settings
      */
-    public function update( $request): JsonResponse
+    public function update(ApiSettingRequest $request, UpdateSettingsAction $action): JsonResponse
     {
-        $settings = Setting::getSettings();
-        
         $data = $request->validated();
-        
-        // Handle file uploads if needed
+
         if ($request->hasFile('logo')) {
-            $data['logo'] = $request->file('logo')->store('settings', 'public');
+            $data['logo'] = $request->file('logo');
         }
-        
+
         if ($request->hasFile('favicon')) {
-            $data['favicon'] = $request->file('favicon')->store('settings', 'public');
+            $data['favicon'] = $request->file('favicon');
         }
-        
-        $settings->update($data);
-        
+
+        $settings = $action->execute($data);
+
         return response()->json([
             'success' => true,
             'message' => 'Settings updated successfully',
