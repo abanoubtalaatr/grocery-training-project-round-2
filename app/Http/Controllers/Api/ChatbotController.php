@@ -18,7 +18,7 @@ class ChatbotController extends Controller
     /**
      * Chat with AI (meals, FAQs, orders, payment, offers). Saves history and optional rating.
      */
-    public function chat(Request $request): JsonResponse
+    public function chat(\App\Http\Requests\Api\ChatbotRequest $request): JsonResponse
     {
         try {
             foreach (['question', 'message'] as $key) {
@@ -44,13 +44,10 @@ class ChatbotController extends Controller
                 ], 422);
             }
 
-            $validator = $request->validate([
-                'question' => ['required', 'string', 'max:1000'],
-                'rating' => ['nullable', 'integer', 'min:1', 'max:5'],
-                'locale' => ['nullable', 'string', 'in:ar,en'],
-            ]);
+            // Move validation to FormRequest (ChatbotRequest) and use validated data here.
+            $validated = $request->validated();
 
-            $question = trim((string) $validator['question']);
+            $question = trim((string) ($validated['question'] ?? ''));
             if ($question === '') {
                 return response()->json([
                     'success' => false,
@@ -58,8 +55,9 @@ class ChatbotController extends Controller
                     'errors' => ['question' => ['A non-empty question is required.']],
                 ], 422);
             }
-            $rating = $validator['rating'] ?? null;
-            $locale = $validator['locale'] ?? null;
+
+            $rating = $validated['rating'] ?? null;
+            $locale = $validated['locale'] ?? null;
             $apiKey = env('GEMINI_API_KEY');
 
             if (! $apiKey) {

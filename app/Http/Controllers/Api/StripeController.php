@@ -27,12 +27,9 @@ class StripeController extends Controller
         return $this->success($cards, 'Cards retrieved successfully');
     }
 
-    public function chargeSavedCard(Request $request, ChargeSavedCardAction $action)
+    public function chargeSavedCard(\App\Http\Requests\Api\ChargeSavedCardRequest $request, ChargeSavedCardAction $action)
     {
-        $data = $request->validate([
-            'payment_method_id' => 'required|string',
-            'amount' => 'required|numeric',
-        ]);
+        $data = $request->validated();
 
         $paymentIntent = $action->execute($request->user(), $data['payment_method_id'], (float) $data['amount']);
 

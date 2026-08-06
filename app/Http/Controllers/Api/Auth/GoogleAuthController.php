@@ -19,12 +19,9 @@ class GoogleAuthController extends Controller
         'https://accounts.google.com',
     ];
 
-    public function login(Request $request): JsonResponse
+    public function login(\App\Http\Requests\Api\GoogleLoginRequest $request): JsonResponse
     {
-        $request->validate([
-            'id_token' => ['required', 'string'],
-            'device_name' => ['nullable', 'string', 'max:100'],
-        ]);
+        $data = $request->validated();
 
         $allowedClientIds = $this->allowedGoogleClientIds();
         if (empty($allowedClientIds)) {

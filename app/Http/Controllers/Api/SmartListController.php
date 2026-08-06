@@ -99,11 +99,11 @@ class SmartListController extends Controller
     /**
      * Add a meal to a wish list.
      */
-    public function addMeal(Request $request, string $id)
+    public function addMeal(\App\Http\Requests\Api\AddMealToSmartListRequest $request, string $id)
     {
-        $request->validate(['meal_id' => ['required', 'exists:meals,id']]);
+        $data = $request->validated();
         $smartList = SmartList::where('user_id', $request->user()->id)->findOrFail($id);
-        $smartList->meals()->syncWithoutDetaching([$request->meal_id]);
+        $smartList->meals()->syncWithoutDetaching([$data['meal_id']]);
         $smartList->load('meals');
         return response()->json([
             'success' => true,
