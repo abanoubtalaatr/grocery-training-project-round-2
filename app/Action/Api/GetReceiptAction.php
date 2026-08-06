@@ -1,67 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Action\Api;
 
-use App\Action\Api\GetPaymentHistoryAction;
-use App\Action\Api\GetReceiptAction;
 use App\Models\Order;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
-class PaymentController extends Controller
+class GetReceiptAction
 {
-    use \App\Traits\ApiResponse;
-
-    /**
-     * Get payment history for the authenticated user.
-     */
-    public function paymentHistory(Request $request, GetPaymentHistoryAction $action): JsonResponse
-    {
-        try {
-            $user = $request->user();
-
-            $paymentHistory = $action->execute($user);
-
-            return $this->success($paymentHistory, 'Payment history retrieved successfully');
-        } catch (\Exception $e) {
-            return $this->error('Failed to retrieve payment history', 500);
-        }
-    }
-
-    /**
-     * Get receipt/invoice for a specific order.
-     */
-    public function receipt(Request $request, Order $order, GetReceiptAction $action): JsonResponse
-    {
-        try {
-            $user = $request->user();
-
-            if ($order->user_id !== $user->id) {
-                return $this->error('Order not found', 404);
-            }
-
-            $order->load(['items.meal.category', 'items.meal.subcategory', 'address', 'user']);
-
-            $receipt = $action->execute($order);
-
-            return $this->success($receipt, 'Receipt retrieved successfully');
-        } catch (\Exception $e) {
-            return $this->error('Failed to retrieve receipt', 500);
-        }
-    }
-
-    /**
-     * Get invoice for a specific order (alias for receipt).
-     */
-    public function invoice(Request $request, Order $order): JsonResponse
-    {
-        return $this->receipt($request, $order);
-    }
-
-    /**
-     * Format order as receipt/invoice.
-     */
-    private function formatReceipt(Order $order): array
+    public function execute(Order $order): array
     {
         $user = $order->user;
         $address = $order->address;
@@ -69,13 +14,11 @@ class PaymentController extends Controller
         return [
             'receipt_number' => $order->order_number,
             'invoice_number' => 'INV-' . str_pad($order->id, 8, '0', STR_PAD_LEFT),
-            'type' => 'receipt', // or 'invoice'
+            'type' => 'receipt',
             'date' => $order->placed_at ?? $order->created_at,
             'payment_date' => $order->placed_at ?? $order->created_at,
             'status' => $order->status,
             'status_description' => $order->status_description,
-            
-            // Customer Information
             'customer' => [
                 'id' => $user->id,
                 'name' => $user->full_name ?? $user->username ?? 'Customer',
@@ -85,8 +28,6 @@ class PaymentController extends Controller
                 'phone' => $user->phone,
                 'country_code' => $user->country_code,
             ],
-
-            // Delivery Address
             'delivery_address' => $address ? [
                 'id' => $address->id,
                 'label' => $address->label,
@@ -104,15 +45,11 @@ class PaymentController extends Controller
                 'country' => $address->country,
                 'full_address' => $address->full_address,
             ] : null,
-
-            // Payment Information
             'payment' => [
                 'method' => $order->payment_method,
                 'stripe_payment_intent_id' => $order->stripe_payment_intent_id,
                 'method_display' => $this->getPaymentMethodDisplay($order->payment_method),
             ],
-
-            // Order Items
             'items' => $order->items->map(function ($item) {
                 return [
                     'id' => $item->id,
@@ -134,8 +71,6 @@ class PaymentController extends Controller
                     'subtotal' => (float) $item->subtotal,
                 ];
             }),
-
-            // Pricing Summary
             'pricing' => [
                 'subtotal' => (float) $order->subtotal,
                 'tax' => (float) $order->tax,
@@ -143,8 +78,6 @@ class PaymentController extends Controller
                 'discount' => (float) $order->discount,
                 'total' => (float) $order->total,
             ],
-
-            // Delivery Information
             'delivery' => [
                 'type' => $order->delivery_type,
                 'estimated_delivery_time' => $order->estimated_delivery_time,
@@ -154,17 +87,12 @@ class PaymentController extends Controller
                 'out_for_delivery_at' => $order->out_for_delivery_at,
                 'delivered_at' => $order->delivered_at,
             ],
-
-            // Additional Information
             'notes' => $order->notes,
             'created_at' => $order->created_at,
             'updated_at' => $order->updated_at,
         ];
     }
 
-    /**
-     * Get payment method display name.
-     */
     private function getPaymentMethodDisplay(string $method): string
     {
         return match($method) {

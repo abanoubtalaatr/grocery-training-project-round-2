@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Offer;
-use Illuminate\Http\Request;
+use App\Action\Api\ValidateOfferAction;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\ValidateOfferRequest;
 use App\Http\Resources\Api\OfferResource;
+use App\Models\Offer;
+use App\Traits\ApiResponse;
+use Illuminate\Http\Request;
 
 class OfferController extends Controller
 {
+    use ApiResponse;
+
     // Get all active offers
     public function index(Request $request)
     {
@@ -71,42 +76,19 @@ class OfferController extends Controller
     }
 
     // Validate offer code
-    public function validateOffer(Request $request)
+    public function validateOffer(ValidateOfferRequest $request, ValidateOfferAction $action)
     {
-        $request->validate([
-            'code' => 'required|string',
-            'amount' => 'nullable|numeric|min:0',
-        ]);
-        
-        $offer = Offer::where('code', $request->code)->first();
-        
-        if (!$offer) {
-            return response()->json([
-                'valid' => false,
-                'message' => 'Invalid offer code',
-            ], 404);
+        $result = $action->execute($request->input('code'), $request->input('amount'));
+
+        if (! $result['offer']) {
+            return $this->error('Invalid offer code', 404);
         }
-        
-        $isValid = $offer->isValid();
-        $canApply = true;
-        $message = 'Offer is valid';
-        
-        if ($isValid && $request->has('amount')) {
-            $canApply = $offer->canApplyToAmount($request->amount);
-            if (!$canApply) {
-                $message = 'Minimum purchase required: $' . $offer->minimum_purchase;
-            }
-        }
-        
-        $discount = $canApply && $isValid 
-            ? $offer->calculateDiscount($request->amount ?? 0)
-            : 0;
-        
-        return response()->json([
-            'valid' => $isValid && $canApply,
-            'offer' => new OfferResource($offer),
-            'discount_amount' => $discount,
-            'message' => $message,
-        ]);
+
+        return $this->success([
+            'valid' => $result['valid'],
+            'offer' => new OfferResource($result['offer']),
+            'discount_amount' => $result['discount'],
+            'message' => $result['message'],
+        ], 'Offer validation result');
     }
 }

@@ -2,140 +2,44 @@
 
 namespace App\Http\Controllers\Api;
 
-use Stripe\Stripe;
-use App\Models\Cart;
-use App\Models\Meal;
-use App\Models\Order;
-use App\Models\Address;
-use App\Models\OrderItem;
-use App\Models\OrderNote;
-use Stripe\PaymentIntent;
+use App\Action\Api\CreateOrderAction;
+use App\Action\Api\ShowOrderAction;
+use App\Action\Api\ListOrdersAction;
+use App\Action\Api\TrackOrderAction;
+use App\Http\Resources\Api\OrderResource;
+use App\Http\Requests\StoreOrderRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreOrderRequest;
-use App\Services\ShippingService;
 
 class OrderController extends Controller
 {
+    use \App\Traits\ApiResponse;
 
-    public function show(Request $request, Order $order)
+    public function show(Request $request, Order $order, ShowOrderAction $action): JsonResponse
     {
-        $order = $order->load(['items.meal', 'address']);
+        $order = $action->execute($order);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Order retrieved successfully',
-            'data' => $this->formatOrder($order),
-        ]);
+        return $this->success(new OrderResource($order), 'Order retrieved successfully');
     }
     
     /**
      * Create a new order.
      */
-    public function store(StoreOrderRequest $request): JsonResponse
+    public function store(StoreOrderRequest $request, CreateOrderAction $action): JsonResponse
     {
         try {
             $user = $request->user();
             $validated = $request->validated();
 
-            // Get user's active cart
-            $cart = $user->activeCart()->with('items.meal')->first();
+            $order = $action->execute($user, $validated);
 
-            if (!$cart || $cart->isEmpty()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Your cart is empty. Please add items to your cart before placing an order.',
-                ], 400);
-            }
-
-            // Validate and process items from cart
-            $itemsResult = $this->validateAndProcessCartItems($cart->items);
-            if (!$itemsResult['success']) {
-                return response()->json($itemsResult['response'], 400);
-            }
-
-            $items = $itemsResult['items'];
-
-            // Calculate totals and shipping (use cart totals; add shipping for delivery)
-            $cart->calculateTotals();
-            $shippingService = app(ShippingService::class);
-            $shippingFee = $shippingService->calculateShippingFee((float) $cart->subtotal, $validated['delivery_type']);
-            $totals = [
-                'subtotal' => $cart->subtotal,
-                'tax' => $cart->tax,
-                'discount' => $cart->discount,
-                'shipping_fee' => $shippingFee,
-                'total' => (float) $cart->subtotal + (float) $cart->tax + $shippingFee,
-            ];
-            $total = $totals['total'];
-
-            // Validate amount matches cart total
-            // if (abs($total - $validated['amount']) > 0.01) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => 'Amount mismatch. Please recalculate your order.',
-            //         'calculated_total' => $total,
-            //         'provided_amount' => $validated['amount'],
-            //     ], 400);
-            // }
-
-            DB::beginTransaction();
-
-            // $paymentResult = match ($validated['payment_method']) {
-            //     'stripe_checkout' => ['success' => true],
-            //     default => $this->processPayment($user, $validated, $total),
-            // };
-
-            // if (! $paymentResult['success']) {
-            //     DB::rollBack();
-
-            //     return response()->json($paymentResult['response'], 400);
-            // }
-
-            $stripePaymentIntentId = $paymentResult['stripe_payment_intent_id'] ?? null;
-
-            // Create order
-            $order = $this->createOrder($user, $validated, $totals['subtotal'], $totals, $stripePaymentIntentId);
-
-            // Create order items and update stock
-            $this->createOrderItems($order, $items);
-
-            // Clear user's active cart
-            $this->clearUserCart($user);
-
-            
-            if(isset($validated['special_note_id'])) {
-                OrderNote::create([
-                    'order_id' => $order->id,
-                    'special_note_id' => $validated['special_note_id'],
-                    'notes' => $validated['notes'] ?? null,
-                ]);
-            }
-            if(isset($validated['notes'])   ) {
-                OrderNote::create([
-                    'order_id' => $order->id,
-                    'special_note_id' => null,
-                    'notes' => $validated['notes'],
-                ]);
-            }
-            DB::commit();
-
-            $order->load(['items.meal', 'address']);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Order created successfully',
-                'data' => $this->formatOrder($order),
-            ], 201);
+            return $this->success(new OrderResource($order), 'Order created successfully', 201);
+        } catch (\RuntimeException $e) {
+            return $this->error($e->getMessage(), 400);
         } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to create order',
-                'error' => $e->getMessage(),
-            ], 500);
+            return $this->error('Failed to create order', 500);
         }
     }
 
@@ -342,127 +246,95 @@ class OrderController extends Controller
     /**
      * Get all user orders.
      */
-    public function index(Request $request): JsonResponse
+    public function index(Request $request, ListOrdersAction $action): JsonResponse
     {
         try {
             $user = $request->user();
 
-            $orders = Order::
-                with(['items.meal.category', 'items.meal.subcategory', 'address'])
-                ->orderBy('created_at', 'desc')
-                ->get()
-                ->map(function ($order) {
-                    return $this->formatOrder($order);
-                });
+            $orders = $action->execute($user);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Orders retrieved successfully',
-                'data' => $orders,
-                'total_count' => $orders->count(),
-            ]);
+            return $this->success(\App\Http\Resources\Api\OrderResource::collection($orders)->values(), 'Orders retrieved successfully');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to retrieve orders',
-                'error' => $e->getMessage(),
-            ], 500);
+            return $this->error('Failed to retrieve orders', 500);
         }
     }
 
     /**
      * Track the last order with status positions.
      */
-    public function track(Request $request): JsonResponse
+    public function track(Request $request, TrackOrderAction $action): JsonResponse
     {
         try {
             $user = $request->user();
 
-            $order = Order::where('user_id', $user->id)
-                ->whereNotIn('status', ['cancelled', 'delivered'])
-                ->with(['items.meal.category', 'items.meal.subcategory', 'address'])
-                ->orderBy('created_at', 'desc')
-                ->first();
+            $order = $action->execute($user);
 
-            if (!$order) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No active order found',
-                ], 404);
+            if (! $order) {
+                return $this->error('No active order found', 404);
             }
 
             if ($order->status === 'awaiting_payment') {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Order is waiting for payment. Complete checkout to continue.',
-                    'data' => [
-                        'order' => $this->formatOrder($order),
-                        'awaiting_payment' => true,
-                        'tracking' => null,
-                    ],
-                ]);
+                return $this->success([
+                    'order' => (new \App\Http\Resources\Api\OrderResource($order))->toArray($request),
+                    'awaiting_payment' => true,
+                    'tracking' => null,
+                ], 'Order is waiting for payment. Complete checkout to continue.');
             }
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Order tracking retrieved successfully',
-                'data' => [
-                    'order' => $this->formatOrder($order),
-                    'tracking' => [
-                        'position' => $order->status_position,
-                        'status' => $order->status,
-                        'status_description' => $order->status_description,
-                        'positions' => [
-                            [
-                                'position' => 1,
-                                'status' => 'placed',
-                                'label' => 'Order Placed',
-                                'description' => 'Your order has been placed',
-                                'completed' => in_array($order->status, ['placed', 'processing', 'shipping', 'out_for_delivery', 'delivered']),
-                                'timestamp' => $order->placed_at,
-                            ],
-                            [
-                                'position' => 2,
-                                'status' => 'processing',
-                                'label' => 'Processing',
-                                'description' => 'Your order is being processed',
-                                'completed' => in_array($order->status, ['processing', 'shipping', 'out_for_delivery', 'delivered']),
-                                'timestamp' => $order->processing_at,
-                            ],
-                            [
-                                'position' => 3,
-                                'status' => 'shipping',
-                                'label' => 'Shipping',
-                                'description' => 'Your order is being shipped',
-                                'completed' => in_array($order->status, ['shipping', 'out_for_delivery', 'delivered']),
-                                'timestamp' => $order->shipping_at,
-                            ],
-                            [
-                                'position' => 4,
-                                'status' => 'out_for_delivery',
-                                'label' => 'Out for Delivery',
-                                'description' => 'Your order is on the way',
-                                'completed' => in_array($order->status, ['out_for_delivery', 'delivered']),
-                                'timestamp' => $order->out_for_delivery_at,
-                            ],
-                            [
-                                'position' => 5,
-                                'status' => 'delivered',
-                                'label' => 'Delivered',
-                                'description' => 'Your order has been delivered',
-                                'completed' => $order->status === 'delivered',
-                                'timestamp' => $order->delivered_at,
-                            ],
-                        ],
+            $tracking = [
+                'position' => $order->status_position,
+                'status' => $order->status,
+                'status_description' => $order->status_description,
+                'positions' => [
+                    [
+                        'position' => 1,
+                        'status' => 'placed',
+                        'label' => 'Order Placed',
+                        'description' => 'Your order has been placed',
+                        'completed' => in_array($order->status, ['placed', 'processing', 'shipping', 'out_for_delivery', 'delivered']),
+                        'timestamp' => $order->placed_at,
+                    ],
+                    [
+                        'position' => 2,
+                        'status' => 'processing',
+                        'label' => 'Processing',
+                        'description' => 'Your order is being processed',
+                        'completed' => in_array($order->status, ['processing', 'shipping', 'out_for_delivery', 'delivered']),
+                        'timestamp' => $order->processing_at,
+                    ],
+                    [
+                        'position' => 3,
+                        'status' => 'shipping',
+                        'label' => 'Shipping',
+                        'description' => 'Your order is being shipped',
+                        'completed' => in_array($order->status, ['shipping', 'out_for_delivery', 'delivered']),
+                        'timestamp' => $order->shipping_at,
+                    ],
+                    [
+                        'position' => 4,
+                        'status' => 'out_for_delivery',
+                        'label' => 'Out for Delivery',
+                        'description' => 'Your order is on the way',
+                        'completed' => in_array($order->status, ['out_for_delivery', 'delivered']),
+                        'timestamp' => $order->out_for_delivery_at,
+                    ],
+                    [
+                        'position' => 5,
+                        'status' => 'delivered',
+                        'label' => 'Delivered',
+                        'description' => 'Your order has been delivered',
+                        'completed' => $order->status === 'delivered',
+                        'timestamp' => $order->delivered_at,
                     ],
                 ],
-            ]);
+            ];
+
+            return $this->success([
+                'order' => (new \App\Http\Resources\Api\OrderResource($order))->toArray($request),
+                'tracking' => $tracking,
+            ], 'Order tracking retrieved successfully');
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to track order',
-                'error' => $e->getMessage(),
-            ], 500);
+            return $this->error('Failed to track order', 500);
         }
     }
 
