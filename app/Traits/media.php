@@ -1,19 +1,21 @@
 <?php
 
 namespace App\Traits;
-trait media
+
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+
+trait Media
 {
-    public function uploadPhoto($img,$dir): string
+    public function uploadPhoto(UploadedFile $img, string $dir): string
     {
-        $imgName = uniqid() .'.'. $img->getClientOriginalExtension();
-        $img->move(public_path('images/'.$dir), $imgName);
-        return $imgName;
+        return $img->store($dir, 'public');
     }
-    public function deletePhoto($imgPath): bool
+
+    public function deletePhoto(string $imgPath): bool
     {
-        if (file_exists($imgPath)) {
-            unlink($imgPath);
-            return true;
+        if (Storage::disk('public')->exists($imgPath)) {
+            return Storage::disk('public')->delete($imgPath);
         }
         return false;
     }

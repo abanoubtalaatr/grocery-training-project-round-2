@@ -11,6 +11,7 @@ trait ApiTrait
     {
         return response()->json(
             [
+                'success' => true,
                 'message' => $message,
                 'errors' => (object)[],
                 'data' => (object)[],
@@ -22,6 +23,7 @@ trait ApiTrait
     {
         return response()->json(
             [
+                'success' => false,
                 'message' => $message,
                 'errors' => $errors,
                 'data' => (object)[],
@@ -34,6 +36,7 @@ trait ApiTrait
     {
         return response()->json(
             [
+                'success' => true,
                 'message' => $message,
                 'errors' => (object)[],
                 'data' => (object)$data,

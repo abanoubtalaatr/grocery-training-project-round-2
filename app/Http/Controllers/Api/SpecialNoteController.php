@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\SpecialNote;
-use Illuminate\Http\Request;
+use App\Actions\Api\SpecialNote\GetSpecialNotesAction;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\SpecialNoteResource;
+use App\Traits\ApiTrait;
+use Illuminate\Http\JsonResponse;
 
 class SpecialNoteController extends Controller
 {
-    public function index()
+    use ApiTrait;
+
+    public function index(GetSpecialNotesAction $action): JsonResponse
     {
-        $specialNotes = SpecialNote::all();
-        return response()->json([
-            'success' => true,
-            'data' => SpecialNoteResource::collection($specialNotes)
-        ]);
+        $specialNotes = $action->run();
+
+        return $this->dataResponse(SpecialNoteResource::collection($specialNotes));
     }
 }

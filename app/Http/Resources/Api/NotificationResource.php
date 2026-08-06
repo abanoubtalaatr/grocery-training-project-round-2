@@ -1,72 +1,67 @@
 <?php
-// app/Http/Resources/NotificationResource.php
 
 namespace App\Http\Resources\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Notifications\DatabaseNotification;
 
 class NotificationResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
+    protected bool $detailed = false;
+
+    public function __construct($resource, bool $detailed = false)
+    {
+        parent::__construct($resource);
+        $this->detailed = $detailed;
+    }
+
     public function toArray(Request $request): array
     {
-        /** @var DatabaseNotification $notification */
-        $notification = $this->resource;
-        $data = $notification->data;
-        
-        return [
-            'id' => $notification->id,
-            'type' => $this->getType($data),
-            'category' => $this->getCategory($data),
-            'title' => $data['title'] ?? 'Notification',
-            'body' => $data['body'] ?? '',
+        $data = $this->notificationDataAsArray($this->data);
+        $type = isset($data['type']) && is_string($data['type']) ? $data['type'] : 'unknown';
+
+        $baseData = [
+            'id' => $this->id,
+            'type' => $type,
+            'title' => is_string($data['title'] ?? null) ? $data['title'] : 'Notification',
+            'body' => is_string($data['body'] ?? null) ? $data['body'] : '',
             'action_url' => $data['action_url'] ?? null,
-            'action_label' => $data['action_label'] ?? 'View',
-            'is_read' => !is_null($notification->read_at),
-            'read_at' => $notification->read_at?->toISOString(),
-            'created_at' => $notification->created_at->toISOString(),
-            'created_at_human' => $notification->created_at->diffForHumans(),
-            'icon' => $this->getIcon($data),
-            'priority' => $data['priority'] ?? 'normal',
-            'metadata' => $data['metadata'] ?? [],
-            'expires_at' => $data['expires_at'] ?? null,
+            'action_label' => is_string($data['action_label'] ?? null) ? $data['action_label'] : 'View',
+            'is_read' => ! is_null($this->read_at),
+            'read_at' => $this->read_at?->toISOString(),
+            'created_at' => $this->created_at?->toISOString() ?? '',
+            'created_at_human' => $this->created_at?->diffForHumans() ?? '',
+            'icon' => $this->getIconForType($type),
+            'priority' => is_string($data['priority'] ?? null) ? $data['priority'] : 'normal',
         ];
+
+        if ($this->detailed) {
+            $baseData['data'] = $data;
+            $baseData['channels'] = $data['channels'] ?? ['database'];
+            $baseData['metadata'] = $data['metadata'] ?? [];
+            $baseData['expires_at'] = $data['expires_at'] ?? null;
+        }
+
+        return $baseData;
     }
-    
-    private function getType(array $data): string
+
+    private function notificationDataAsArray(mixed $data): array
     {
-        return $data['type'] ?? 'unknown';
+        if (is_array($data)) {
+            return $data;
+        }
+
+        if (is_string($data) && $data !== '') {
+            $decoded = json_decode($data, true);
+
+            return is_array($decoded) ? $decoded : [];
+        }
+
+        return [];
     }
-    
-    private function getCategory(array $data): string
+
+    private function getIconForType(string $type): string
     {
-        $type = $this->getType($data);
-        
-        $categories = [
-            'order_confirmation' => 'Order & Delivery',
-            'order_shipped' => 'Order & Delivery',
-            'delivery_updates' => 'Order & Delivery',
-            'out_of_stock_alerts' => 'Order & Delivery',
-            'weekly_discounts' => 'Deals & Promotions',
-            'exclusive_member_offers' => 'Deals & Promotions',
-            'seasonal_campaigns' => 'Deals & Promotions',
-            'cart_reminders' => 'Account & Reminders',
-            'payment_billing' => 'Account & Reminders',
-        ];
-        
-        return $categories[$type] ?? 'System';
-    }
-    
-    private function getIcon(array $data): string
-    {
-        $type = $this->getType($data);
-        
         $icons = [
             'order_confirmation' => 'shopping-bag',
             'order_shipped' => 'truck',
@@ -77,8 +72,11 @@ class NotificationResource extends JsonResource
             'seasonal_campaigns' => 'gift',
             'cart_reminders' => 'shopping-cart',
             'payment_billing' => 'credit-card',
+            'system' => 'bell',
+            'account' => 'user',
+            'security' => 'shield',
         ];
-        
+
         return $icons[$type] ?? 'bell';
     }
 }

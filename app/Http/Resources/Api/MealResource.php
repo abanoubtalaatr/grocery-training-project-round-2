@@ -7,20 +7,32 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class MealResource extends JsonResource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @return array<string, mixed>
-     */
     public function toArray(Request $request): array
     {
         return [
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
-            'description' => $this->description,
             'image_url' => $this->image_url,
-            'offer_title' => $this->offer_title,
+
+            ...$this->getApiPriceAttributes(),
+
+            'rating' => (float) $this->rating,
+            'size' => $this->size,
+            'brand' => $this->brand,
+            'stock_quantity' => $this->stock_quantity,
+            'is_available' => $this->is_available,
+            'in_stock' => $this->isInStock(),
+
+            'category' => $this->category ? [
+                'id' => $this->category->id,
+                'name' => $this->category->name,
+            ] : null,
+
+            'subcategory' => $this->subcategory ? [
+                'id' => $this->subcategory->id,
+                'name' => $this->subcategory->name,
+            ] : null,
         ];
     }
 }

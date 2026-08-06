@@ -1,28 +1,81 @@
 <?php
 
 use App\Http\Controllers\Api\AddressController;
+use App\Http\Controllers\Api\Auth\ChangePasswordController;
+use App\Http\Controllers\Api\Auth\DeleteAccountController;
+use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Auth\GoogleAuthController;
-use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\Auth\LoginController;
+use App\Http\Controllers\Api\Auth\LogoutController;
+use App\Http\Controllers\Api\Auth\MeController;
+use App\Http\Controllers\Api\Auth\RegisterController;
+use App\Http\Controllers\Api\Auth\ResetPasswordController;
+use App\Http\Controllers\Api\Auth\VerifyOtpController;
 use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\CartItemsController;
 use App\Http\Controllers\Api\CategoryController;
-use App\Http\Controllers\Api\ChatbotController;
+use App\Http\Controllers\Api\Chatbot\GetChatHistoryController;
+use App\Http\Controllers\Api\Chatbot\GetChatSuggestionsController;
+use App\Http\Controllers\Api\Chatbot\SendChatMessageController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\FaqController;
+use App\Http\Controllers\Api\Faq\GetFaqCategoriesController;
+use App\Http\Controllers\Api\Faq\GetFaqsByCategoryController;
 use App\Http\Controllers\Api\FavoriteController;
+use App\Http\Controllers\Api\FavoriteStatusController;
 use App\Http\Controllers\Api\MealController;
+use App\Http\Controllers\Api\MealBestSellsController;
+use App\Http\Controllers\Api\MealBrandsController;
+use App\Http\Controllers\Api\MealFrequencyController;
+use App\Http\Controllers\Api\MealHotController;
+use App\Http\Controllers\Api\MealMoreToExploreController;
+use App\Http\Controllers\Api\MealNewProductsController;
+use App\Http\Controllers\Api\MealRecommendationsController;
+use App\Http\Controllers\Api\MealSliderController;
+use App\Http\Controllers\Api\MealTodayController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\NotificationSettingsController;
+use App\Http\Controllers\Api\UpdateNotificationCategoryController;
+use App\Http\Controllers\Api\Notification\ClearAllNotificationsController;
+use App\Http\Controllers\Api\Notification\DestroyMultipleNotificationsController;
+use App\Http\Controllers\Api\Notification\GetNotificationsByTypeController;
+use App\Http\Controllers\Api\Notification\GetNotificationsWithResourcesController;
+use App\Http\Controllers\Api\Notification\GetNotificationStatsController;
+use App\Http\Controllers\Api\Notification\GetRecentNotificationsController;
+use App\Http\Controllers\Api\Notification\GetUnreadNotificationsCountController;
+use App\Http\Controllers\Api\Notification\MarkAllNotificationsAsReadController;
+use App\Http\Controllers\Api\Notification\MarkNotificationAsReadController;
+use App\Http\Controllers\Api\Notification\MarkNotificationAsUnreadController;
 use App\Http\Controllers\Api\OfferController;
+use App\Http\Controllers\Api\Offer\GetFeaturedOffersController;
+use App\Http\Controllers\Api\Offer\ShowOfferByCodeController;
+use App\Http\Controllers\Api\Offer\ValidateOfferController;
 use App\Http\Controllers\Api\OrderController;
-use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\OrderTrackingController;
+use App\Http\Controllers\Api\Payment\GetPaymentHistoryController;
+use App\Http\Controllers\Api\Payment\GetPaymentReceiptController;
+use App\Http\Controllers\Api\Payment\CreateCheckoutSessionController;
+use App\Http\Controllers\Api\Payment\VerifyCheckoutSessionController;
 use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\ProfileImageController;
+use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\Review\GetMealReviewsController;
+use App\Http\Controllers\Api\Review\GetMealReviewStatsController;
+use App\Http\Controllers\Api\Review\GetUserReviewsController;
+use App\Http\Controllers\Api\SessionController;
+use App\Http\Controllers\Api\SetDefaultAddressController;
 use App\Http\Controllers\Api\SettingController;
+use App\Http\Controllers\Api\Setting\GetPublicSettingsController;
 use App\Http\Controllers\Api\SmartListController;
 use App\Http\Controllers\Api\SpecialNoteController;
 use App\Http\Controllers\Api\StaticPageController;
-use App\Http\Controllers\Api\StripeCheckoutController;
-use App\Http\Controllers\Api\StripeController;
+use App\Http\Controllers\Api\StaticPage\GetImportantPagesController;
+use App\Http\Controllers\Api\StaticPage\ShowStaticPageBySlugController;
+use App\Http\Controllers\Api\Stripe\ChargeSavedCardController;
+use App\Http\Controllers\Api\Stripe\CreateSetupIntentController;
+use App\Http\Controllers\Api\Stripe\DeleteCardController;
+use App\Http\Controllers\Api\Stripe\ListCardsController;
 use App\Http\Controllers\Api\StripeWebhookController;
 use App\Http\Controllers\Api\SubcategoryController;
 use Illuminate\Support\Facades\Route;
@@ -38,177 +91,157 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
+Route::post('/stripe/webhook', StripeWebhookController::class);
 
 // Public routes - Authentication
 Route::prefix('auth')->group(function () {
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
-    Route::post('/verify-otp', [AuthController::class, 'verifyOtp']);
-    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-    Route::post('/google', [GoogleAuthController::class, 'login']);
+    Route::post('/register', RegisterController::class);
+    Route::post('/login', LoginController::class);
+    Route::post('/forgot-password', ForgotPasswordController::class);
+    Route::post('/verify-otp', VerifyOtpController::class);
+    Route::post('/reset-password', ResetPasswordController::class);
+    Route::post('/google', GoogleAuthController::class);
 });
 
 // Protected routes - Require authentication
 Route::middleware('auth:sanctum')->group(function () {
     // Auth routes
     Route::prefix('auth')->group(function () {
-        Route::post('/logout', [AuthController::class, 'logout']);
-        Route::post('/change-password', [AuthController::class, 'changePassword']);
-        Route::delete('/delete-account', [AuthController::class, 'deleteAccount']);
-        Route::get('/me', [AuthController::class, 'me']);
+        Route::post('/logout', LogoutController::class);
+        Route::post('/change-password', ChangePasswordController::class);
+        Route::delete('/delete-account', DeleteAccountController::class);
+        Route::get('/me', MeController::class);
     });
 
     // Profile routes
-    Route::prefix('profile')->group(function () {
+    Route::middleware('auth:sanctum')->prefix('profile')->group(function () {
         Route::get('/', [ProfileController::class, 'show']);
-        Route::post('/image', [ProfileController::class, 'updateImage']);
-        Route::put('/info', [ProfileController::class, 'updateInfo']);
-        Route::delete('/image', [ProfileController::class, 'deleteImage']);
-        Route::get('/sessions', [ProfileController::class, 'sessions']);
-        Route::delete('/sessions/{tokenId}', [ProfileController::class, 'destroySession']);
+        Route::put('/update', [ProfileController::class, 'update']);
+        Route::post('/image', [ProfileImageController::class, 'update']);
+        Route::delete('/image', [ProfileImageController::class, 'destroy']);
+        
+        // Sessions management
+        Route::get('/sessions', [SessionController::class, 'index']);
+        Route::delete('/sessions/{tokenId}', [SessionController::class, 'destroy']);
     });
 
-    // Address routes
-    Route::prefix('addresses')->group(function () {
-        Route::get('/', [AddressController::class, 'index']);
-        Route::post('/', [AddressController::class, 'store']);
-        Route::get('/{id}', [AddressController::class, 'show']);
-        Route::put('/{id}', [AddressController::class, 'update']);
-        Route::delete('/{id}', [AddressController::class, 'destroy']);
-        Route::post('/{id}/set-default', [AddressController::class, 'setDefault']);
-    });
-
-    Route::post('smart-lists/{id}/meals', [SmartListController::class, 'addMeal']);
-    Route::delete('smart-lists/{id}/meals/{mealId}', [SmartListController::class, 'removeMeal']);
+    Route::apiResource('addresses', AddressController::class);
+    Route::match(['put', 'patch'], '/set-default-address/{address}', SetDefaultAddressController::class);
     Route::apiResource('smart-lists', SmartListController::class);
 
     Route::prefix('notification-settings')->group(function () {
         Route::get('/', [NotificationSettingsController::class, 'index']);
         Route::put('/', [NotificationSettingsController::class, 'update']);
-        Route::put('/category/{category}', [NotificationSettingsController::class, 'updateCategory']);
+        Route::put('/category/{category}', UpdateNotificationCategoryController::class);
     });
 
     Route::prefix('notifications')->group(function () {
         // Get notifications
         Route::get('/', [NotificationController::class, 'index']);
-        Route::get('/with-resources', [NotificationController::class, 'indexWithResources']);
+        Route::get('/with-resources', GetNotificationsWithResourcesController::class);
 
         // Statistics
-        Route::get('/stats', [NotificationController::class, 'stats']);
-        Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
-        Route::get('/recent', [NotificationController::class, 'recent']);
+        Route::get('/stats', GetNotificationStatsController::class);
+        Route::get('/unread-count', GetUnreadNotificationsCountController::class);
+        Route::get('/recent', GetRecentNotificationsController::class);
 
         // Single notification operations
         Route::get('/{id}', [NotificationController::class, 'show']);
-        Route::put('/{id}/read', [NotificationController::class, 'markAsRead']);
-        Route::put('/{id}/unread', [NotificationController::class, 'markAsUnread']);
+        Route::put('/{id}/read', MarkNotificationAsReadController::class);
+        Route::put('/{id}/unread', MarkNotificationAsUnreadController::class);
         Route::delete('/{id}', [NotificationController::class, 'destroy']);
 
         // Bulk operations
-        Route::put('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
-        Route::delete('/delete-multiple', [NotificationController::class, 'destroyMultiple']);
-        Route::delete('/clear-all', [NotificationController::class, 'clearAll']);
+        Route::put('/mark-all-read', MarkAllNotificationsAsReadController::class);
+        Route::delete('/delete-multiple', DestroyMultipleNotificationsController::class);
+        Route::delete('/clear-all', ClearAllNotificationsController::class);
 
         // Filtered notifications
-        Route::get('/type/{type}', [NotificationController::class, 'byType']);
+        Route::get('/type/{type}', GetNotificationsByTypeController::class);
     });
 
-    // Cart routes
-    Route::prefix('cart')->group(function () {
-        Route::get('/', [CartController::class, 'index']);
-        Route::post('/items', [CartController::class, 'addItem']);
-        Route::put('/items/{itemId}', [CartController::class, 'updateItem']);
-        Route::delete('/items/{itemId}', [CartController::class, 'removeItem']);
-        Route::delete('/clear', [CartController::class, 'clear']);
-    });
+    Route::apiResource('cart', CartController::class)->only('index', 'destroy');
+    Route::apiResource('cart-items', CartItemsController::class)->only('store', 'update', 'destroy');
 
     // Favorites routes
-    Route::prefix('favorites')->group(function () {
-        Route::get('/', [FavoriteController::class, 'index']);
-        Route::post('/{mealId}/toggle', [FavoriteController::class, 'toggle']);
-        Route::get('/{mealId}/check', [FavoriteController::class, 'check']);
-        Route::delete('/{mealId}', [FavoriteController::class, 'remove']);
-    });
+    Route::apiResource('favorites', FavoriteController::class)->only('index', 'store', 'destroy');
+    Route::get('favorites/{meal}/status', FavoriteStatusController::class);
 
     // Chatbot routes
     Route::prefix('chatbot')->group(function () {
-        Route::post('/', [ChatbotController::class, 'chat']);
-        Route::get('/history', [ChatbotController::class, 'history']);
-        Route::get('/suggestions', [ChatbotController::class, 'suggestions']);
+        Route::post('/', SendChatMessageController::class);
+        Route::get('/history', GetChatHistoryController::class);
+        Route::get('/suggestions', GetChatSuggestionsController::class);
     });
 
-    Route::get('/cards', [StripeController::class, 'listCards']);
-    Route::post('/setup-intent', [StripeController::class, 'createSetupIntent']);
-    Route::post('/charge-card', [StripeController::class, 'chargeSavedCard']);
-    Route::delete('/cards/{id}', [StripeController::class, 'deleteCard']);
+    Route::get('/cards', ListCardsController::class);
+    Route::post('/setup-intent', CreateSetupIntentController::class);
+    Route::post('/charge-card', ChargeSavedCardController::class);
+    Route::delete('/cards/{id}', DeleteCardController::class);
 
     // Order routes
-    Route::prefix('orders')->group(function () {
-        Route::post('/', [OrderController::class, 'store']);
-        Route::get('/', [OrderController::class, 'index']);
-        Route::get('/track', [OrderController::class, 'track']);
-        Route::get('/{id}', [OrderController::class, 'show']);
-    });
+    Route::apiResource('orders', OrderController::class)->only('index', 'store', 'show');
+    Route::get('orders/track', OrderTrackingController::class);
 
     // Payment routes
     Route::prefix('payments')->group(function () {
-        Route::post('/stripe/checkout-session', [StripeCheckoutController::class, 'store']);
-        Route::get('/stripe/verify-session/{session_id}', [StripeCheckoutController::class, 'verifySession']);
-        Route::get('/history', [PaymentController::class, 'paymentHistory']);
-        Route::get('/receipt/{order}', [PaymentController::class, 'receipt']);
-        Route::get('/invoice/{order}', [PaymentController::class, 'invoice']);
+        Route::post('/stripe/checkout-session', CreateCheckoutSessionController::class);
+        Route::get('/stripe/verify-session/{session_id}', VerifyCheckoutSessionController::class);
+        Route::get('/history', GetPaymentHistoryController::class);
+        Route::get('/receipt/{order}', GetPaymentReceiptController::class);
+        Route::get('/invoice/{order}', GetPaymentReceiptController::class);
     });
 
     // Dashboard route
-    Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/dashboard', DashboardController::class);
 
     // Personalized "frequency" meals (requires auth — uses order history)
-    Route::get('/frequency', [MealController::class, 'frequency']);
+    Route::get('/frequency', MealFrequencyController::class);
+
+    // User reviews (requires auth)
+    Route::get('/user/reviews', GetUserReviewsController::class);
+    Route::apiResource('reviews', ReviewController::class)->only('store', 'update', 'destroy');
 });
 
 // Meals routes
 Route::prefix('meals')->group(function () {
-    Route::get('/today', [MealController::class, 'today']);
-    Route::get('hot', [MealController::class, 'hot']);
-
-    Route::get('/recommendations', [MealController::class, 'recommendations']);
+    Route::get('/today', MealTodayController::class);
+    Route::get('hot', MealHotController::class);
+    Route::get('/recommendations', MealRecommendationsController::class);
     Route::get('/', [MealController::class, 'index']);
     Route::get('/{id}', [MealController::class, 'show']);
-
+    Route::get('/{meal}/reviews', GetMealReviewsController::class);
+    Route::get('/{meal}/reviews/stats', GetMealReviewStatsController::class);
 });
-Route::get('/new-products', [MealController::class, 'newProducts']);
-Route::get('best-sells', [MealController::class, 'bestSells']);
-Route::get('sliders', [MealController::class, 'slider']);
-Route::get('brands', [MealController::class, 'brands']);
-Route::get('more-to-explore', [MealController::class, 'moreToExplore']);
+
+Route::get('/new-products', MealNewProductsController::class);
+Route::get('best-sells', MealBestSellsController::class);
+Route::get('sliders', MealSliderController::class);
+Route::get('brands', MealBrandsController::class);
+Route::get('more-to-explore', MealMoreToExploreController::class);
 Route::get('settings', [SettingController::class, 'index']);
+Route::get('settings/public', GetPublicSettingsController::class);
 Route::get('special-notes', [SpecialNoteController::class, 'index']);
-// Categories routes
 
 Route::prefix('offers')->group(function () {
     Route::get('/', [OfferController::class, 'index']);
-    Route::get('/featured', [OfferController::class, 'featured']);
-    Route::get('/validate', [OfferController::class, 'validateOffer']);
-    Route::get('/{code}', [OfferController::class, 'showByCode']);
-});
-Route::prefix('categories')->group(function () {
-    Route::get('/', [CategoryController::class, 'index']);
-    Route::get('/{id}', [CategoryController::class, 'show']);
-    Route::get('/{id}/meals', [CategoryController::class, 'meals']);
+    Route::get('/featured', GetFeaturedOffersController::class);
+    Route::get('/validate', ValidateOfferController::class);
+    Route::get('/{code}', ShowOfferByCodeController::class);
 });
 
+Route::apiResource('categories', CategoryController::class)->only('index', 'show');
 // Subcategories routes
-Route::prefix('subcategories')->group(function () {
-    Route::get('/', [SubcategoryController::class, 'index']);
-    Route::get('/{id}', [SubcategoryController::class, 'show']);
-    Route::get('/{id}/meals', [SubcategoryController::class, 'meals']);
-});
+Route::apiResource('subcategories', CategoryController::class)->only('index', 'show');
+
 Route::get('/faqs', [FaqController::class, 'index']);
+Route::get('/faqs/categories', GetFaqCategoriesController::class);
+Route::get('/faqs/category/{category}', GetFaqsByCategoryController::class);
+
 Route::get('/pages', [StaticPageController::class, 'index']);
-Route::get('/pages/slug/{slug}', [StaticPageController::class, 'showBySlug']);
-Route::get('/pages/important', [StaticPageController::class, 'importantPages']);
+Route::get('/pages/slug/{slug}', ShowStaticPageBySlugController::class);
+Route::get('/pages/important', GetImportantPagesController::class);
+
 Route::post('/contact', [ContactController::class, 'submit']);
 
 // Health check route
