@@ -14,49 +14,28 @@ class FaqController extends Controller
     /**
      * Display a listing of the FAQs.
      */
-    public function index(Request $request)
+    public function index(Request $request, \App\Action\Api\ListFaqsAction $action)
     {
-        $query = Faq::query();
+        $params = [
+            'category' => $request->get('category'),
+            'active_only' => $request->boolean('active_only', true),
+            'search' => $request->get('search'),
+        ];
 
-        // Filter by category
-        if ($request->has('category')) {
-            $query->where('category', $request->category);
-        }
-
-        // Filter active only
-        if ($request->boolean('active_only', true)) {
-            $query->active();
-        }
-
-        // Search in question and answer
-        if ($request->has('search')) {
-            $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('question', 'LIKE', "%{$search}%")
-                    ->orWhere('answer', 'LIKE', "%{$search}%");
-            });
-        }
-
-        // Order by
-        $query->ordered();
-
-        // Get categories list
-        if ($request->boolean('with_categories', false)) {
-            $categories = Faq::active()
-                ->distinct('category')
-                ->pluck('category')
-                ->filter()
-                ->values();
-        }
-
-        $perPage = $request->get('per_page', 15);
-        $faqs = $query->paginate($perPage);
+        $perPage = (int) $request->get('per_page', 15);
+        $faqs = $action->execute($params, $perPage);
 
         $response = [
             'data' => new FaqCollection($faqs),
         ];
 
         if ($request->boolean('with_categories', false)) {
+            $categories = Faq::active()
+                ->distinct('category')
+                ->pluck('category')
+                ->filter()
+                ->values();
+
             $response['categories'] = $categories;
         }
 
@@ -66,24 +45,11 @@ class FaqController extends Controller
     /**
      * Store a newly created FAQ.
      */
-    public function store(Request $request)
+    public function store(\App\Http\Requests\Api\FaqStoreRequest $request, \App\Action\Api\CreateFaqAction $action)
     {
-        $validator = Validator::make($request->all(), [
-            'question' => 'required|string|max:255',
-            'answer' => 'required|string',
-            'category' => 'nullable|string|max:100',
-            'order' => 'nullable|integer',
-            'is_active' => 'boolean',
-        ]);
+        $data = $request->validated();
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
-        $faq = Faq::create($validator->validated());
+        $faq = $action->execute($data);
 
         return response()->json([
             'message' => 'FAQ created successfully',
@@ -102,24 +68,11 @@ class FaqController extends Controller
     /**
      * Update the specified FAQ.
      */
-    public function update(Request $request, Faq $faq)
+    public function update(\App\Http\Requests\Api\FaqUpdateRequest $request, Faq $faq, \App\Action\Api\UpdateFaqAction $action)
     {
-        $validator = Validator::make($request->all(), [
-            'question' => 'sometimes|required|string|max:255',
-            'answer' => 'sometimes|required|string',
-            'category' => 'nullable|string|max:100',
-            'order' => 'nullable|integer',
-            'is_active' => 'sometimes|boolean',
-        ]);
+        $data = $request->validated();
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
-        $faq->update($validator->validated());
+        $faq = $action->execute($faq, $data);
 
         return response()->json([
             'message' => 'FAQ updated successfully',
@@ -130,9 +83,9 @@ class FaqController extends Controller
     /**
      * Remove the specified FAQ.
      */
-    public function destroy(Faq $faq)
+    public function destroy(Faq $faq, \App\Action\Api\DeleteFaqAction $action)
     {
-        $faq->delete();
+        $action->execute($faq);
 
         return response()->json([
             'message' => 'FAQ deleted successfully',
