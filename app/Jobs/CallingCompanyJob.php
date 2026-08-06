@@ -9,15 +9,16 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class SendEmailJob implements ShouldQueue
+class CallingCompanyJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * @param  array<string, mixed>  $payload
+     * Create a new job instance.
      */
-    public function __construct(public array $payload = [])
+    public function __construct()
     {
+        //
     }
 
     /**
@@ -25,6 +26,6 @@ class SendEmailJob implements ShouldQueue
      */
     public function handle(): void
     {
-        Log::info('Sending email to the user', $this->payload);
+        Log::info('Calling company');
     }
 }
