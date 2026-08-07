@@ -10,71 +10,56 @@ use App\Http\Responses\ApiResponse;
 use App\Http\Resources\CategoryResource;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
+use App\Actions\Category\IndexCategoryAction;
+use App\Actions\Category\StoreCategoryAction;
+use App\Actions\Category\ShowCategoryAction;
+use App\Actions\Category\UpdateCategoryAction;
+use App\Actions\Category\DestroyCategoryAction;
 
 class CategoryController extends Controller
 {
+    private IndexCategoryAction $indexAction;
+    private StoreCategoryAction $storeAction;
+    private ShowCategoryAction $showAction;
+    private UpdateCategoryAction $updateAction;
+    private DestroyCategoryAction $destroyAction;
+
+    public function __construct(
+        IndexCategoryAction $indexAction,
+        StoreCategoryAction $storeAction,
+        ShowCategoryAction $showAction,
+        UpdateCategoryAction $updateAction,
+        DestroyCategoryAction $destroyAction
+    ) {
+        $this->indexAction = $indexAction;
+        $this->storeAction = $storeAction;
+        $this->showAction = $showAction;
+        $this->updateAction = $updateAction;
+        $this->destroyAction = $destroyAction;
+    }
+
     public function index(Request $request)
     {
-        $categories = Category::query()
-            ->latest()
-            ->paginate(10);
-
-        return ApiResponse::success(
-            CategoryResource::collection($categories),
-            'Categories retrieved successfully.'
-        );
+        return $this->indexAction->handle($request);
     }
 
     public function store(StoreCategoryRequest $request)
     {
-        $category = Category::create([
-
-            ...$request->validated(),
-
-            'slug' => Str::slug($request->name),
-
-        ]);
-
-        return ApiResponse::success(
-            new CategoryResource($category),
-            'Category created successfully.',
-            201
-        );
+        return $this->storeAction->handle($request);
     }
 
     public function show(Category $category)
     {
-        return ApiResponse::success(
-            new CategoryResource($category),
-            'Category retrieved successfully.'
-        );
+        return $this->showAction->handle($category);
     }
 
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-
-        $data = $request->validated();
-
-        if (isset($data['name'])) {
-
-            $data['slug'] = Str::slug($data['name']);
-        }
-
-        $category->update($data);
-
-        return ApiResponse::success(
-            new CategoryResource($category),
-            'Category updated successfully.'
-        );
+        return $this->updateAction->handle($request, $category);
     }
 
     public function destroy(Category $category)
     {
-        $category->delete();
-
-        return ApiResponse::success(
-            null,
-            'Category deleted successfully.'
-        );
+        return $this->destroyAction->handle($category);
     }
 }

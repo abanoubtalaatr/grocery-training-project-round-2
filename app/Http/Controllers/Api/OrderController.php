@@ -2,24 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
-use Stripe\Stripe;
-use App\Models\Cart;
-use App\Models\Meal;
-use App\Models\Order;
-use App\Models\Address;
-use App\Models\OrderItem;
-use App\Models\OrderNote;
-use Stripe\PaymentIntent;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
+use App\Jobs\SendInvoiceEmailJob;
+use App\Models\Cart;
+use App\Models\Order;
+use App\Models\OrderItem;
+use App\Models\OrderNote;
 use App\Services\ShippingService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
 
 class OrderController extends Controller
 {
-
     public function show(Request $request, Order $order)
     {
         $order = $order->load(['items.meal', 'address']);
@@ -30,7 +28,7 @@ class OrderController extends Controller
             'data' => $this->formatOrder($order),
         ]);
     }
-    
+
     /**
      * Create a new order.
      */
@@ -43,7 +41,7 @@ class OrderController extends Controller
             // Get user's active cart
             $cart = $user->activeCart()->with('items.meal')->first();
 
-            if (!$cart || $cart->isEmpty()) {
+            if (! $cart || $cart->isEmpty()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Your cart is empty. Please add items to your cart before placing an order.',
@@ -52,7 +50,7 @@ class OrderController extends Controller
 
             // Validate and process items from cart
             $itemsResult = $this->validateAndProcessCartItems($cart->items);
-            if (!$itemsResult['success']) {
+            if (! $itemsResult['success']) {
                 return response()->json($itemsResult['response'], 400);
             }
 
@@ -105,15 +103,14 @@ class OrderController extends Controller
             // Clear user's active cart
             $this->clearUserCart($user);
 
-            
-            if(isset($validated['special_note_id'])) {
+            if (isset($validated['special_note_id'])) {
                 OrderNote::create([
                     'order_id' => $order->id,
                     'special_note_id' => $validated['special_note_id'],
                     'notes' => $validated['notes'] ?? null,
                 ]);
             }
-            if(isset($validated['notes'])   ) {
+            if (isset($validated['notes'])) {
                 OrderNote::create([
                     'order_id' => $order->id,
                     'special_note_id' => null,
@@ -122,7 +119,16 @@ class OrderController extends Controller
             }
             DB::commit();
 
-            $order->load(['items.meal', 'address']);
+
+            $order->load([
+                'items.meal',
+                'address',
+                'user',
+            ]);
+            SendInvoiceEmailJob::dispatch($order);
+
+
+            
 
             return response()->json([
                 'success' => true,
@@ -131,6 +137,7 @@ class OrderController extends Controller
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create order',
@@ -150,7 +157,7 @@ class OrderController extends Controller
         foreach ($cartItems as $cartItem) {
             $meal = $cartItem->meal;
 
-            if (!$meal) {
+            if (! $meal) {
                 return [
                     'success' => false,
                     'response' => [
@@ -160,7 +167,7 @@ class OrderController extends Controller
                 ];
             }
 
-            if (!$meal->is_available) {
+            if (! $meal->is_available) {
                 return [
                     'success' => false,
                     'response' => [
@@ -238,7 +245,7 @@ class OrderController extends Controller
 
         Stripe::setApiKey(config('services.stripe.secret'));
 
-        if (!$user->stripe_customer_id) {
+        if (! $user->stripe_customer_id) {
             return [
                 'success' => false,
                 'response' => [
@@ -250,7 +257,7 @@ class OrderController extends Controller
 
         try {
             $paymentIntent = PaymentIntent::create([
-                'amount' => (int)($total * 100),
+                'amount' => (int) ($total * 100),
                 'currency' => 'usd',
                 'customer' => $user->stripe_customer_id,
                 'payment_method' => $validated['payment_method_id'],
@@ -263,7 +270,7 @@ class OrderController extends Controller
                     'success' => false,
                     'response' => [
                         'success' => false,
-                        'message' => 'Payment failed: ' . $paymentIntent->status,
+                        'message' => 'Payment failed: '.$paymentIntent->status,
                     ],
                 ];
             }
@@ -277,7 +284,7 @@ class OrderController extends Controller
                 'success' => false,
                 'response' => [
                     'success' => false,
-                    'message' => 'Payment processing failed: ' . $e->getMessage(),
+                    'message' => 'Payment processing failed: '.$e->getMessage(),
                 ],
             ];
         }
@@ -347,8 +354,7 @@ class OrderController extends Controller
         try {
             $user = $request->user();
 
-            $orders = Order::
-                with(['items.meal.category', 'items.meal.subcategory', 'address'])
+            $orders = Order::with(['items.meal.category', 'items.meal.subcategory', 'address'])
                 ->orderBy('created_at', 'desc')
                 ->get()
                 ->map(function ($order) {
@@ -384,7 +390,7 @@ class OrderController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->first();
 
-            if (!$order) {
+            if (! $order) {
                 return response()->json([
                     'success' => false,
                     'message' => 'No active order found',
