@@ -41,21 +41,21 @@ class CategoryController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        public function destroy(string $id): JsonResponse
-        {
-            return $this->destroyAction->handle($id);
-        }
+        return $this->storeAction->handle($request);
     }
-    public function handle(string $id, Request $request): JsonResponse
-    {
-        return response()->json(['success' => false, 'message' => 'Not implemented'], 501);
-    }
-}
 
-class DestroyCategoryAction
-{
-    public function handle(string $id): JsonResponse
+    public function show($id): JsonResponse
     {
-        return response()->json(['success' => false, 'message' => 'Not implemented'], 501);
+        return $this->showAction->handle($id);
+    }
+
+    public function update(Request $request, $id): JsonResponse
+    {
+        return $this->updateAction->handle($id, $request);
+    }
+
+    public function destroy(string $id): JsonResponse
+    {
+        return $this->destroyAction->handle($id);
     }
 }
