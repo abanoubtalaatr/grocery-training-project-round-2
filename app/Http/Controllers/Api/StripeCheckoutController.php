@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\CreateStripeCheckoutSessionRequest;
+use App\Http\Requests\Api\CreateStripeCheckoutSessionRequest;
 use App\Models\Order;
 use App\Services\StripeCheckoutService;
 use Illuminate\Http\JsonResponse;

@@ -3,75 +3,115 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SettingRequest;
-use App\Http\Resources\SettingResource;
+use App\Http\Resources\Api\SettingResource;
 use App\Models\Setting;
+use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class SettingController extends Controller
 {
+    use ApiResponse;
+
     /**
-     * Get settings
+     * Get all settings
      */
     public function index(): JsonResponse
     {
         $settings = Setting::getSettings();
-        return response()->json([
-            'success' => true,
-            'data' => new SettingResource($settings)
+
+        return $this->success(
+            new SettingResource($settings),
+            'Settings retrieved successfully'
+        );
+    }
+
+    /**
+     * Get single setting (not typically used for singleton settings)
+     */
+    public function show(Setting $setting): JsonResponse
+    {
+        return $this->success(
+            new SettingResource($setting),
+            'Setting retrieved successfully'
+        );
+    }
+
+    /**
+     * Create new setting (admin only)
+     */
+    public function store(Request $request): JsonResponse
+    {
+        $this->authorize('create', Setting::class);
+
+        $validated = $request->validate([
+            'key' => ['required', 'string', 'unique:settings,key'],
+            'value' => ['required', 'string'],
+            'group' => ['nullable', 'string'],
         ]);
+
+        $setting = Setting::create($validated);
+
+        return $this->success(
+            new SettingResource($setting),
+            'Setting created successfully',
+            201
+        );
     }
 
     /**
      * Update settings
      */
-    public function update( $request): JsonResponse
+    public function update(Request $request, Setting $setting = null): JsonResponse
     {
-        $settings = Setting::getSettings();
-        
-        $data = $request->validated();
-        
-        // Handle file uploads if needed
-        if ($request->hasFile('logo')) {
-            $data['logo'] = $request->file('logo')->store('settings', 'public');
+        $this->authorize('update', Setting::class);
+
+        // For singleton settings, update the global settings
+        if (! $setting) {
+            $setting = Setting::getSettings();
         }
-        
-        if ($request->hasFile('favicon')) {
-            $data['favicon'] = $request->file('favicon')->store('settings', 'public');
-        }
-        
-        $settings->update($data);
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Settings updated successfully',
-            'data' => new SettingResource($settings)
+
+        $validated = $request->validate([
+            'site_name' => ['sometimes', 'string', 'max:255'],
+            'site_description' => ['sometimes', 'string', 'max:1000'],
+            'facebook' => ['sometimes', 'nullable', 'url'],
+            'linkedin' => ['sometimes', 'nullable', 'url'],
+            'instagram' => ['sometimes', 'nullable', 'url'],
+            'twitter' => ['sometimes', 'nullable', 'url'],
+            'email' => ['sometimes', 'email'],
+            'phone' => ['sometimes', 'string', 'max:20'],
+            'address' => ['sometimes', 'string', 'max:500'],
+            'copyright_text' => ['sometimes', 'string', 'max:255'],
+            'logo' => ['sometimes', 'nullable', 'file', 'image', 'max:5120'],
+            'favicon' => ['sometimes', 'nullable', 'file', 'image', 'max:1024'],
         ]);
+
+        // Handle file uploads
+        if ($request->hasFile('logo')) {
+            $validated['logo'] = $request->file('logo')->store('settings', 'public');
+        }
+
+        if ($request->hasFile('favicon')) {
+            $validated['favicon'] = $request->file('favicon')->store('settings', 'public');
+        }
+
+        $setting->update($validated);
+
+        return $this->success(
+            new SettingResource($setting),
+            'Settings updated successfully'
+        );
     }
 
     /**
-     * Get specific settings for public use
+     * Delete setting (admin only)
      */
-    public function publicSettings(): JsonResponse
+    public function destroy(Setting $setting): JsonResponse
     {
-        $settings = Setting::getSettings();
-        
-        return response()->json([
-            'site_name' => $settings->site_name,
-            'site_description' => $settings->site_description,
-            'social_media' => [
-                'facebook' => $settings->facebook,
-                'linkedin' => $settings->linkedin,
-                'instagram' => $settings->instagram,
-                'twitter' => $settings->twitter,
-            ],
-            'contact' => [
-                'email' => $settings->email,
-                'phone' => $settings->phone,
-                'address' => $settings->address,
-            ],
-            'logo' => $settings->logo,
-            'copyright' => $settings->copyright_text,
-        ]);
+        $this->authorize('delete', Setting::class);
+
+        $setting->delete();
+
+        return $this->success(null, 'Setting deleted successfully');
     }
 }

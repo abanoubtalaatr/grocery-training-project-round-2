@@ -14,9 +14,6 @@ class CartItem extends Model
         'cart_id',
         'meal_id',
         'quantity',
-        'unit_price',
-        'discount_amount',
-        'subtotal',
     ];
 
     protected $casts = [
@@ -33,16 +30,16 @@ class CartItem extends Model
     {
         parent::boot();
 
-        static::saving(function ($cartItem) {
-            $cartItem->calculateSubtotal();
+        static::saving(function () {
+            $this->calculateSubtotal();
         });
 
-        static::saved(function ($cartItem) {
-            $cartItem->cart->calculateTotals();
+        static::saved(function () {
+            $this->cart->calculateTotals();
         });
 
-        static::deleted(function ($cartItem) {
-            $cartItem->cart->calculateTotals();
+        static::deleted(function () {
+            $this->cart->calculateTotals();
         });
     }
 
@@ -74,11 +71,10 @@ class CartItem extends Model
         if ($this->meal) {
             $meal = $this->meal;
             $this->unit_price = (float) $meal->final_price;
-            if ($meal->resolved_discount_price !== null) {
-                $this->discount_amount = ($meal->price - $meal->resolved_discount_price) * $this->quantity;
-            } else {
-                $this->discount_amount = 0;
-            }
+
+            $this->discount_amount = $meal->resolved_discount_price !== null
+                ? ($meal->price - $meal->resolved_discount_price) * $this->quantity
+                : 0 ;
         }
 
         $this->subtotal = $this->unit_price * $this->quantity;

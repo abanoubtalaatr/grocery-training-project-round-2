@@ -45,7 +45,7 @@ class Address extends Model
         parent::boot();
 
         // When setting an address as default, unset all other defaults for this user
-        static::saving(function ($address) {
+        static::saved(function ($address) {
             if ($address->is_default) {
                 static::where('user_id', $address->user_id)
                     ->where('id', '!=', $address->id)

@@ -1,0 +1,88 @@
+<?php
+
+namespace App\Http\Resources\Api;
+
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class OrderResource extends JsonResource
+{
+    /**
+     * Transform the resource into an array.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'order_number' => $this->order_number,
+            'payment_method' => $this->payment_method,
+            'stripe_payment_intent_id' => $this->stripe_payment_intent_id,
+            'delivery_type' => $this->delivery_type,
+            'status' => $this->status,
+            'status_position' => $this->status_position,
+            'status_description' => $this->status_description,
+            'items' => $this->items->map(function ($item) {
+                return [
+                    'id' => $item->id,
+                    'meal' => [
+                        'id' => $item->meal->id,
+                        'title' => $item->meal->title,
+                        'slug' => $item->meal->slug,
+                        'image_url' => $item->meal->image_url,
+                        ...$item->meal->getApiPriceAttributes(),
+                        'category' => $item->meal->category ? [
+                            'id' => $item->meal->category->id,
+                            'name' => $item->meal->category->name,
+                        ] : null,
+                        'subcategory' => $item->meal->subcategory ? [
+                            'id' => $item->meal->subcategory->id,
+                            'name' => $item->meal->subcategory->name,
+                        ] : null,
+                    ],
+                    'quantity' => $item->quantity,
+                    'unit_price' => (float) $item->unit_price,
+                    'discount_amount' => (float) $item->discount_amount,
+                    'subtotal' => (float) $item->subtotal,
+                ];
+            }),
+            'address' => $this->address ? [
+                'id' => $this->address->id,
+                'label' => $this->address->label,
+                'full_name' => $this->address->full_name,
+                'phone' => $this->address->phone,
+                'country_code' => $this->address->country_code,
+                'street_address' => $this->address->street_address,
+                'building_number' => $this->address->building_number,
+                'floor' => $this->address->floor,
+                'apartment' => $this->address->apartment,
+                'landmark' => $this->address->landmark,
+                'city' => $this->address->city,
+                'state' => $this->address->state,
+                'postal_code' => $this->address->postal_code,
+                'country' => $this->address->country,
+                'full_address' => $this->address->full_address,
+                'latitude' => $this->address->latitude,
+                'longitude' => $this->address->longitude,
+            ] : null,
+            'subtotal' => $this->subtotal,
+            'tax' => $this->tax,
+            'discount' => $this->discount,
+            'shipping_fee' => (float) ($this->shipping_fee ?? 0),
+            'total' => $this->total,
+            'notes' => $this->notes,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'placed_at' => $this->placed_at,
+            'processing_at' => $this->processing_at,
+            'shipping_at' => $this->shipping_at,
+            'out_for_delivery_at' => $this->out_for_delivery_at,
+            'delivered_at' => $this->delivered_at,
+            'estimated_delivery_time' => $this->estimated_delivery_time,
+            'special_note' => $this->special_note,
+            'schedule_delivery' => $this->schedule_delivery,
+            'delivery_speed' => $this->delivery_speed,
+        ];
+    }
+}

@@ -158,6 +158,17 @@ class AuthService
     }
 
     /**
+     * Change the authenticated user's password.
+     */
+    public function changePassword(User $user, string $password): bool
+    {
+        $user->password = Hash::make($password);
+        $user->save();
+
+        return true;
+    }
+
+    /**
      * Delete user account
      */
     public function deleteAccount(User $user): bool

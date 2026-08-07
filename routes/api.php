@@ -20,7 +20,6 @@ use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SmartListController;
-use App\Http\Controllers\Api\SmartListListController;
 use App\Http\Controllers\Api\SpecialNoteController;
 use App\Http\Controllers\Api\StaticPageController;
 use App\Http\Controllers\Api\StripeCheckoutController;
@@ -76,10 +75,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('addresses')->group(function () {
         Route::get('/', [AddressController::class, 'index']);
         Route::post('/', [AddressController::class, 'store']);
-        Route::get('/{id}', [AddressController::class, 'show']);
-        Route::put('/{id}', [AddressController::class, 'update']);
-        Route::delete('/{id}', [AddressController::class, 'destroy']);
-        Route::post('/{id}/set-default', [AddressController::class, 'setDefault']);
+        Route::get('/{address}', [AddressController::class, 'show']);
+        Route::put('/{address}', [AddressController::class, 'update']);
+        Route::delete('/{address}', [AddressController::class, 'destroy']);
+        Route::patch('/{address}/set-default', [AddressController::class, 'setDefault']);
     });
 
     Route::post('smart-lists/{id}/meals', [SmartListController::class, 'addMeal']);
@@ -129,9 +128,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Favorites routes
     Route::prefix('favorites')->group(function () {
         Route::get('/', [FavoriteController::class, 'index']);
-        Route::post('/{mealId}/toggle', [FavoriteController::class, 'toggle']);
-        Route::get('/{mealId}/check', [FavoriteController::class, 'check']);
-        Route::delete('/{mealId}', [FavoriteController::class, 'remove']);
+        Route::post('/{meal}', [FavoriteController::class, 'store']);
+        Route::get('/{meal}', [FavoriteController::class, 'show']);
+        Route::delete('/{meal}', [FavoriteController::class, 'destroy']);
     });
 
     // Chatbot routes
@@ -158,9 +157,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('payments')->group(function () {
         Route::post('/stripe/checkout-session', [StripeCheckoutController::class, 'store']);
         Route::get('/stripe/verify-session/{session_id}', [StripeCheckoutController::class, 'verifySession']);
-        Route::get('/history', [PaymentController::class, 'paymentHistory']);
-        Route::get('/receipt/{order}', [PaymentController::class, 'receipt']);
-        Route::get('/invoice/{order}', [PaymentController::class, 'invoice']);
+        Route::get('/history', [PaymentController::class, 'index']);
+        Route::get('/receipt/{order}', [PaymentController::class, 'show']);
+        Route::get('/invoice/{order}', [PaymentController::class, 'show']);
     });
 
     // Dashboard route
@@ -170,7 +169,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/frequency', [MealController::class, 'frequency']);
 
     // Smart list
-    Route::apiResource('/smart-lists', SmartListListController::class);
+    Route::apiResource('/smart-lists', SmartListController::class);
 
     Route::post('/invoices', [InvoiceController::class, 'store']);
 });
@@ -216,7 +215,7 @@ Route::get('/faqs', [FaqController::class, 'index']);
 Route::get('/pages', [StaticPageController::class, 'index']);
 Route::get('/pages/slug/{slug}', [StaticPageController::class, 'showBySlug']);
 Route::get('/pages/important', [StaticPageController::class, 'importantPages']);
-Route::post('/contact', [ContactController::class, 'submit']);
+Route::post('/contact', [ContactController::class, 'store']);
 
 // Health check route
 Route::get('/health', function () {

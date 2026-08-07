@@ -3,32 +3,32 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\FaqResource;
-use App\Http\Resources\FaqCollection;
+use App\Http\Resources\Api\FaqCollection;
+use App\Http\Resources\Api\FaqResource;
 use App\Models\Faq;
+use App\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class FaqController extends Controller
 {
+    use ApiResponse;
+
     /**
-     * Display a listing of the FAQs.
+     * Get all FAQs with optional filtering
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         $query = Faq::query();
 
-        // Filter by category
         if ($request->has('category')) {
             $query->where('category', $request->category);
         }
 
-        // Filter active only
         if ($request->boolean('active_only', true)) {
             $query->active();
         }
 
-        // Search in question and answer
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function ($q) use ($search) {
@@ -37,10 +37,9 @@ class FaqController extends Controller
             });
         }
 
-        // Order by
         $query->ordered();
 
-        // Get categories list
+        $categories = null;
         if ($request->boolean('with_categories', false)) {
             $categories = Faq::active()
                 ->distinct('category')
@@ -52,119 +51,90 @@ class FaqController extends Controller
         $perPage = $request->get('per_page', 15);
         $faqs = $query->paginate($perPage);
 
-        $response = [
-            'data' => new FaqCollection($faqs),
+        $data = [
+            'faqs' => new FaqCollection($faqs),
+            'pagination' => [
+                'current_page' => $faqs->currentPage(),
+                'last_page' => $faqs->lastPage(),
+                'per_page' => $faqs->perPage(),
+                'total' => $faqs->total(),
+            ],
         ];
 
-        if ($request->boolean('with_categories', false)) {
-            $response['categories'] = $categories;
+        if ($categories !== null) {
+            $data['categories'] = $categories;
         }
 
-        return response()->json($response);
+        return $this->success($data, 'FAQs retrieved successfully');
     }
 
     /**
-     * Store a newly created FAQ.
+     * Get single FAQ
      */
-    public function store(Request $request)
+    public function show(Faq $faq): JsonResponse
     {
-        $validator = Validator::make($request->all(), [
-            'question' => 'required|string|max:255',
-            'answer' => 'required|string',
-            'category' => 'nullable|string|max:100',
-            'order' => 'nullable|integer',
-            'is_active' => 'boolean',
+        return $this->success(
+            new FaqResource($faq),
+            'FAQ retrieved successfully'
+        );
+    }
+
+    /**
+     * Create new FAQ (admin only)
+     */
+    public function store(Request $request): JsonResponse
+    {
+        $this->authorize('create', Faq::class);
+
+        $validated = $request->validate([
+            'question' => ['required', 'string', 'max:255'],
+            'answer' => ['required', 'string'],
+            'category' => ['nullable', 'string', 'max:100'],
+            'order' => ['nullable', 'integer', 'min:0'],
+            'is_active' => ['nullable', 'boolean'],
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
+        $faq = Faq::create($validated);
 
-        $faq = Faq::create($validator->validated());
-
-        return response()->json([
-            'message' => 'FAQ created successfully',
-            'data' => new FaqResource($faq),
-        ], 201);
+        return $this->success(
+            new FaqResource($faq),
+            'FAQ created successfully',
+            201
+        );
     }
 
     /**
-     * Display the specified FAQ.
+     * Update FAQ (admin only)
      */
-    public function show(Faq $faq)
+    public function update(Request $request, Faq $faq): JsonResponse
     {
-        return new FaqResource($faq);
-    }
+        $this->authorize('update', $faq);
 
-    /**
-     * Update the specified FAQ.
-     */
-    public function update(Request $request, Faq $faq)
-    {
-        $validator = Validator::make($request->all(), [
-            'question' => 'sometimes|required|string|max:255',
-            'answer' => 'sometimes|required|string',
-            'category' => 'nullable|string|max:100',
-            'order' => 'nullable|integer',
-            'is_active' => 'sometimes|boolean',
+        $validated = $request->validate([
+            'question' => ['sometimes', 'required', 'string', 'max:255'],
+            'answer' => ['sometimes', 'required', 'string'],
+            'category' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'order' => ['sometimes', 'nullable', 'integer', 'min:0'],
+            'is_active' => ['sometimes', 'boolean'],
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
+        $faq->update($validated);
 
-        $faq->update($validator->validated());
-
-        return response()->json([
-            'message' => 'FAQ updated successfully',
-            'data' => new FaqResource($faq),
-        ]);
+        return $this->success(
+            new FaqResource($faq),
+            'FAQ updated successfully'
+        );
     }
 
     /**
-     * Remove the specified FAQ.
+     * Delete FAQ (admin only)
      */
-    public function destroy(Faq $faq)
+    public function destroy(Faq $faq): JsonResponse
     {
+        $this->authorize('delete', $faq);
+
         $faq->delete();
 
-        return response()->json([
-            'message' => 'FAQ deleted successfully',
-        ]);
-    }
-
-    /**
-     * Get all FAQ categories.
-     */
-    public function categories()
-    {
-        $categories = Faq::active()
-            ->distinct('category')
-            ->pluck('category')
-            ->filter()
-            ->values();
-
-        return response()->json([
-            'data' => $categories,
-        ]);
-    }
-
-    /**
-     * Get FAQs by category.
-     */
-    public function byCategory($category)
-    {
-        $faqs = Faq::active()
-            ->category($category)
-            ->ordered()
-            ->get();
-
-        return FaqResource::collection($faqs);
+        return $this->success(null, 'FAQ deleted successfully');
     }
 }

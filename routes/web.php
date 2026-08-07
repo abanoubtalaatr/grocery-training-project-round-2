@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\StripePaymentCallbackController;
+use App\Http\Controllers\Api\StripePaymentCallbackController;
 use Illuminate\Support\Facades\Route;
 
 /*

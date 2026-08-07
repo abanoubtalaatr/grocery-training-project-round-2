@@ -11,6 +11,8 @@ class Cart extends Model
 {
     use HasFactory;
 
+    public const MAX_QUANTITY_PER_PRODUCT = 10;
+
     protected $fillable = [
         'user_id',
         'status',
