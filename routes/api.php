@@ -27,6 +27,7 @@ use App\Http\Controllers\Api\StripeCheckoutController;
 use App\Http\Controllers\Api\StripeController;
 use App\Http\Controllers\Api\StripeWebhookController;
 use App\Http\Controllers\Api\SubcategoryController;
+use App\Http\Controllers\Api\SmartListListController;
 use Illuminate\Support\Facades\Route;
 
 /*
