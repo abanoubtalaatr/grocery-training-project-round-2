@@ -18,12 +18,7 @@ class DashboardController extends Controller
      */
     public function __invoke(Request $request, GetDashboardAction $action): JsonResponse
     {
-        try {
-            $data = $action->run($request->user());
-
-            return $this->dataResponse(new DashboardResource($data), 'Dashboard data retrieved successfully');
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), 'Failed to retrieve dashboard data', 500);
-        }
+        $data = $action->run($request->user());
+        return $this->dataResponse(new DashboardResource($data), 'Dashboard data retrieved successfully');
     }
 }

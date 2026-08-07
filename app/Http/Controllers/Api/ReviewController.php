@@ -37,7 +37,6 @@ class ReviewController extends Controller
 
     public function store(StoreReviewRequest $request, StoreReviewAction $action): JsonResponse
     {
-        try {
             $review = $action->run($request->user(), $request->validated());
 
             return $this->dataResponse(
@@ -45,9 +44,6 @@ class ReviewController extends Controller
                 'Review submitted successfully. Waiting for admin approval.',
                 201
             );
-        } catch (LogicException $e) {
-            return $this->errorResponse([], $e->getMessage(), 400);
-        }
     }
 
     public function show(int $id, ShowReviewAction $action): JsonResponse

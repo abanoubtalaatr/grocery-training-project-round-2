@@ -37,7 +37,6 @@ class ProfileController extends Controller
      */
     public function update(UpdateProfileInfoRequest $request, UpdateProfileInfoAction $action): JsonResponse
     {
-        try {
             $data = $request->validated();
 
             if (empty($data) && !$request->has('preferred_languages')) {
@@ -46,23 +45,6 @@ class ProfileController extends Controller
 
             $user = $action->run($request->user(), $data);
 
-            return $this->dataResponse([
-                'id' => $user->id,
-                'username' => $user->username,
-                'firstname' => $user->firstname,
-                'lastname' => $user->lastname,
-                'full_name' => $user->full_name,
-                'gender' => $user->gender,
-                'birthday' => $user->birthday?->format('Y-m-d'),
-                'email' => $user->email,
-                'phone' => $user->phone,
-                'country_code' => $user->country_code,
-                'preferred_languages' => $user->preferred_languages ?? [],
-                'profile_image_url' => $user->profile_image_url,
-                'updated_at' => $user->updated_at,
-            ], 'Profile updated successfully');
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), 'Failed to update profile', 500);
-        }
+            return $this->dataResponse(new ProfileResource($user), 'Profile updated successfully');
     }
 }

@@ -22,7 +22,6 @@ class MealController extends Controller
      */
     public function index(IndexMealRequest $request, IndexMealAction $action): JsonResponse
     {
-        try {
             $user = $request->user();
             $filters = $request->validated();
             
@@ -38,9 +37,7 @@ class MealController extends Controller
                 'total_count' => $totalCount,
                 'filters_applied' => $filters,
             ], $isEmpty ? ['empty_message' => 'No products match the applied filters. Try adjusting your search or filters.'] : []));
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), 'Failed to retrieve meals', 500);
-        }
+
     }
 
     /**
@@ -48,17 +45,12 @@ class MealController extends Controller
      */
     public function show(string $id, ShowMealAction $action): JsonResponse
     {
-        try {
             $meal = $action->run($id);
 
             return $this->dataResponse(
                 new MealDetailResource($meal),
                 'Meal retrieved successfully'
             );
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            return $this->errorResponse([], 'Meal not found', 404);
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), 'Failed to retrieve meal', 500);
-        }
+
     }
 }

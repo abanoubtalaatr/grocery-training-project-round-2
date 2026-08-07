@@ -16,7 +16,6 @@ class GetChatHistoryController extends Controller
 
     public function __invoke(Request $request, GetChatHistoryAction $action): JsonResponse
     {
-        try {
             $perPage = (int) $request->input('per_page', 15);
             $messages = $action->run($request->user(), $perPage);
 
@@ -31,12 +30,5 @@ class GetChatHistoryController extends Controller
                     'to' => $messages->lastItem(),
                 ],
             ], 'Chat history retrieved successfully');
-        } catch (Throwable $e) {
-            return $this->errorResponse(
-                config('app.debug') ? $e->getMessage() : 'Internal server error',
-                'Failed to retrieve chat history',
-                500
-            );
-        }
     }
 }

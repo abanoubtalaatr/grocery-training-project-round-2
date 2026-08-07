@@ -24,7 +24,6 @@ class SessionController extends Controller
 
     public function destroy(Request $request, string $tokenId, DestroyProfileSessionAction $action): JsonResponse
     {
-        try {
             $deleted = $action->run($request->user(), $tokenId, $request->user()->currentAccessToken()?->id);
             
             if (!$deleted) {
@@ -32,10 +31,6 @@ class SessionController extends Controller
             }
 
             return $this->successResponse('Session revoked successfully');
-        } catch (\InvalidArgumentException $e) {
-            return $this->errorResponse([], $e->getMessage(), 400);
-        } catch (\Exception $e) {
-            return $this->errorResponse($e->getMessage(), 'Failed to revoke session', 500);
-        }
+
     }
 }
