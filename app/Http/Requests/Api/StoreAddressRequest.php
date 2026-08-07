@@ -3,7 +3,10 @@
 namespace App\Http\Requests\Api;
 
 use Illuminate\Foundation\Http\FormRequest;
+<<<<<<< HEAD
 use Override;
+=======
+>>>>>>> origin/main
 
 class StoreAddressRequest extends FormRequest
 {
@@ -23,7 +26,11 @@ class StoreAddressRequest extends FormRequest
     public function rules(): array
     {
         return [
+<<<<<<< HEAD
                             'label' => ['nullable', 'string', 'max:255'],
+=======
+            'label' => ['nullable', 'string', 'max:255'],
+>>>>>>> origin/main
                 'full_name' => ['required', 'string', 'min:2', 'max:255'],
                 'phone' => ['required', 'string', 'min:10', 'max:20', 'regex:/^\+?[1-9]\d{9,14}$/'],
                 'country_code' => ['nullable', 'string', 'max:5', 'regex:/^\+\d{1,4}$/'],
@@ -42,6 +49,7 @@ class StoreAddressRequest extends FormRequest
                 'longitude' => ['nullable', 'numeric', 'between:-180,180'],
         ];
     }
+<<<<<<< HEAD
 
     public function messages(): array
     {
@@ -54,4 +62,6 @@ class StoreAddressRequest extends FormRequest
     ];
         
     }
+=======
+>>>>>>> origin/main
 }
