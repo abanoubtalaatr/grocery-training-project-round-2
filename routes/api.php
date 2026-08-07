@@ -1,6 +1,17 @@
 <?php
 
 use App\Http\Controllers\Api\AddressController;
+use App\Http\Controllers\Api\Admin\AdminCategoryController;
+use App\Http\Controllers\Api\Admin\AdminContactController;
+use App\Http\Controllers\Api\Admin\AdminDashboardController;
+use App\Http\Controllers\Api\Admin\AdminNotificationController;
+use App\Http\Controllers\Api\Admin\AdminOfferController;
+use App\Http\Controllers\Api\Admin\AdminOrderController;
+use App\Http\Controllers\Api\Admin\AdminProductController;
+use App\Http\Controllers\Api\Admin\AdminReviewController;
+use App\Http\Controllers\Api\Admin\AdminSettingController;
+use App\Http\Controllers\Api\Admin\AdminSubcategoryController;
+use App\Http\Controllers\Api\Admin\AdminUserController;
 use App\Http\Controllers\Api\Auth\GoogleAuthController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
@@ -27,17 +38,13 @@ use App\Http\Controllers\Api\StripeCheckoutController;
 use App\Http\Controllers\Api\StripeController;
 use App\Http\Controllers\Api\StripeWebhookController;
 use App\Http\Controllers\Api\SubcategoryController;
+use App\Http\Controllers\CategoryController as ControllersCategoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
 */
 
 Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
@@ -54,6 +61,7 @@ Route::prefix('auth')->group(function () {
 
 // Protected routes - Require authentication
 Route::middleware('auth:sanctum')->group(function () {
+    
     // Auth routes
     Route::prefix('auth')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
@@ -93,27 +101,18 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::prefix('notifications')->group(function () {
-        // Get notifications
         Route::get('/', [NotificationController::class, 'index']);
         Route::get('/with-resources', [NotificationController::class, 'indexWithResources']);
-
-        // Statistics
         Route::get('/stats', [NotificationController::class, 'stats']);
         Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
         Route::get('/recent', [NotificationController::class, 'recent']);
-
-        // Single notification operations
         Route::get('/{id}', [NotificationController::class, 'show']);
         Route::put('/{id}/read', [NotificationController::class, 'markAsRead']);
         Route::put('/{id}/unread', [NotificationController::class, 'markAsUnread']);
         Route::delete('/{id}', [NotificationController::class, 'destroy']);
-
-        // Bulk operations
         Route::put('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
         Route::delete('/delete-multiple', [NotificationController::class, 'destroyMultiple']);
         Route::delete('/clear-all', [NotificationController::class, 'clearAll']);
-
-        // Filtered notifications
         Route::get('/type/{type}', [NotificationController::class, 'byType']);
     });
 
@@ -166,20 +165,88 @@ Route::middleware('auth:sanctum')->group(function () {
     // Dashboard route
     Route::get('/dashboard', [DashboardController::class, 'index']);
 
-    // Personalized "frequency" meals (requires auth — uses order history)
+    // Personalized "frequency" meals
     Route::get('/frequency', [MealController::class, 'frequency']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('admin')->prefix('admin')->group(function () {
+        
+        // Dashboard
+        Route::get('dashboard/stats', [AdminDashboardController::class, 'stats']);
+        Route::get('dashboard/revenue-chart', [AdminDashboardController::class, 'revenueChart']);
+        Route::get('dashboard/recent-activity', [AdminDashboardController::class, 'recentActivity']);
+
+        // Users Management
+        Route::apiResource('users', AdminUserController::class);
+        Route::patch('users/{user}/toggle-status', [AdminUserController::class, 'toggleStatus']);
+        Route::get('users/{user}/orders', [AdminUserController::class, 'userOrders']);
+        Route::get('users-stats', [AdminUserController::class, 'stats']);
+
+        // Orders Management
+        Route::get('orders', [AdminOrderController::class, 'index']);
+        Route::get('orders/{order}', [AdminOrderController::class, 'show']);
+        Route::patch('orders/{order}/status', [AdminOrderController::class, 'updateStatus']);
+        Route::get('orders-stats', [AdminOrderController::class, 'stats']);
+        Route::get('orders-export', [AdminOrderController::class, 'export']);
+
+        // Products Management
+        Route::apiResource('products', AdminProductController::class);
+        Route::patch('products/{product}/toggle-availability', [AdminProductController::class, 'toggleAvailability']);
+        Route::patch('products/{product}/toggle-featured', [AdminProductController::class, 'toggleFeatured']);
+        Route::post('products/{product}/images', [AdminProductController::class, 'uploadImages']);
+        Route::delete('products/{product}/images/{image}', [AdminProductController::class, 'deleteImage']);
+        Route::get('products-stats', [AdminProductController::class, 'stats']);
+
+        // Categories Management
+        Route::apiResource('categories', AdminCategoryController::class);
+        Route::patch('categories/{category}/toggle-status', [AdminCategoryController::class, 'toggleStatus']);
+
+        // Subcategories Management
+        Route::apiResource('subcategories', AdminSubcategoryController::class);
+        Route::patch('subcategories/{subcategory}/toggle-status', [AdminSubcategoryController::class, 'toggleStatus']);
+
+        // Offers Management
+        Route::apiResource('offers', AdminOfferController::class);
+        Route::patch('offers/{offer}/toggle-status', [AdminOfferController::class, 'toggleStatus']);
+
+        // Reviews Management
+        Route::get('reviews', [AdminReviewController::class, 'index']);
+        Route::get('reviews/{review}', [AdminReviewController::class, 'show']);
+        Route::patch('reviews/{review}/approve', [AdminReviewController::class, 'approve']);
+        Route::patch('reviews/{review}/reject', [AdminReviewController::class, 'reject']);
+        Route::delete('reviews/{review}', [AdminReviewController::class, 'destroy']);
+        Route::get('reviews-stats', [AdminReviewController::class, 'stats']);
+
+        // Contact Messages
+        Route::get('contacts', [AdminContactController::class, 'index']);
+        Route::get('contacts/{contact}', [AdminContactController::class, 'show']);
+        Route::patch('contacts/{contact}/mark-as-read', [AdminContactController::class, 'markAsRead']);
+        Route::patch('contacts/{contact}/mark-as-replied', [AdminContactController::class, 'markAsReplied']);
+        Route::patch('contacts/{contact}/mark-as-spam', [AdminContactController::class, 'markAsSpam']);
+        Route::delete('contacts/{contact}', [AdminContactController::class, 'destroy']);
+        Route::get('contacts-stats', [AdminContactController::class, 'stats']);
+
+        // Settings
+        Route::get('settings', [AdminSettingController::class, 'index']);
+        Route::put('settings', [AdminSettingController::class, 'update']);
+
+        // Notifications
+        Route::get('notifications', [AdminNotificationController::class, 'index']);
+        Route::post('notifications/send', [AdminNotificationController::class, 'send']);
+        Route::post('notifications/send-to-all', [AdminNotificationController::class, 'sendToAll']);
+    });
 });
 
-// Meals routes
-Route::prefix('meals')->group(function () {
-    Route::get('/today', [MealController::class, 'today']);
-    Route::get('hot', [MealController::class, 'hot']);
-
-    Route::get('/recommendations', [MealController::class, 'recommendations']);
-    Route::get('/', [MealController::class, 'index']);
-    Route::get('/{id}', [MealController::class, 'show']);
-
-});
+// Public routes
+Route::get('/meals/today', [MealController::class, 'today']);
+Route::get('meals/hot', [MealController::class, 'hot']);
+Route::get('/meals/recommendations', [MealController::class, 'recommendations']);
+Route::get('/meals', [MealController::class, 'index']);
+Route::get('/meals/{id}', [MealController::class, 'show']);
 Route::get('/new-products', [MealController::class, 'newProducts']);
 Route::get('best-sells', [MealController::class, 'bestSells']);
 Route::get('sliders', [MealController::class, 'slider']);
@@ -187,14 +254,16 @@ Route::get('brands', [MealController::class, 'brands']);
 Route::get('more-to-explore', [MealController::class, 'moreToExplore']);
 Route::get('settings', [SettingController::class, 'index']);
 Route::get('special-notes', [SpecialNoteController::class, 'index']);
-// Categories routes
 
+// Offers routes
 Route::prefix('offers')->group(function () {
     Route::get('/', [OfferController::class, 'index']);
     Route::get('/featured', [OfferController::class, 'featured']);
     Route::get('/validate', [OfferController::class, 'validateOffer']);
     Route::get('/{code}', [OfferController::class, 'showByCode']);
 });
+
+// Categories routes
 Route::prefix('categories')->group(function () {
     Route::get('/', [CategoryController::class, 'index']);
     Route::get('/{id}', [CategoryController::class, 'show']);
@@ -207,6 +276,7 @@ Route::prefix('subcategories')->group(function () {
     Route::get('/{id}', [SubcategoryController::class, 'show']);
     Route::get('/{id}/meals', [SubcategoryController::class, 'meals']);
 });
+
 Route::get('/faqs', [FaqController::class, 'index']);
 Route::get('/pages', [StaticPageController::class, 'index']);
 Route::get('/pages/slug/{slug}', [StaticPageController::class, 'showBySlug']);
@@ -222,9 +292,4 @@ Route::get('/health', function () {
     ]);
 });
 
-
-// Route::apiResource('smart-list-lists', SmartListListController::class);
-
-// Categories routes by mohammed-bashamekha
-use App\Http\Controllers\CategoryController as ControllersCategoryController;
 Route::apiResource('categories-ver2', ControllersCategoryController::class);

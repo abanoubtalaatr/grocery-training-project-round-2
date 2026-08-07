@@ -1,29 +1,18 @@
 <?php
 
-use App\Http\Controllers\StripePaymentCallbackController;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
 Route::get('/', function () {
-    return response()->json([
-        'name' => config('app.name'),
-        'message' => 'Welcome to Grocery API',
-        'version' => '1.0.0',
-        'documentation' => '/api/documentation',
-    ]);
+    return redirect('/admin');
 });
 
-Route::prefix('payment')->group(function () {
-    Route::get('/success', [StripePaymentCallbackController::class, 'success'])->name('payment.success');
-    Route::get('/cancel', [StripePaymentCallbackController::class, 'cancel'])->name('payment.cancel');
-});
+// Laravel/Filament بيدور على route اسمه login
+Route::get('/login', function () {
+    return redirect('/admin/login');
+})->name('login');
