@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\AddSmartListMealRequest;
 use App\Http\Requests\Api\SmartListRequest;
 use App\Http\Resources\Api\SmartListResource;
 use App\Models\SmartList;
 use App\Services\SmartListService;
 use App\Traits\ApiResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class SmartListController extends Controller
@@ -21,7 +23,7 @@ class SmartListController extends Controller
     /**
      * Display a listing of the user's smart lists.
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         $smartLists = SmartList::where('user_id', $request->user()->id)
             ->with('meals')
@@ -36,24 +38,23 @@ class SmartListController extends Controller
     /**
      * Store a newly created smart list.
      */
-    public function store(SmartListRequest $request)
+    public function store(SmartListRequest $request): JsonResponse
     {
         $smartList = $this->smartListService->create(
             $request->user()->id,
             $request->validated()
         );
 
-        return $this->success(
+        return $this->created(
             new SmartListResource($smartList),
-            'Wish list created successfully',
-            201
+            'Wish list created successfully'
         );
     }
 
     /**
      * Display the specified smart list.
      */
-    public function show(SmartList $smartList)
+    public function show(SmartList $smartList): JsonResponse
     {
         $this->authorize('view', $smartList);
 
@@ -66,7 +67,7 @@ class SmartListController extends Controller
     /**
      * Update the specified smart list.
      */
-    public function update(SmartListRequest $request, SmartList $smartList)
+    public function update(SmartListRequest $request, SmartList $smartList): JsonResponse
     {
         $this->authorize('update', $smartList);
 
@@ -84,7 +85,7 @@ class SmartListController extends Controller
     /**
      * Remove the specified smart list.
      */
-    public function destroy(SmartList $smartList)
+    public function destroy(SmartList $smartList): JsonResponse
     {
         $this->authorize('delete', $smartList);
 
@@ -96,17 +97,13 @@ class SmartListController extends Controller
     /**
      * Add a meal to a wish list.
      */
-    public function addMeal(Request $request, SmartList $smartList)
+    public function addMeal(AddSmartListMealRequest $request, SmartList $smartList): JsonResponse
     {
         $this->authorize('update', $smartList);
 
-        $request->validate([
-            'meal_id' => ['required', 'exists:meals,id'],
-        ]);
-
         $smartList = $this->smartListService->addMeal(
             $smartList,
-            (int) $request->meal_id
+            (int) $request->input('meal_id')
         );
 
         return $this->success(
@@ -118,7 +115,7 @@ class SmartListController extends Controller
     /**
      * Remove a meal from a wish list.
      */
-    public function removeMeal(SmartList $smartList, string $mealId)
+    public function removeMeal(SmartList $smartList, string $mealId): JsonResponse
     {
         $this->authorize('update', $smartList);
 
