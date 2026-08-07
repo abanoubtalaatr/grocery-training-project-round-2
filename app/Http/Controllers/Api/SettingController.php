@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\SettingRequest;
 use App\Http\Resources\SettingResource;
 use App\Models\Setting;
 use Illuminate\Http\JsonResponse;
@@ -16,10 +15,8 @@ class SettingController extends Controller
     public function index(): JsonResponse
     {
         $settings = Setting::getSettings();
-        return response()->json([
-            'success' => true,
-            'data' => new SettingResource($settings)
-        ]);
+
+        return $this->successResponse(new SettingResource($settings));
     }
 
     /**
@@ -42,11 +39,7 @@ class SettingController extends Controller
         
         $settings->update($data);
         
-        return response()->json([
-            'success' => true,
-            'message' => 'Settings updated successfully',
-            'data' => new SettingResource($settings)
-        ]);
+        return $this->successResponse(new SettingResource($settings), 'Settings updated successfully');
     }
 
     /**
@@ -56,7 +49,7 @@ class SettingController extends Controller
     {
         $settings = Setting::getSettings();
         
-        return response()->json([
+        return $this->successResponse([
             'site_name' => $settings->site_name,
             'site_description' => $settings->site_description,
             'social_media' => [

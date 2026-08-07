@@ -2,17 +2,28 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\SmartList;
-use Illuminate\Http\Request;
+use App\Actions\Api\SmartLists\AddMealToSmartListAction;
+use App\Actions\Api\SmartLists\DestroySmartListAction;
+use App\Actions\Api\SmartLists\RemoveMealFromSmartListAction;
+use App\Actions\Api\SmartLists\StoreSmartListAction;
+use App\Actions\Api\SmartLists\UpdateSmartListAction;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\AddSmartListMealRequest;
 use App\Http\Requests\Api\SmartListRequest;
 use App\Http\Resources\Api\SmartListResource;
+use App\Models\Meal;
+use App\Models\SmartList;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class SmartListController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
-        $smartLists = $this->userSmartListsQuery($request)->with('meals')->get();
+        $smartLists = SmartList::query()
+            ->where('user_id', $request->user()->id)
+            ->with('meals')
+            ->get();
 
         return $this->successResponse(
             SmartListResource::collection($smartLists),
@@ -20,65 +31,40 @@ class SmartListController extends Controller
         );
     }
 
-    public function store(SmartListRequest $request)
+    public function store(SmartListRequest $request, StoreSmartListAction $storeSmartList): JsonResponse
     {
-        $data = $request->validated();
-        $data['user_id'] = $request->user()->id;
-        $data['description'] = $data['description'] ?? '';
-        $mealIds = $data['meal_ids'] ?? [];
-        unset($data['meal_ids']);
-
-        if ($request->hasFile('image')) {
-            $data['image'] = $this->storeImage($request->file('image'));
-        }
-
-        $smartList = SmartList::create($data);
-
-        if (!empty($mealIds)) {
-            $smartList->meals()->attach($mealIds);
-        }
-
-        $smartList->load('meals');
+        $smartList = $storeSmartList->execute(
+            $request->user(),
+            $request->validated(),
+            $request->file('image')
+        );
 
         return $this->successResponse(
             new SmartListResource($smartList),
-            'Wish list created successfully'
+            'Wish list created successfully',
+            201
         );
     }
 
-    public function show(Request $request, $id)
+    public function show(SmartList $smartList): JsonResponse
     {
-        $smartList = $this->findUserSmartList($request, $id)->load('meals');
+        $this->authorize('view', $smartList);
 
         return $this->successResponse(
-            new SmartListResource($smartList),
+            new SmartListResource($smartList->load('meals')),
             'Smart list retrieved successfully'
         );
     }
 
-    public function update(SmartListRequest $request, $id)
+    public function update(SmartListRequest $request, SmartList $smartList, UpdateSmartListAction $updateSmartList): JsonResponse
     {
-        $smartList = $this->findUserSmartList($request, $id);
-        $data = $request->validated();
+        $this->authorize('update', $smartList);
 
-        if (array_key_exists('description', $data) && $data['description'] === null) {
-            $data['description'] = '';
-        }
-
-        $mealIds = $data['meal_ids'] ?? null;
-        unset($data['meal_ids']);
-
-        if ($request->hasFile('image')) {
-            $data['image'] = $this->storeImage($request->file('image'));
-        }
-
-        $smartList->update($data);
-
-        if ($mealIds !== null) {
-            $smartList->meals()->sync($mealIds);
-        }
-
-        $smartList->load('meals');
+        $smartList = $updateSmartList->execute(
+            $smartList,
+            $request->validated(),
+            $request->file('image')
+        );
 
         return $this->successResponse(
             new SmartListResource($smartList),
@@ -86,25 +72,20 @@ class SmartListController extends Controller
         );
     }
 
-    public function destroy(Request $request, $id)
+    public function destroy(SmartList $smartList, DestroySmartListAction $destroySmartList): JsonResponse
     {
-        $smartList = $this->findUserSmartList($request, $id);
-        $smartList->meals()->detach();
-        $smartList->delete();
+        $this->authorize('delete', $smartList);
+
+        $destroySmartList->execute($smartList);
 
         return $this->successResponse(null, 'Wish list deleted successfully');
     }
 
-    /**
-     * Add a meal to a wish list.
-     */
-    public function addMeal(Request $request, string $id)
+    public function addMeal(AddSmartListMealRequest $request, SmartList $smartList, AddMealToSmartListAction $addMeal): JsonResponse
     {
-        $request->validate(['meal_id' => ['required', 'exists:meals,id']]);
+        $this->authorize('update', $smartList);
 
-        $smartList = $this->findUserSmartList($request, $id);
-        $smartList->meals()->syncWithoutDetaching([$request->meal_id]);
-        $smartList->load('meals');
+        $smartList = $addMeal->execute($smartList, (int) $request->validated('meal_id'));
 
         return $this->successResponse(
             new SmartListResource($smartList),
@@ -112,57 +93,15 @@ class SmartListController extends Controller
         );
     }
 
-    /**
-     * Remove a meal from a wish list.
-     */
-    public function removeMeal(Request $request, string $id, string $mealId)
+    public function removeMeal(SmartList $smartList, Meal $meal, RemoveMealFromSmartListAction $removeMeal): JsonResponse
     {
-        $smartList = $this->findUserSmartList($request, $id);
-        $smartList->meals()->detach($mealId);
-        $smartList->load('meals');
+        $this->authorize('update', $smartList);
+
+        $smartList = $removeMeal->execute($smartList, $meal);
 
         return $this->successResponse(
             new SmartListResource($smartList),
             'Item removed from wish list successfully'
         );
-    }
-
-    /**
-     * Base query scoped to the authenticated user's smart lists.
-     */
-    private function userSmartListsQuery(Request $request)
-    {
-        return SmartList::where('user_id', $request->user()->id);
-    }
-
-    /**
-     * Find a smart list by id, scoped to the authenticated user.
-     */
-    private function findUserSmartList(Request $request, $id): SmartList
-    {
-        return $this->userSmartListsQuery($request)->findOrFail($id);
-    }
-
-    /**
-     * Store an uploaded image and return its generated file name.
-     */
-    private function storeImage($image): string
-    {
-        $imageName = time() . '.' . $image->getClientOriginalExtension();
-        $image->move(public_path('images/smart-lists'), $imageName);
-
-        return $imageName;
-    }
-
-    /**
-     * Build a consistent success JSON response.
-     */
-    private function successResponse($data, string $message)
-    {
-        return response()->json([
-            'success' => true,
-            'message' => $message,
-            'data' => $data,
-        ]);
     }
 }

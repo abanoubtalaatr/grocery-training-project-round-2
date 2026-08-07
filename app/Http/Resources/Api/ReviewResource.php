@@ -14,30 +14,20 @@ class ReviewResource extends JsonResource
             'rating' => $this->rating,
             'comment' => $this->comment,
             'images' => $this->images ?? [],
-            'is_approved' => $this->is_approved,
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
-            'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
-            
-            // User information
-            'user' => [
+            'is_approved' => (bool) $this->is_approved,
+            'created_at' => $this->created_at?->format('Y-m-d H:i:s'),
+            'updated_at' => $this->updated_at?->format('Y-m-d H:i:s'),
+            'user' => $this->whenLoaded('user', fn () => [
                 'id' => $this->user->id,
                 'name' => $this->user->name,
                 'avatar' => $this->user->avatar ?? null,
-            ],
-            
-            // Meal information
-            'meal' => [
+            ]),
+            'meal' => $this->whenLoaded('meal', fn () => [
                 'id' => $this->meal->id,
-                'name' => $this->meal->name,
+                'title' => $this->meal->title,
                 'slug' => $this->meal->slug,
-                'image' => $this->meal->image,
-            ],
-            
-            // Links for API
-            'links' => [
-                'self' => route('reviews.show', $this->id),
-                'meal' => route('meals.show', $this->meal_id),
-            ]
+                'image_url' => $this->meal->image_url,
+            ]),
         ];
     }
 }

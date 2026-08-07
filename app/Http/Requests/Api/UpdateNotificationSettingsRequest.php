@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests\Api;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateNotificationSettingsRequest extends FormRequest
+class UpdateNotificationSettingsRequest extends ApiFormRequest
 {
     /**
      * Only allow true, false, 0, or 1 for boolean fields.
@@ -15,7 +14,7 @@ class UpdateNotificationSettingsRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return true;
+        return $this->user() !== null;
     }
 
     public function rules(): array

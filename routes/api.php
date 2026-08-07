@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\FavoriteController;
+use App\Http\Controllers\Api\HealthController;
 use App\Http\Controllers\Api\MealController;
 use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\NotificationSettingsController;
@@ -75,18 +76,14 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Address routes
-    Route::prefix('addresses')->group(function () {
-        Route::get('/', [AddressController::class, 'index']);
-        Route::post('/', [AddressController::class, 'store']);
-        Route::get('/{id}', [AddressController::class, 'show']);
-        Route::put('/{id}', [AddressController::class, 'update']);
-        Route::delete('/{id}', [AddressController::class, 'destroy']);
-        Route::post('/{id}/set-default', [AddressController::class, 'setDefault']);
-    });
+    Route::post('addresses/{address}/set-default', [AddressController::class, 'setDefault']);
+    Route::apiResource('addresses', AddressController::class)
+        ->parameters(['addresses' => 'address']);
 
-    Route::post('smart-lists/{id}/meals', [SmartListController::class, 'addMeal']);
-    Route::delete('smart-lists/{id}/meals/{mealId}', [SmartListController::class, 'removeMeal']);
-    Route::apiResource('smart-lists', SmartListController::class);
+    Route::post('smart-lists/{smartList}/meals', [SmartListController::class, 'addMeal']);
+    Route::delete('smart-lists/{smartList}/meals/{meal}', [SmartListController::class, 'removeMeal']);
+    Route::apiResource('smart-lists', SmartListController::class)
+        ->parameters(['smart-lists' => 'smartList']);
 
     Route::prefix('notification-settings')->group(function () {
         Route::get('/', [NotificationSettingsController::class, 'index']);
@@ -104,12 +101,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/unread-count', [NotificationController::class, 'unreadCount']);
         Route::get('/recent', [NotificationController::class, 'recent']);
 
-        // Single notification operations
-        Route::get('/{id}', [NotificationController::class, 'show']);
-        Route::put('/{id}/read', [NotificationController::class, 'markAsRead']);
-        Route::put('/{id}/unread', [NotificationController::class, 'markAsUnread']);
-        Route::delete('/{id}', [NotificationController::class, 'destroy']);
-
         // Bulk operations
         Route::put('/mark-all-read', [NotificationController::class, 'markAllAsRead']);
         Route::delete('/delete-multiple', [NotificationController::class, 'destroyMultiple']);
@@ -117,14 +108,20 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Filtered notifications
         Route::get('/type/{type}', [NotificationController::class, 'byType']);
+
+        // Single notification operations
+        Route::get('/{id}', [NotificationController::class, 'show']);
+        Route::put('/{id}/read', [NotificationController::class, 'markAsRead']);
+        Route::put('/{id}/unread', [NotificationController::class, 'markAsUnread']);
+        Route::delete('/{id}', [NotificationController::class, 'destroy']);
     });
 
     // Cart routes
     Route::prefix('cart')->group(function () {
         Route::get('/', [CartController::class, 'index']);
         Route::post('/items', [CartController::class, 'addItem']);
-        Route::put('/items/{itemId}', [CartController::class, 'updateItem']);
-        Route::delete('/items/{itemId}', [CartController::class, 'removeItem']);
+        Route::put('/items/{cartItem}', [CartController::class, 'updateItem']);
+        Route::delete('/items/{cartItem}', [CartController::class, 'removeItem']);
         Route::delete('/clear', [CartController::class, 'clear']);
     });
 
@@ -216,10 +213,4 @@ Route::get('/pages/important', [StaticPageController::class, 'importantPages']);
 Route::post('/contact', [ContactController::class, 'submit']);
 
 // Health check route
-Route::get('/health', function () {
-    return response()->json([
-        'success' => true,
-        'message' => 'API is running',
-        'timestamp' => now(),
-    ]);
-});
+Route::get('/health', HealthController::class);

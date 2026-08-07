@@ -7,28 +7,22 @@ use App\Http\Requests\Api\UpdateNotificationCategoryRequest;
 use App\Http\Requests\Api\UpdateNotificationSettingsRequest;
 use App\Models\UserNotificationSetting;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 class NotificationSettingsController extends Controller
 {
     /**
      * Get user notification settings
      */
-    public function index()
+    public function index(Request $request): JsonResponse
     {
         try {
-            $user = Auth::user();
+            $user = $request->user();
             $settings = $user->initializeNotificationSettings();
 
-            return response()->json([
-                'success' => true,
-                'data' => $settings ? $this->formatSettings($settings) : $this->defaultSettingsStructure(),
-            ]);
+            return $this->successResponse($settings ? $this->formatSettings($settings) : $this->defaultSettingsStructure());
         } catch (\Throwable $e) {
-            return response()->json([
-                'success' => true,
-                'data' => $this->defaultSettingsStructure(),
-            ]);
+            return $this->successResponse($this->defaultSettingsStructure());
         }
     }
 
@@ -40,15 +34,14 @@ class NotificationSettingsController extends Controller
     {
         $validated = $request->validated();
 
-        $user = Auth::user();
+        $user = $request->user();
         $settings = $user->initializeNotificationSettings();
         $settings->update($validated);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Notification settings updated successfully',
-            'data' => $this->formatSettings($settings->fresh()),
-        ]);
+        return $this->successResponse(
+            $this->formatSettings($settings->fresh()),
+            'Notification settings updated successfully'
+        );
     }
 
     /**
@@ -59,16 +52,13 @@ class NotificationSettingsController extends Controller
     {
         $validated = $request->validated();
 
-        $user = Auth::user();
+        $user = $request->user();
         $settings = $user->initializeNotificationSettings();
 
         $fields = $this->getCategoryFields($category);
 
         if (empty($fields)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid category',
-            ], 400);
+            return $this->errorResponse('Invalid category');
         }
 
         $updateData = [];
@@ -78,11 +68,10 @@ class NotificationSettingsController extends Controller
 
         $settings->update($updateData);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Notification settings updated successfully',
-            'data' => $this->formatSettings($settings->fresh()),
-        ]);
+        return $this->successResponse(
+            $this->formatSettings($settings->fresh()),
+            'Notification settings updated successfully'
+        );
     }
 
     /**

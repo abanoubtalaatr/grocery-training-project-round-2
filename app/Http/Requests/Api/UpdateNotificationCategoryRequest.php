@@ -2,16 +2,15 @@
 
 namespace App\Http\Requests\Api;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateNotificationCategoryRequest extends FormRequest
+class UpdateNotificationCategoryRequest extends ApiFormRequest
 {
     private const BOOLEAN_VALUES = [true, false, 0, 1];
 
     public function authorize(): bool
     {
-        return true;
+        return $this->user() !== null;
     }
 
     public function rules(): array
