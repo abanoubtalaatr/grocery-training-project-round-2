@@ -19,6 +19,7 @@ class SmartListController extends Controller
             'data' => SmartListResource::collection($smartLists),
         ]);
     }
+
     public function store(SmartListRequest $request)
     {
         $data = $request->validated();
@@ -30,8 +31,8 @@ class SmartListController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('images/smart-lists'), $imageName);
-            $data['image'] = $imageName;
+            $path = $image->storeAs('public/images/smart-lists', $imageName);
+            $data['image'] = $path;
         }
         $smartList = SmartList::create($data);
         if (!empty($mealIds)) {
@@ -55,6 +56,9 @@ class SmartListController extends Controller
             'data' => new SmartListResource($smartList),
         ]);
     }
+    /**
+     * Update a smart list.
+     */
     public function update(SmartListRequest $request, $id)
     {
         $smartList = SmartList::where('user_id', $request->user()->id)->findOrFail($id);
@@ -68,8 +72,8 @@ class SmartListController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->move(public_path('images/smart-lists'), $imageName);
-            $data['image'] = $imageName;
+            $path = $image->storeAs('public/images/smart-lists', $imageName);
+            $data['image'] = $path;
         }
         $smartList->update($data);
         if ($mealIds !== null) {
@@ -97,7 +101,7 @@ class SmartListController extends Controller
     }
 
     /**
-     * Add a meal to a wish list.
+     * Add a meal to a smart list.
      */
     public function addMeal(Request $request, string $id)
     {
