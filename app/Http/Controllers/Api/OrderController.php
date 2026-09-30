@@ -15,10 +15,14 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
+use App\Services\Email\Contracts\EmailServiceInterface;
 use App\Services\ShippingService;
 
 class OrderController extends Controller
 {
+    public function __construct(
+        private readonly EmailServiceInterface $emailService
+    ) {}
 
     public function show(Request $request, Order $order)
     {
@@ -123,6 +127,8 @@ class OrderController extends Controller
             DB::commit();
 
             $order->load(['items.meal', 'address']);
+
+            $this->emailService->sendOrderConfirmation($order);
 
             return response()->json([
                 'success' => true,
