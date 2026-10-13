@@ -23,14 +23,15 @@ class SmartListResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', 'username')
                     ->required()
-                    ->numeric(),
+                    ->searchable()
+                    ->preload(),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('description')
-                    ->required()
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('image')
                     ->image(),

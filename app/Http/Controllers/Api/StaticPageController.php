@@ -19,7 +19,7 @@ class StaticPageController extends Controller
         $query = StaticPage::query();
 
         // Show only published pages for non-admin users
-        if (!$request->user() || !$request->user()->is_admin) {
+        if (!$request->user() || !$request->user()->isAdmin()) {
             $query->published();
         }
 
@@ -90,7 +90,7 @@ class StaticPageController extends Controller
         }
 
         // Check if page is published for non-admin users
-        if (!$page->is_published && (!request()->user() || !request()->user()->is_admin)) {
+        if (!$page->is_published && (!request()->user() || !request()->user()->isAdmin())) {
             return response()->json([
                 'message' => 'Page not found'
             ], 404);

@@ -39,11 +39,14 @@ class ContactMessageResource extends Resource
                 Forms\Components\Textarea::make('message')
                     ->required()
                     ->columnSpanFull(),
-                Forms\Components\TextInput::make('ip_address')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('user_agent')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('status')
+                Forms\Components\Select::make('status')
+                    ->options([
+                        'new' => 'New',
+                        'read' => 'Read',
+                        'replied' => 'Replied',
+                        'spam' => 'Spam',
+                    ])
+                    ->default('new')
                     ->required(),
                 Forms\Components\Textarea::make('admin_notes')
                     ->columnSpanFull(),

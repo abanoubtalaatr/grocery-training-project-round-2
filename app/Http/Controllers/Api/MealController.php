@@ -83,16 +83,18 @@ class MealController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to load frequency meals',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
+                'error' => 'Internal server error',
             ], 500);
         }
     }
 
     public function moreToExplore(Request $request)
     {
+        $limit = min(max((int) $request->input('limit', 20), 1), 50);
         $meals = Meal::with('category')
             ->available()
             ->orderBy('created_at', 'desc')
+            ->take($limit)
             ->get();
 
         return response()->json([
@@ -115,9 +117,11 @@ class MealController extends Controller
 
     public function slider(Request $request)
     {
+        $limit = min(max((int) $request->input('limit', 20), 1), 50);
         $meals = Meal::with('category')
             ->available()
             ->orderBy('created_at', 'desc')
+            ->take($limit)
             ->get()
             ->map(function ($meal) {
                 return [
@@ -165,9 +169,11 @@ class MealController extends Controller
     {
 
         try {
+            $limit = min(max((int) $request->input('limit', 20), 1), 50);
             $meals = Meal::with('category')
                 ->available()
                 ->orderBy('created_at', 'desc')
+                ->take($limit)
                 ->get();
 
             return response()->json([
@@ -176,10 +182,11 @@ class MealController extends Controller
                 'data' => $meals,
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve new products', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve meals',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -190,10 +197,12 @@ class MealController extends Controller
     public function hot(Request $request): JsonResponse
     {
         try {
+            $limit = min(max((int) $request->input('limit', 20), 1), 50);
             $meals = Meal::with('category')
                 ->available()
                 ->hot()
                 ->orderBy('created_at', 'desc')
+                ->take($limit)
                 ->get()
                 ->map(function ($meal) {
                     return [
@@ -221,10 +230,11 @@ class MealController extends Controller
                 'data' => $meals,
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve hot meals', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve hot meals',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -235,10 +245,12 @@ class MealController extends Controller
     public function today(Request $request): JsonResponse
     {
         try {
+            $limit = min(max((int) $request->input('limit', 20), 1), 50);
             $meals = Meal::with('category')
                 ->available()
                 ->withActiveDiscount()
                 ->orderBy('created_at', 'desc')
+                ->take($limit)
                 ->get()
                 ->map(function ($meal) {
                     return [
@@ -266,10 +278,11 @@ class MealController extends Controller
                 'data' => $meals,
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve hot meals', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to retrieve today\'s deals',
-                'error' => $e->getMessage(),
+                'message' => 'Failed to retrieve hot meals',
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -357,8 +370,9 @@ class MealController extends Controller
                 $favoriteMealIds = $user->favorites()->pluck('meal_id')->toArray();
             }
 
-            $meals = $query->get()
-                ->map(function ($meal) use ($favoriteMealIds) {
+            $perPage = min(max((int) $request->input('per_page', 20), 1), 100);
+            $meals = $query->paginate($perPage)
+                ->through(function ($meal) use ($favoriteMealIds) {
                     return [
                         'id' => $meal->id,
                         'title' => $meal->title,
@@ -390,14 +404,16 @@ class MealController extends Controller
                     ];
                 });
 
-            $totalCount = $meals->count();
-            $isEmpty = $totalCount === 0;
+            $isEmpty = $meals->isEmpty();
 
             return response()->json(array_merge([
                 'success' => true,
                 'message' => $isEmpty ? 'No products match your filters.' : 'Meals retrieved successfully',
-                'data' => $meals,
-                'total_count' => $totalCount,
+                'data' => $meals->items(),
+                'total_count' => $meals->total(),
+                'current_page' => $meals->currentPage(),
+                'per_page' => $meals->perPage(),
+                'last_page' => $meals->lastPage(),
                 'filters_applied' => [
                     'search' => $request->input('search'),
                     'category_id' => $request->input('category_id'),
@@ -413,10 +429,11 @@ class MealController extends Controller
                 ],
             ], $isEmpty ? ['empty_message' => 'No products match the applied filters. Try adjusting your search or filters.'] : []));
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve meals', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve meals',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -476,10 +493,11 @@ class MealController extends Controller
                 'data' => $meals->values(),
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve today deals', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to retrieve recommendations',
-                'error' => $e->getMessage(),
+                'message' => 'Failed to retrieve today\'s deals',
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -521,9 +539,11 @@ class MealController extends Controller
                 'message' => 'Meal retrieved successfully',
                 'data' => [
                     'id' => $meal->id,
-                    'title' => $meal->title,
+                    'title' => $meal->localized_title,
+                    'title_ar' => $meal->title_ar,
                     'slug' => $meal->slug,
-                    'description' => $meal->description,
+                    'description' => $meal->localized_description,
+                    'description_ar' => $meal->description_ar,
                     'image_url' => $meal->image_url,
                     'offer_title' => $meal->offer_title,
 
@@ -538,9 +558,12 @@ class MealController extends Controller
                     // Product details
                     'size' => $meal->size,
                     'brand' => $meal->brand,
-                    'includes' => $meal->includes,
-                    'how_to_use' => $meal->how_to_use,
-                    'features' => $meal->features,
+                    'includes' => (app()->getLocale() === 'ar' && ! empty($meal->includes_ar)) ? $meal->includes_ar : $meal->includes,
+                    'includes_ar' => $meal->includes_ar,
+                    'how_to_use' => (app()->getLocale() === 'ar' && ! empty($meal->how_to_use_ar)) ? $meal->how_to_use_ar : $meal->how_to_use,
+                    'how_to_use_ar' => $meal->how_to_use_ar,
+                    'features' => (app()->getLocale() === 'ar' && ! empty($meal->features_ar)) ? $meal->features_ar : $meal->features,
+                    'features_ar' => $meal->features_ar,
 
                     // Expiry and availability
                     'expiry_date' => $meal->expiry_date,
@@ -560,7 +583,8 @@ class MealController extends Controller
                     // Relationships
                     'category' => [
                         'id' => $meal->category->id,
-                        'name' => $meal->category->name,
+                        'name' => $meal->category->localized_name,
+                        'name_ar' => $meal->category->name_ar,
                         'slug' => $meal->category->slug,
                     ],
                     'reviews' => $meal->reviews->map(function ($review) {
@@ -578,7 +602,8 @@ class MealController extends Controller
                     })->values(),
                     'subcategory' => $meal->subcategory ? [
                         'id' => $meal->subcategory->id,
-                        'name' => $meal->subcategory->name,
+                        'name' => $meal->subcategory->localized_name,
+                        'name_ar' => $meal->subcategory->name_ar,
                         'slug' => $meal->subcategory->slug,
                     ] : null,
 
@@ -592,10 +617,11 @@ class MealController extends Controller
                 'message' => 'Meal not found',
             ], 404);
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve meal', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve meal',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }

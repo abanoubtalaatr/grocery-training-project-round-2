@@ -10,6 +10,9 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class UserResource extends Resource
 {
@@ -37,23 +40,32 @@ class UserResource extends Resource
                 Forms\Components\TextInput::make('phone')
                     ->tel()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('firstname')
+                    ->maxLength(255),
+                Forms\Components\TextInput::make('lastname')
+                    ->maxLength(255),
+                Forms\Components\Select::make('role')
+                    ->options([
+                        'customer' => 'Customer',
+                        'delivery_partner' => 'Driver',
+                        'support_agent' => 'Support Agent',
+                        'admin' => 'Admin',
+                    ])
+                    ->default('customer')
+                    ->required(),
                 Forms\Components\TextInput::make('country_code')
                     ->required()
                     ->maxLength(255)
-                    ->default(+20),
+                    ->default('+20'),
                 Forms\Components\TextInput::make('password')
                     ->password()
                     ->required(fn (string $context): bool => $context === 'create')
+                    ->minLength(12)
                     ->maxLength(255)
-                    ->dehydrated(fn ($state) => filled($state))
-                    ->dehydrateStateUsing(fn ($state) => \Hash::make($state)),
+                    ->dehydrated(fn ($state) => filled($state)),
                 Forms\Components\Toggle::make('agree_terms')
                     ->required(),
                 Forms\Components\Toggle::make('is_active')
-                    ->required(),
-                Forms\Components\Toggle::make('is_admin')
-                    ->label('Admin')
-                    ->helperText('Grant admin access to this user')
                     ->required(),
             ]);
     }
@@ -81,11 +93,10 @@ class UserResource extends Resource
                     ->boolean()
                     ->label('Active')
                     ->sortable(),
-                Tables\Columns\IconColumn::make('is_admin')
-                    ->boolean()
-                    ->label('Admin')
+                Tables\Columns\TextColumn::make('role')
+                    ->searchable()
                     ->sortable()
-                    ->color('success'),
+                    ->badge(),
                 Tables\Columns\IconColumn::make('email_verified')
                     ->boolean()
                     ->label('Email Verified')
@@ -110,8 +121,14 @@ class UserResource extends Resource
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_active')
                     ->label('Active'),
-                Tables\Filters\TernaryFilter::make('is_admin')
-                    ->label('Admin'),
+                Tables\Filters\SelectFilter::make('role')
+                    ->label('Role')
+                    ->options([
+                        'customer' => 'Customer',
+                        'delivery_partner' => 'Driver',
+                        'support_agent' => 'Support Agent',
+                        'admin' => 'Admin',
+                    ]),
                 Tables\Filters\TernaryFilter::make('email_verified')
                     ->label('Email Verified'),
                 Tables\Filters\TernaryFilter::make('phone_verified')
@@ -121,7 +138,8 @@ class UserResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->hidden(fn (?User $record): bool => $record && $record->id === Auth::id()),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -145,5 +163,22 @@ class UserResource extends Resource
             'view' => Pages\ViewUser::route('/{record}'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
+    }
+
+    /**
+     * Check if the given record is the last active admin.
+     */
+    public static function isLastActiveAdmin(User $record): bool
+    {
+        if (! $record->isAdmin()) {
+            return false;
+        }
+
+        $otherActiveAdminCount = User::where('is_active', true)
+            ->where('id', '!=', $record->id)
+            ->where('role', User::ROLE_ADMIN)
+            ->count();
+
+        return $otherActiveAdminCount === 0;
     }
 }

@@ -13,9 +13,11 @@ class CategoryMealResource extends JsonResource
     {
        return [
             'id' => $this->id,
-            'title' => $this->title,
+            'title' => $this->localized_title,
+            'title_ar' => $this->title_ar,
             'slug' => $this->slug,
-            'description' => $this->description,
+            'description' => $this->localized_description,
+            'description_ar' => $this->description_ar,
             'image_url' => $this->image_url,
             'offer_title' => $this->offer_title,
             ...$this->getApiPriceAttributes(),
@@ -23,7 +25,8 @@ class CategoryMealResource extends JsonResource
             'rating_count' => (int) $this->rating_count,
             'has_offer' => $this->hasOffer(),
             'is_featured' => (bool) $this->is_featured,
-            'features' => $this->features,
+            'features' => (app()->getLocale() === 'ar' && ! empty($this->features_ar)) ? $this->features_ar : $this->features,
+            'features_ar' => $this->features_ar,
         ];
     }
 }

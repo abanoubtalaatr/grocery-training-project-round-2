@@ -15,11 +15,14 @@
         "google/apiclient": "^2.19",
         "guzzlehttp/guzzle": "^7.2",
         "intervention/image": "^2.7",
+        "kreait/firebase-php": "*",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",
         "laravel/socialite": "^5.24",
         "laravel/tinker": "^2.8",
-        "stripe/stripe-php": "^19.1"
+        "mews/purifier": "*",
+        "stripe/stripe-php": "^19.1",
+        "twilio/sdk": "*"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -64,6 +67,9 @@
         }
     },
     "config": {
+        "platform": {
+            "php": "8.3.0"
+        },
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Subcategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SubcategoryController extends Controller
 {
@@ -48,10 +49,11 @@ class SubcategoryController extends Controller
                 'data' => $subcategories,
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve subcategories', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve subcategories',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -105,10 +107,11 @@ class SubcategoryController extends Controller
                 'message' => 'Subcategory not found',
             ], 404);
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve subcategory', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve subcategory',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -201,10 +204,11 @@ class SubcategoryController extends Controller
                 'message' => 'Subcategory not found',
             ], 404);
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve meals', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve meals',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }

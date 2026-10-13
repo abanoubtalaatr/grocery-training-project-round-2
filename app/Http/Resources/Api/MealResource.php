@@ -16,9 +16,11 @@ class MealResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
+            'title' => $this->localized_title,
+            'title_ar' => $this->title_ar,
             'slug' => $this->slug,
-            'description' => $this->description,
+            'description' => $this->localized_description,
+            'description_ar' => $this->description_ar,
             'image_url' => $this->image_url,
             'offer_title' => $this->offer_title,
         ];

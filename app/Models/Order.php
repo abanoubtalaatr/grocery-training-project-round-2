@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Order extends Model
 {
@@ -14,12 +15,16 @@ class Order extends Model
     protected $fillable = [
         'user_id',
         'address_id',
+        'driver_id',
         'order_number',
         'payment_method',
+        'coupon_code',
         'payment_method_id',
         'stripe_checkout_session_id',
         'stripe_payment_intent_id',
         'delivery_type',
+        'pickup_location',
+        'pickup_location_confirmed',
         'status',
         'subtotal',
         'tax',
@@ -27,6 +32,9 @@ class Order extends Model
         'shipping_fee',
         'total',
         'notes',
+        'driver_latitude',
+        'driver_longitude',
+        'driver_location_updated_at',
         'placed_at',
         'processing_at',
         'shipping_at',
@@ -44,6 +52,10 @@ class Order extends Model
         'discount' => 'decimal:2',
         'shipping_fee' => 'decimal:2',
         'total' => 'decimal:2',
+        'driver_latitude' => 'decimal:8',
+        'driver_longitude' => 'decimal:8',
+        'driver_location_updated_at' => 'datetime',
+        'pickup_location_confirmed' => 'boolean',
         'placed_at' => 'datetime',
         'processing_at' => 'datetime',
         'shipping_at' => 'datetime',
@@ -93,6 +105,11 @@ class Order extends Model
     public function address(): BelongsTo
     {
         return $this->belongsTo(Address::class);
+    }
+
+    public function driver(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'driver_id');
     }
 
     /**
@@ -160,6 +177,11 @@ class Order extends Model
     {
         return $query->whereNotIn('status', ['cancelled', 'delivered']);
     }
+    public function messages(): HasMany
+    {
+        return $this->hasMany(OrderMessage::class);
+    }
+
     public function notes(): HasMany
     {
         return $this->hasMany(OrderNote::class);
@@ -176,20 +198,26 @@ class Order extends Model
             return $this->notes;
         }
 
-        // Check if there is at least one related OrderNote
-        $orderNote = $this->notes()->first();
+        // Use eager-loaded notes relationship if available, otherwise query
+        $orderNotes = $this->relationLoaded('notes')
+            ? $this->getRelation('notes')
+            : $this->notes()->get();
+
+        $orderNote = $orderNotes->first();
         if ($orderNote) {
-            // If the OrderNote has a related SpecialNote, return its name
-            if ($orderNote->specialNote) {
-                return $orderNote->specialNote->name;
+            // Use eager-loaded specialNote if available, otherwise query
+            $specialNote = $orderNote->relationLoaded('specialNote')
+                ? $orderNote->getRelation('specialNote')
+                : $orderNote->specialNote;
+
+            if ($specialNote) {
+                return $specialNote->name;
             }
-            // Otherwise return the notes field from OrderNote if present
             if (!empty($orderNote->notes)) {
                 return $orderNote->notes;
             }
         }
 
-        // Nothing found
         return null;
     }
 }

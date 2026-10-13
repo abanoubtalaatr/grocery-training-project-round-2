@@ -15,12 +15,38 @@ class Subcategory extends Model
     protected $fillable = [
         'category_id',
         'name',
+        'name_ar',
         'slug',
         'description',
+        'description_ar',
         'image_url',
         'is_active',
         'order',
     ];
+
+    /**
+     * Get localized name based on app locale.
+     */
+    public function getLocalizedNameAttribute(): string
+    {
+        if (app()->getLocale() === 'ar' && ! empty($this->name_ar)) {
+            return $this->name_ar;
+        }
+
+        return $this->name ?? '';
+    }
+
+    /**
+     * Get localized description based on app locale.
+     */
+    public function getLocalizedDescriptionAttribute(): ?string
+    {
+        if (app()->getLocale() === 'ar' && ! empty($this->description_ar)) {
+            return $this->description_ar;
+        }
+
+        return $this->description;
+    }
 
     protected $casts = [
         'is_active' => 'boolean',

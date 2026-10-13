@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Actions\Api\SmartListAction;
+use App\Actions\Api\AddSmartListToCartAction;
 use App\Models\SmartList;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\UpdateSmartListRequest;
 use App\Http\Resources\Api\SmartListResource;
 use App\Http\Requests\Api\CreateSmartListRequest;
+use App\Http\Requests\Api\PaginationRequest;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
 
@@ -16,17 +18,20 @@ class SmartListController extends Controller
 {
     use ApiResponse;
 
-    public function index(Request $request): JsonResponse
+    public function index(PaginationRequest $request): JsonResponse
     {
         $this->authorize('viewAny', SmartList::class);
 
-        $perPage = max(1, min($request->integer('per_page', 15), 100));
         $smartLists = $request->user()
             ->smartLists()
             ->with('meals')
             ->withCount('meals')
-            ->paginate($perPage);
-        return $this->success(SmartListResource::collection($smartLists), 'Smart lists retrieved successfully');
+            ->paginate($request->perPage);
+
+        return $this->success(
+            SmartListResource::collection($smartLists),
+            'Smart lists retrieved successfully'
+        );
     }
 
     public function store(CreateSmartListRequest $request, SmartListAction $action): JsonResponse
@@ -58,5 +63,14 @@ class SmartListController extends Controller
         $action->delete($smartList);
 
         return $this->success([], 'Smart list deleted successfully');
+    }
+
+    public function addToCart(Request $request, SmartList $smartList, AddSmartListToCartAction $action): JsonResponse
+    {
+        $this->authorize('view', $smartList);
+
+        $result = $action->execute($request->user(), $smartList);
+
+        return $this->success($result, 'Items added to cart successfully');
     }
 }

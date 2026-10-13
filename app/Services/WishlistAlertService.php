@@ -29,8 +29,14 @@ class WishlistAlertService
 
         $userIds = $query->pluck('user_id')->unique()->filter();
 
+        if ($userIds->isEmpty()) {
+            return;
+        }
+
+        $users = User::whereIn('id', $userIds)->get()->keyBy('id');
+
         foreach ($userIds as $userId) {
-            $user = User::find($userId);
+            $user = $users->get($userId);
             if ($user) {
                 $user->notify(new WishlistPriceAlertNotification($meal, $reason));
             }

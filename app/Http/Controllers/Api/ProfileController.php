@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
@@ -36,14 +37,22 @@ class ProfileController extends Controller
                 ->get()
                 ->map(fn (Address $a) => $this->formatAddress($a));
 
-            $allOrders = Order::where('user_id', $user->id)
+            $perPage = min(max((int) $request->input('per_page', 20), 1), 100);
+
+            $orderHistoryPaginator = Order::where('user_id', $user->id)
                 ->with(['items.meal.category', 'items.meal.subcategory', 'address'])
                 ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
+
+            $orderHistory = $orderHistoryPaginator->through(fn (Order $o) => $this->formatOrderSummary($o));
+
+            $inProgressOrders = Order::where('user_id', $user->id)
+                ->whereNotIn('status', ['cancelled', 'delivered'])
+                ->with(['items.meal.category', 'items.meal.subcategory', 'address'])
+                ->orderBy('created_at', 'desc')
+                ->limit(20)
                 ->get();
 
-            $orderHistory = $allOrders->map(fn (Order $o) => $this->formatOrderSummary($o));
-
-            $inProgressOrders = $allOrders->whereNotIn('status', ['cancelled', 'delivered']);
             $inProgressWithTracking = $inProgressOrders->map(fn (Order $o) => $this->formatOrderWithTracking($o))->values();
 
             $orderNotifications = $user->notifications()
@@ -84,8 +93,14 @@ class ProfileController extends Controller
                     ],
                     'addresses' => $addresses,
                     'order_history' => [
-                        'orders' => $orderHistory,
-                        'ordered_at' => $orderHistory->map(fn ($o) => $o['placed_at'] ?? $o['created_at'])->values(),
+                        'orders' => $orderHistory->items(),
+                        'ordered_at' => collect($orderHistory->items())->map(fn ($o) => $o['placed_at'] ?? $o['created_at'])->values(),
+                        'pagination' => [
+                            'current_page' => $orderHistoryPaginator->currentPage(),
+                            'per_page' => $orderHistoryPaginator->perPage(),
+                            'total' => $orderHistoryPaginator->total(),
+                            'last_page' => $orderHistoryPaginator->lastPage(),
+                        ],
                     ],
                     'in_progress_orders' => $inProgressWithTracking,
                     'order_notifications' => $orderNotifications,
@@ -100,10 +115,11 @@ class ProfileController extends Controller
                 ],
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve profile', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve profile',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -166,10 +182,11 @@ class ProfileController extends Controller
                 ],
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to update profile image', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update profile image',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -264,10 +281,11 @@ class ProfileController extends Controller
                 ],
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to update profile', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update profile',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -300,10 +318,11 @@ class ProfileController extends Controller
                 'message' => 'Profile image deleted successfully',
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to delete profile image', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to delete profile image',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }

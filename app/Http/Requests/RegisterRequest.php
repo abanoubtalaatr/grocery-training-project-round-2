@@ -89,8 +89,9 @@ class RegisterRequest extends FormRequest
                     if (! is_string($value) || $value === '') {
                         return;
                     }
-                    if (User::onlyTrashed()->where('username', $value)->exists()) {
-                        $fail('This username was previously associated with a deleted account.');
+                    $trashed = User::onlyTrashed()->where('username', $value)->first();
+                    if ($trashed && ! $trashed->is_active) {
+                        $fail('This username was previously associated with a blocked account.');
                     }
                 },
             ],
@@ -104,8 +105,9 @@ class RegisterRequest extends FormRequest
                     if (! is_string($value) || $value === '') {
                         return;
                     }
-                    if (User::onlyTrashed()->whereRaw('LOWER(email) = ?', [strtolower(trim($value))])->exists()) {
-                        $fail('This email was previously associated with a deleted account.');
+                    $trashed = User::onlyTrashed()->whereRaw('LOWER(email) = ?', [strtolower(trim($value))])->first();
+                    if ($trashed && ! $trashed->is_active) {
+                        $fail('This email was previously associated with a blocked account.');
                     }
                 },
             ],
@@ -123,13 +125,13 @@ class RegisterRequest extends FormRequest
                         return;
                     }
                     $normalized = preg_replace('/\s+/', '', $value);
-                    if (User::onlyTrashed()->where('phone', $normalized)->exists()) {
-                        $fail('This phone number was previously associated with a deleted account.');
+                    $trashed = User::onlyTrashed()->where('phone', $normalized)->first();
+                    if ($trashed && ! $trashed->is_active) {
+                        $fail('This phone number was previously associated with a blocked account.');
                     }
                 },
             ],
-            'password' => ['required', 'string', 'confirmed', Password::min(8)->letters()->numbers(), 'max:20'],
-            'agree_terms' => ['required', 'accepted'],
+            'password' => ['required', 'string', 'confirmed', Password::min(12)->letters()->numbers()],
         ];
     }
 
@@ -161,8 +163,6 @@ class RegisterRequest extends FormRequest
             'phone.min' => EgyptianPhoneRules::lengthMessage(),
             'phone.max' => EgyptianPhoneRules::lengthMessage(),
             'password.confirmed' => 'Password confirmation does not match.',
-            'agree_terms.required' => 'You must agree to the terms and conditions.',
-            'agree_terms.accepted' => 'You must agree to the terms and conditions.',
         ];
     }
 }

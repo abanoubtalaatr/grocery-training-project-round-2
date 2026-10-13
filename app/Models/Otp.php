@@ -35,8 +35,10 @@ class Otp extends Model
 
     // OTP Types
     const TYPE_PASSWORD_RESET = 'password_reset';
+    const TYPE_PASSWORD_CHANGE = 'password_change';
     const TYPE_EMAIL_VERIFICATION = 'email_verification';
     const TYPE_PHONE_VERIFICATION = 'phone_verification';
+    const TYPE_MFA_LOGIN = 'mfa_login';
 
     /**
      * Scope a query to only include valid OTPs.

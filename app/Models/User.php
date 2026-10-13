@@ -18,6 +18,11 @@ class User extends Authenticatable implements HasName
     /** Maximum length for API-validated usernames (registration and profile). */
     public const USERNAME_MAX_LENGTH = 50;
 
+    public const ROLE_CUSTOMER = 'customer';
+    public const ROLE_DELIVERY_PARTNER = 'delivery_partner';
+    public const ROLE_SUPPORT_AGENT = 'support_agent';
+    public const ROLE_ADMIN = 'admin';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -41,6 +46,7 @@ class User extends Authenticatable implements HasName
         'agree_terms',
         'is_active',
         'is_admin',
+        'role',
         'stripe_customer_id',
         'google_id',
         'avatar',
@@ -57,6 +63,7 @@ class User extends Authenticatable implements HasName
     protected $hidden = [
         'password',
         'remember_token',
+        'stripe_customer_id',
     ];
 
     /**
@@ -109,7 +116,7 @@ class User extends Authenticatable implements HasName
      */
     public function scopeAdmin($query)
     {
-        return $query->where('is_admin', true);
+        return $query->where('role', self::ROLE_ADMIN);
     }
 
     /**
@@ -117,7 +124,35 @@ class User extends Authenticatable implements HasName
      */
     public function isAdmin(): bool
     {
-        return $this->is_admin === true;
+        return ($this->role ?? '') === self::ROLE_ADMIN;
+    }
+
+    public function isCustomer(): bool
+    {
+        return ($this->role ?? self::ROLE_CUSTOMER) === self::ROLE_CUSTOMER;
+    }
+
+    public function isDeliveryPartner(): bool
+    {
+        return ($this->role ?? '') === self::ROLE_DELIVERY_PARTNER;
+    }
+
+    public function isSupportAgent(): bool
+    {
+        return ($this->role ?? '') === self::ROLE_SUPPORT_AGENT;
+    }
+
+    public function hasRole(string|array $roles): bool
+    {
+        if (is_string($roles)) {
+            $roles = array_map('trim', explode(',', $roles));
+        }
+
+        if (in_array(self::ROLE_ADMIN, $roles, true) && $this->isAdmin()) {
+            return true;
+        }
+
+        return in_array($this->role ?? self::ROLE_CUSTOMER, $roles, true);
     }
 
     /**
@@ -299,7 +334,10 @@ class User extends Authenticatable implements HasName
         $settings = $this->notificationSettings;
 
         if (! $settings) {
-            $settings = $this->notificationSettings()->create([]);
+            $settings = $this->notificationSettings()->create([
+                'delivery_updates' => true,
+                'push_notifications' => true,
+            ]);
             $this->setRelation('notificationSettings', $settings);
         }
 
@@ -317,5 +355,25 @@ class User extends Authenticatable implements HasName
     public function smartLists()
     {
         return $this->hasMany(SmartList::class);
+    }
+
+    public function contactMessages()
+    {
+        return $this->hasMany(ContactMessage::class);
+    }
+
+    public function mealViews()
+    {
+        return $this->hasMany(MealView::class);
+    }
+
+    public function activities()
+    {
+        return $this->hasMany(UserActivity::class);
+    }
+
+    public function pushTokens()
+    {
+        return $this->hasMany(PushToken::class);
     }
 }

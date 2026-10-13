@@ -23,12 +23,38 @@ class Category extends Model
      */
     protected $fillable = [
         'name',
+        'name_ar',
         'slug',
         'description',
+        'description_ar',
         'image',
         'is_active',
         'sort_order',
     ];
+
+    /**
+     * Get localized name based on app locale.
+     */
+    public function getLocalizedNameAttribute(): string
+    {
+        if (app()->getLocale() === 'ar' && ! empty($this->name_ar)) {
+            return $this->name_ar;
+        }
+
+        return $this->name ?? '';
+    }
+
+    /**
+     * Get localized description based on app locale.
+     */
+    public function getLocalizedDescriptionAttribute(): ?string
+    {
+        if (app()->getLocale() === 'ar' && ! empty($this->description_ar)) {
+            return $this->description_ar;
+        }
+
+        return $this->description;
+    }
 
     /**
      * The attributes that should be cast.

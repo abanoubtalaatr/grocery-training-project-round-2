@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ApplyCouponRequest;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Meal;
+use App\Models\Offer;
 use App\Services\ShippingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class CartController extends Controller
@@ -39,10 +42,11 @@ class CartController extends Controller
                 'data' => $this->formatCart($cart, $shippingFee, $totalWithShipping),
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve cart', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve cart',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -157,10 +161,11 @@ class CartController extends Controller
             ], 422);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Failed to add item to cart', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to add item to cart',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -221,10 +226,11 @@ class CartController extends Controller
             ], 404);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Failed to update cart item', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update cart item',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -261,10 +267,11 @@ class CartController extends Controller
             ], 404);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Failed to remove item from cart', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to remove item from cart',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -292,10 +299,94 @@ class CartController extends Controller
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Failed to clear cart', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to clear cart',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
+            ], 500);
+        }
+    }
+
+    /**
+     * Apply coupon code to cart.
+     */
+    public function applyCoupon(ApplyCouponRequest $request): JsonResponse
+    {
+        try {
+            $user = $request->user();
+            $cart = $user->getOrCreateCart();
+            $cart->load('items');
+
+            if ($cart->isEmpty()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot apply coupon to an empty cart.',
+                ], 400);
+            }
+
+            $code = trim((string) $request->input('code'));
+            $offer = Offer::where('code', $code)->first();
+
+            if (! $offer || ! $offer->isValid()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid or expired coupon code.',
+                ], 400);
+            }
+
+            $subtotal = (float) $cart->items->sum('subtotal');
+            if (! $offer->canApplyToAmount($subtotal)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Minimum purchase of $' . number_format((float) $offer->minimum_purchase, 2) . ' required for this coupon.',
+                ], 400);
+            }
+
+            $cart->coupon_code = $offer->code;
+            $cart->calculateTotals();
+            $cart->load(['items.meal.category', 'items.meal.subcategory']);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Coupon applied successfully',
+                'data' => $this->formatCart($cart),
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to apply coupon', ['message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to apply coupon',
+                'error' => 'Internal server error',
+            ], 500);
+        }
+    }
+
+    /**
+     * Remove coupon code from cart.
+     */
+    public function removeCoupon(Request $request): JsonResponse
+    {
+        try {
+            $user = $request->user();
+            $cart = $user->getOrCreateCart();
+
+            $cart->coupon_code = null;
+            $cart->coupon_discount = 0;
+            $cart->calculateTotals();
+            $cart->load(['items.meal.category', 'items.meal.subcategory']);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Coupon removed successfully',
+                'data' => $this->formatCart($cart),
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to remove coupon', ['message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to remove coupon',
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -314,7 +405,8 @@ class CartController extends Controller
                     'id' => $item->id,
                     'meal' => [
                         'id' => $item->meal->id,
-                        'title' => $item->meal->title,
+                        'title' => $item->meal->localized_title,
+                        'title_ar' => $item->meal->title_ar,
                         'slug' => $item->meal->slug,
                         'image_url' => $item->meal->image_url,
                         ...$item->meal->getApiPriceAttributes(),
@@ -326,11 +418,13 @@ class CartController extends Controller
                         'in_stock' => $item->meal->isInStock(),
                         'category' => $item->meal->category ? [
                             'id' => $item->meal->category->id,
-                            'name' => $item->meal->category->name,
+                            'name' => $item->meal->category->localized_name,
+                            'name_ar' => $item->meal->category->name_ar,
                         ] : null,
                         'subcategory' => $item->meal->subcategory ? [
                             'id' => $item->meal->subcategory->id,
-                            'name' => $item->meal->subcategory->name,
+                            'name' => $item->meal->subcategory->localized_name,
+                            'name_ar' => $item->meal->subcategory->name_ar,
                         ] : null,
                     ],
                     'quantity' => $item->quantity,
@@ -343,6 +437,8 @@ class CartController extends Controller
             'subtotal' => (float) $cart->subtotal,
             'tax' => (float) $cart->tax,
             'discount' => (float) $cart->discount,
+            'coupon_code' => $cart->coupon_code,
+            'coupon_discount' => (float) ($cart->coupon_discount ?? 0),
             'total' => (float) $cart->total,
             'is_empty' => $cart->isEmpty(),
             'created_at' => $cart->created_at,

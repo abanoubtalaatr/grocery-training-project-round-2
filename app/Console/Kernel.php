@@ -16,6 +16,8 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             app(\App\Services\OtpService::class)->cleanupExpired();
         })->daily();
+
+        $schedule->command('orders:enforce-delivery-sla')->everyMinute();
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\PaginationRequest;
 use App\Http\Resources\Api\CategoryResource;
 use App\Models\Category;
 use App\Traits\ApiResponse;
@@ -16,16 +17,14 @@ class CategoryController extends Controller
     /**
      * Get all categories
      */
-    public function index(Request $request): JsonResponse
+    public function index(PaginationRequest $request): JsonResponse
     {
-        $perPage = max(1, min($request->integer('per_page', 15), 100));
-
         $categories = Category::active()
             ->ordered()
             ->withCount([
                 'meals' => fn($query) => $query->available(),
             ])
-            ->paginate($perPage);
+            ->paginate($request->perPage);
 
         return $this->success(
             CategoryResource::collection($categories),

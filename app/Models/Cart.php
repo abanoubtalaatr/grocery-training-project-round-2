@@ -14,9 +14,11 @@ class Cart extends Model
     protected $fillable = [
         'user_id',
         'status',
+        'coupon_code',
         'subtotal',
         'tax',
         'discount',
+        'coupon_discount',
         'total',
     ];
 
@@ -24,6 +26,7 @@ class Cart extends Model
         'subtotal' => 'decimal:2',
         'tax' => 'decimal:2',
         'discount' => 'decimal:2',
+        'coupon_discount' => 'decimal:2',
         'total' => 'decimal:2',
     ];
 
@@ -50,16 +53,35 @@ class Cart extends Model
     {
         $this->load('items');
         
-        // Item subtotals = unit_price * quantity (amount to pay per line); discount is for display only
-        $subtotal = $this->items->sum('subtotal');
-        $tax = $subtotal * 0.1; // 10% tax rate - adjust as needed
-        $discount = $this->items->sum('discount_amount');
-        $total = $subtotal + $tax;
+        $subtotal = (float) $this->items->sum('subtotal');
+        $itemDiscount = (float) $this->items->sum('discount_amount');
+        $couponDiscount = 0.0;
+
+        if ($this->coupon_code) {
+            $offer = Offer::where('code', $this->coupon_code)->first();
+            if ($offer && $offer->isValid() && $offer->canApplyToAmount($subtotal)) {
+                $couponDiscount = round((float) $offer->calculateDiscount($subtotal), 2);
+            } else {
+                $this->coupon_code = null;
+                $couponDiscount = 0.0;
+            }
+        }
+
+        $taxableSubtotal = max(0, $subtotal - $couponDiscount);
+        $taxRate = (float) Setting::getSettings()->tax_rate;
+        if ($taxRate <= 0) {
+            $taxRate = 0.1; // Default 10% tax rate
+        }
+        $tax = round($taxableSubtotal * $taxRate, 2);
+        $totalDiscount = $itemDiscount + $couponDiscount;
+        $total = round($taxableSubtotal + $tax, 2);
 
         $this->update([
             'subtotal' => $subtotal,
             'tax' => $tax,
-            'discount' => $discount,
+            'discount' => $totalDiscount,
+            'coupon_code' => $this->coupon_code,
+            'coupon_discount' => $couponDiscount,
             'total' => $total,
         ]);
     }

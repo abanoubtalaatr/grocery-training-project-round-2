@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ReplySupportMessageRequest;
 use App\Http\Resources\ContactMessageCollection;
 use App\Http\Resources\ContactMessageResource;
 use App\Mail\ContactMessageReceived;
@@ -49,6 +50,7 @@ class ContactController extends Controller
 
         // Create contact message
         $contactMessage = ContactMessage::create([
+            'user_id' => $request->user()?->id,
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
@@ -58,6 +60,7 @@ class ContactController extends Controller
             'user_agent' => $request->userAgent(),
         ]);
 
+        $emailSent = true;
         try {
             // Send notification email to admin
             Mail::to(config('mail.admin_email', 'admin@example.com'))
@@ -68,13 +71,23 @@ class ContactController extends Controller
                 ->send(new \App\Mail\ContactAutoReply($contactMessage));
 
         } catch (\Exception $e) {
-            Log::error('Failed to send contact email: '.$e->getMessage());
+            Log::error('Failed to send contact email', [
+                'contact_message_id' => $contactMessage->id,
+                'error' => $e->getMessage(),
+            ]);
+            $emailSent = false;
         }
 
-        return response()->json([
+        $response = [
             'message' => 'Thank you for your message. We will get back to you soon.',
             'data' => new ContactMessageResource($contactMessage),
-        ], 201);
+        ];
+
+        if (! $emailSent) {
+            $response['warning'] = 'Your message was saved, but email notification could not be sent. Our team will still review your message.';
+        }
+
+        return response()->json($response, 201);
     }
 
     /**
@@ -236,5 +249,48 @@ class ContactController extends Controller
         }
 
         return false;
+    }
+
+    /**
+     * Get submitted contact/support messages for authenticated user.
+     */
+    public function myMessages(Request $request)
+    {
+        $user = $request->user();
+        if (! $user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthenticated.',
+            ], 401);
+        }
+
+        $messages = ContactMessage::where('user_id', $user->id)
+            ->orWhere('email', $user->email)
+            ->orderByDesc('created_at')
+            ->paginate($request->get('per_page', 20));
+
+        return new ContactMessageCollection($messages);
+    }
+
+    /**
+     * Reply to contact/support message (support agent / admin).
+     */
+    public function reply(ReplySupportMessageRequest $request, ContactMessage $contactMessage)
+    {
+        $this->authorize('update', $contactMessage);
+
+        $contactMessage->update([
+            'reply' => $request->validated('reply'),
+            'admin_notes' => $request->validated('admin_notes') ?? $contactMessage->admin_notes,
+            'replied_by' => $request->user()->id,
+            'replied_at' => now(),
+            'status' => 'replied',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Reply sent successfully',
+            'data' => new ContactMessageResource($contactMessage),
+        ]);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Support\EmailValidation;
+use App\Services\DeliverySlaService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -29,6 +30,13 @@ class StoreOrderRequest extends FormRequest
             'payment_method' => ['required', 'string', Rule::in(['card', 'cash_on_delivery', 'stripe_checkout'])],
             'payment_method_id' => ['nullable', 'string', 'required_if:payment_method,card'],
             'delivery_type' => ['required', 'string', Rule::in(['delivery', 'pickup'])],
+            'pickup_location' => [
+                'nullable',
+                'string',
+                'max:500',
+                'required_if:delivery_type,pickup',
+            ],
+            'pickup_location_confirmed' => ['nullable', 'accepted_if:delivery_type,pickup'],
             'address_id' => [
                 'nullable',
                 'exists:addresses,id',
@@ -41,7 +49,7 @@ class StoreOrderRequest extends FormRequest
             'notes' => ['nullable', 'string', 'max:1000'],
             'contacts_information' => ['nullable'],
             'schedule_delivery' => ['nullable', 'string', 'max:255'],
-            'delivery_speed' => ['nullable', 'string', 'max:255'],
+            'delivery_speed' => ['nullable', 'string', Rule::in(DeliverySlaService::supportedSpeeds())],
             'estimated_delivery_time' => ['nullable', 'integer', 'min:0'],
             'contacts_information.first_name' => ['nullable', 'string', 'max:255'],
             'contacts_information.last_name' => ['nullable', 'string', 'max:255'],
@@ -58,6 +66,8 @@ class StoreOrderRequest extends FormRequest
         return [
             'payment_method_id.required_if' => 'Payment method ID is required when using card payment.',
             'address_id.required_if' => 'Address is required for delivery orders.',
+            'pickup_location.required_if' => 'Pickup location is required for pickup orders.',
+            'pickup_location_confirmed.accepted_if' => 'Pickup location must be confirmed for pickup orders.',
             'contacts_information.email.not_regex' => EmailValidation::trailingHyphenDotBeforeAtMessage(),
             'contacts_information.email.regex' => EmailValidation::domainStructureMessage(),
             'contacts_information.email.max' => 'The email address may not exceed 255 characters.',

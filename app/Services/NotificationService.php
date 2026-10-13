@@ -3,8 +3,11 @@
 namespace App\Services;
 
 use App\Models\User;
+use App\Models\Order;
+use App\Notifications\DeliverySlaBreachedNotification;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Twilio\Rest\Client as TwilioClient;
 
 class NotificationService
 {
@@ -30,31 +33,29 @@ class NotificationService
     }
 
     /**
-     * Send OTP via SMS
+     * Send OTP via SMS using Twilio
      */
     public function sendOtpSms(string $phone, string $otp, string $type): bool
     {
         try {
-            // This is a placeholder for SMS implementation
-            // You would integrate with Twilio, Nexmo, or another SMS provider here
-            
-            $message = $this->getSmsMessage($otp, $type);
-            
-            // Example with Twilio (uncomment and configure when ready)
-            /*
-            $twilio = new \Twilio\Rest\Client(
-                config('services.twilio.sid'),
-                config('services.twilio.token')
-            );
-            
-            $twilio->messages->create($phone, [
-                'from' => config('services.twilio.phone'),
-                'body' => $message
-            ]);
-            */
+            $sid = config('services.twilio.sid');
+            $token = config('services.twilio.token');
+            $from = config('services.twilio.phone');
 
-            // For now, just log the SMS (remove this in production)
-            Log::info("SMS to {$phone}: {$message}");
+            if (! $sid || ! $token || ! $from) {
+                Log::error('Twilio SMS configuration is incomplete. Cannot send OTP.');
+                return false;
+            }
+
+            $message = $this->getSmsMessage($otp, $type);
+
+            $client = $this->createTwilioClient($sid, $token);
+            $client->messages->create($phone, [
+                'from' => $from,
+                'body' => $message,
+            ]);
+
+            Log::info('SMS OTP sent to phone ending in ' . substr($phone, -4) . ' (type: ' . $type . ')');
 
             return true;
         } catch (\Exception $e) {
@@ -64,14 +65,24 @@ class NotificationService
     }
 
     /**
+     * Create a Twilio client instance.
+     */
+    protected function createTwilioClient(string $sid, string $token): mixed
+    {
+        return new TwilioClient($sid, $token);
+    }
+
+    /**
      * Get email subject based on OTP type
      */
     private function getEmailSubject(string $type): string
     {
         return match ($type) {
             'password_reset' => 'Password Reset OTP',
+            'password_change' => 'Password Change OTP',
             'email_verification' => 'Email Verification OTP',
             'phone_verification' => 'Phone Verification OTP',
+            'mfa_login' => 'Login Verification OTP',
             default => 'Verification OTP',
         };
     }
@@ -88,6 +99,7 @@ class NotificationService
             'password_reset' => 'reset your password',
             'email_verification' => 'verify your email',
             'phone_verification' => 'verify your phone',
+            'mfa_login' => 'complete your login',
             default => 'verify your account',
         };
 
@@ -156,6 +168,28 @@ class NotificationService
     {
         if ($this->shouldSendNotification($user, 'delivery_updates')) {
             // $user->notify(new DeliveryUpdateNotification($order, $update));
+        }
+    }
+
+    /**
+     * Send delivery delay notification for breached delivery SLA.
+     */
+    public function sendDeliverySlaBreached(User $user, Order $order): bool
+    {
+        try {
+            $user->initializeNotificationSettings();
+
+            if (! $this->shouldSendNotification($user, 'delivery_updates')) {
+                return false;
+            }
+
+            $user->notify(new DeliverySlaBreachedNotification($order));
+
+            return true;
+        } catch (\Throwable $e) {
+            Log::error('Failed to send delivery SLA breach notification: ' . $e->getMessage());
+
+            return false;
         }
     }
 

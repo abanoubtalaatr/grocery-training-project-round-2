@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Api;
 
 use App\DTOs\Api\CreateSmartListData;
-use App\Models\SmartList;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateSmartListRequest extends FormRequest

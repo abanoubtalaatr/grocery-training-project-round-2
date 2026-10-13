@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'expiry_minutes' => env('OTP_EXPIRY_MINUTES', 10),
+    'expiry_minutes' => env('OTP_EXPIRY_MINUTES', 3),
 
     /*
     |--------------------------------------------------------------------------
@@ -21,11 +21,11 @@ return [
     |--------------------------------------------------------------------------
     |
     | This value determines the number of digits in the OTP code.
-    | Default is 6 digits.
+    | Default is 4 digits per SRS requirement.
     |
     */
 
-    'length' => env('OTP_LENGTH', 6),
+    'length' => env('OTP_LENGTH', 4),
 
     /*
     |--------------------------------------------------------------------------

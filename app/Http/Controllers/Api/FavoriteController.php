@@ -8,6 +8,7 @@ use App\Models\Meal;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class FavoriteController extends Controller
 {
@@ -73,10 +74,11 @@ class FavoriteController extends Controller
                 'total_count' => $favorites->count(),
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve favorites', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve favorites',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -125,10 +127,11 @@ class FavoriteController extends Controller
             ], 404);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Failed to toggle favorite', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to toggle favorite',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -157,10 +160,11 @@ class FavoriteController extends Controller
                 'message' => 'Meal not found',
             ], 404);
         } catch (\Exception $e) {
+            Log::error('Failed to check favorite status', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to check favorite status',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -197,10 +201,11 @@ class FavoriteController extends Controller
                 'message' => 'Meal not found',
             ], 404);
         } catch (\Exception $e) {
+            Log::error('Failed to remove from favorites', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to remove from favorites',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }

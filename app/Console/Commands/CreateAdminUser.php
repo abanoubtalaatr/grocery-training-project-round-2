@@ -62,7 +62,7 @@ class CreateAdminUser extends Command
             'username' => $username,
             'email' => $email,
             'password' => Hash::make($password),
-            'is_admin' => true,
+            'role' => User::ROLE_ADMIN,
             'is_active' => true,
             'email_verified' => true,
             'phone_verified' => false,
@@ -78,7 +78,7 @@ class CreateAdminUser extends Command
                 ['ID', $user->id],
                 ['Username', $user->username],
                 ['Email', $user->email],
-                ['Admin', $user->is_admin ? 'Yes' : 'No'],
+                ['Role', $user->role],
                 ['Active', $user->is_active ? 'Yes' : 'No'],
             ]
         );

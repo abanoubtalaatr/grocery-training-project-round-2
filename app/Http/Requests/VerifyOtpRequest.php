@@ -58,7 +58,7 @@ class VerifyOtpRequest extends FormRequest
      */
     public function rules(): array
     {
-        $otpLength = max(4, min(8, (int) config('otp.length', 6)));
+        $otpLength = max(4, min(8, (int) config('otp.length', 4)));
 
         return [
             'identifier' => ['required', 'string'],
@@ -76,7 +76,7 @@ class VerifyOtpRequest extends FormRequest
         return [
             'identifier.required' => 'Email or phone number is required.',
             'otp.required' => 'OTP code is required.',
-            'otp.size' => 'OTP must be '.max(4, min(8, (int) config('otp.length', 6))).' digits.',
+            'otp.size' => 'OTP must be '.max(4, min(8, (int) config('otp.length', 4))).' digits.',
         ];
     }
 }

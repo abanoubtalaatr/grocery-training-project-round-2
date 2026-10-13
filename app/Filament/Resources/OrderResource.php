@@ -37,7 +37,7 @@ class OrderResource extends Resource
                     ->preload(),
                 Forms\Components\Select::make('address_id')
                     ->label('Address')
-                    ->relationship('address', 'address_line_1', fn (Builder $query, callable $get) =>
+                    ->relationship('address', 'street_address', fn (Builder $query, callable $get) =>
                         $query->where('user_id', $get('user_id'))
                     )
                     ->searchable()
@@ -49,10 +49,8 @@ class OrderResource extends Resource
                     ->dehydrated(),
                 Forms\Components\Select::make('payment_method')
                     ->options([
-                        'stripe' => 'Stripe',
-                        'cash' => 'Cash',
                         'card' => 'Card',
-                        'cash_on_delivery' => 'Cash on delivery',
+                        'cash_on_delivery' => 'Cash on Delivery',
                         'stripe_checkout' => 'Stripe Checkout (hosted)',
                     ])
                     ->required(),
@@ -61,9 +59,8 @@ class OrderResource extends Resource
                     ->label('Payment Method ID'),
                 Forms\Components\Select::make('delivery_type')
                     ->options([
-                        'standard' => 'Standard',
-                        'express' => 'Express',
-                        'scheduled' => 'Scheduled',
+                        'delivery' => 'Delivery',
+                        'pickup' => 'Pickup',
                     ])
                     ->required(),
                 Forms\Components\Select::make('status')
@@ -91,6 +88,9 @@ class OrderResource extends Resource
                     ->default(0.00),
                 Forms\Components\TextInput::make('total')
                     ->required()
+                    ->numeric()
+                    ->default(0.00),
+                Forms\Components\TextInput::make('shipping_fee')
                     ->numeric()
                     ->default(0.00),
                 Forms\Components\Textarea::make('notes')
@@ -127,6 +127,7 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
+                        'awaiting_payment' => 'warning',
                         'placed' => 'warning',
                         'processing' => 'info',
                         'shipping' => 'info',
@@ -193,7 +194,7 @@ class OrderResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
-                        'awaiting_payment' => 'Awaiting payment',
+                        'awaiting_payment' => 'Awaiting Payment',
                         'placed' => 'Order Placed',
                         'processing' => 'Processing',
                         'shipping' => 'Shipping',
@@ -203,10 +204,8 @@ class OrderResource extends Resource
                     ]),
                 Tables\Filters\SelectFilter::make('payment_method')
                     ->options([
-                        'stripe' => 'Stripe',
-                        'cash' => 'Cash',
                         'card' => 'Card',
-                        'cash_on_delivery' => 'Cash on delivery',
+                        'cash_on_delivery' => 'Cash on Delivery',
                         'stripe_checkout' => 'Stripe Checkout (hosted)',
                     ]),
             ])

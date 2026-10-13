@@ -22,8 +22,10 @@ class Meal extends Model
         'category_id',
         'subcategory_id',
         'title',
+        'title_ar',
         'slug',
         'description',
+        'description_ar',
         'image',
         'offer_title',
         'price',
@@ -33,8 +35,11 @@ class Meal extends Model
         'size',
         'expiry_date',
         'includes',
+        'includes_ar',
         'how_to_use',
+        'how_to_use_ar',
         'features',
+        'features_ar',
         'brand',
         'stock_quantity',
         'sold_count',
@@ -43,6 +48,30 @@ class Meal extends Model
         'is_hot',
         'available_date',
     ];
+
+    /**
+     * Get localized title based on app locale.
+     */
+    public function getLocalizedTitleAttribute(): string
+    {
+        if (app()->getLocale() === 'ar' && ! empty($this->title_ar)) {
+            return $this->title_ar;
+        }
+
+        return $this->title ?? '';
+    }
+
+    /**
+     * Get localized description based on app locale.
+     */
+    public function getLocalizedDescriptionAttribute(): ?string
+    {
+        if (app()->getLocale() === 'ar' && ! empty($this->description_ar)) {
+            return $this->description_ar;
+        }
+
+        return $this->description;
+    }
 
     /**
      * The attributes that should be cast.

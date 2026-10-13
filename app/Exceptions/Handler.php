@@ -135,35 +135,21 @@ class Handler extends ExceptionHandler
 
     private function handleDatabaseError(QueryException $e)
     {
-        $debugData = config('app.debug') ? [
-            'exception' => class_basename($e),
-            'sql' => $e->getSql(),
-            'bindings' => $e->getBindings(),
-            'message' => $e->getMessage(),
-        ] : [];
+        report($e);
 
         return $this->error(
             'A database error occurred.',
-            500,
-            $debugData
+            500
         );
     }
 
     private function handleGeneralException(Throwable $e)
     {
-        $debugData = config('app.debug') ? [
-            'exception' => class_basename($e),
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-            'trace' => array_slice($e->getTrace(), 0, 5),
-        ] : [];
+        report($e);
 
         return $this->error(
-            config('app.debug')
-                ? ($e->getMessage() ?: 'Something went wrong.')
-                : 'Something went wrong.',
-            500,
-            $debugData
+            'Something went wrong.',
+            500
         );
     }
 }

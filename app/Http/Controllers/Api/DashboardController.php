@@ -8,10 +8,13 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Meal;
 use App\Models\Category;
+use App\Models\MealView;
+use App\Models\UserActivity;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class DashboardController extends Controller
 {
@@ -32,13 +35,15 @@ class DashboardController extends Controller
                     'category_distribution' => $this->getCategoryDistribution($user),
                     'recent_orders' => $this->getRecentOrders($user),
                     'top_purchases' => $this->getTopPurchases($user),
+                    'analytics' => $this->getAnalytics($user),
                 ],
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve dashboard data', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve dashboard data',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -296,5 +301,42 @@ class DashboardController extends Controller
                 'total_spent' => (float) $item->total_spent,
             ];
         })->toArray();
+    }
+
+    /**
+     * Get user analytics: time spent, viewed products, orders, notifications, favorites.
+     */
+    private function getAnalytics($user): array
+    {
+        // Time spent: approximate duration between session start and last activity
+        $totalTimeSpentMinutes = UserActivity::where('user_id', $user->id)
+            ->get()
+            ->sum(function ($activity) {
+                return $activity->session_start->diffInMinutes($activity->last_activity_at);
+            });
+
+        // Viewed products: count of unique meals viewed
+        $viewedProductsCount = MealView::where('user_id', $user->id)
+            ->distinct('meal_id')
+            ->count('meal_id');
+
+        // Orders: total orders count
+        $ordersCount = Order::where('user_id', $user->id)
+            ->where('status', '!=', 'cancelled')
+            ->count();
+
+        // Notifications: unread notifications count
+        $notificationsCount = $user->notifications()->whereNull('read_at')->count();
+
+        // Favorites: total favorites count
+        $favoritesCount = $user->favorites()->count();
+
+        return [
+            'time_spent_minutes' => (int) $totalTimeSpentMinutes,
+            'viewed_products_count' => (int) $viewedProductsCount,
+            'orders_count' => (int) $ordersCount,
+            'notifications_count' => (int) $notificationsCount,
+            'favorites_count' => (int) $favoritesCount,
+        ];
     }
 }

@@ -9,6 +9,7 @@ use App\Services\StripeCheckoutService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 use Throwable;
@@ -103,9 +104,10 @@ class StripeCheckoutController extends Controller
         try {
             $session = $this->checkoutService->createSessionForOrder($order, $user, (float) $data['amount']);
         } catch (\InvalidArgumentException $e) {
+            Log::error('Stripe checkout invalid argument', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => 'Invalid checkout request',
             ], 422);
         } catch (\Throwable $e) {
             report($e);

@@ -7,6 +7,7 @@ use App\Models\Address;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class AddressController extends Controller
@@ -42,10 +43,11 @@ class AddressController extends Controller
                 'total_count' => $addresses->count(),
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve addresses', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve addresses',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -70,10 +72,11 @@ class AddressController extends Controller
                 'message' => 'Address not found',
             ], 404);
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve address', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve address',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -145,11 +148,12 @@ class AddressController extends Controller
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Failed to create address', ['message' => $e->getMessage()]);
 
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create address',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -214,11 +218,12 @@ class AddressController extends Controller
             ], 404);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Failed to update address', ['message' => $e->getMessage()]);
 
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update address',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -258,11 +263,12 @@ class AddressController extends Controller
             ], 404);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Failed to delete address', ['message' => $e->getMessage()]);
 
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to delete address',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -304,11 +310,12 @@ class AddressController extends Controller
             ], 404);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Failed to set default address', ['message' => $e->getMessage()]);
 
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to set default address',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }

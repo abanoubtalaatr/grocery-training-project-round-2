@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Otp;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class OtpService
 {
@@ -23,9 +24,9 @@ class OtpService
 
         Otp::create([
             'identifier' => $identifier,
-            'otp' => $otpCode,
+            'otp' => Hash::make($otpCode),
             'type' => $type,
-            'expires_at' => Carbon::now()->addMinutes(config('otp.expiry_minutes', 10)),
+            'expires_at' => Carbon::now()->addMinutes(config('otp.expiry_minutes', 3)),
         ]);
 
         return $otpCode;
@@ -39,11 +40,7 @@ class OtpService
         $identifier = $this->normalizeIdentifier($identifier);
         $otpCode = $this->normalizeOtpInput($otpCode);
 
-        $otp = Otp::where('identifier', $identifier)
-            ->where('otp', $otpCode)
-            ->where('type', $type)
-            ->valid()
-            ->first();
+        $otp = $this->findValidOtp($identifier, $otpCode, $type);
 
         if (! $otp) {
             return false;
@@ -62,11 +59,27 @@ class OtpService
         $identifier = $this->normalizeIdentifier($identifier);
         $otpCode = $this->normalizeOtpInput($otpCode);
 
-        return Otp::where('identifier', $identifier)
-            ->where('otp', $otpCode)
+        return $this->findValidOtp($identifier, $otpCode, $type) !== null;
+    }
+
+    /**
+     * Find a valid OTP by checking hashed values.
+     * Since generate() deletes old OTPs first, there should be very few valid OTPs per identifier/type.
+     */
+    private function findValidOtp(string $identifier, string $otpCode, string $type): ?Otp
+    {
+        $validOtps = Otp::where('identifier', $identifier)
             ->where('type', $type)
             ->valid()
-            ->exists();
+            ->get();
+
+        foreach ($validOtps as $otp) {
+            if (Hash::check($otpCode, $otp->otp)) {
+                return $otp;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -75,11 +88,11 @@ class OtpService
     private function generateOtpCode(): string
     {
         $fixed = config('otp.fixed_code');
-        if (is_string($fixed) && $fixed !== '') {
+        if (is_string($fixed) && $fixed !== '' && app()->environment('local', 'testing')) {
             return $fixed;
         }
 
-        $length = max(4, min(8, (int) config('otp.length', 6)));
+        $length = max(4, min(8, (int) config('otp.length', 4)));
 
         $code = '';
         for ($i = 0; $i < $length; $i++) {

@@ -4,20 +4,28 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\ConfirmChangePasswordRequest;
 use App\Http\Requests\DeleteAccountRequest;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\VerifyOtpRequest;
+use App\Models\Otp;
 use App\Services\AuthService;
+use App\Services\NotificationService;
+use App\Services\OtpService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
     public function __construct(
-        protected AuthService $authService
+        protected AuthService $authService,
+        protected OtpService $otpService,
+        protected NotificationService $notificationService
     ) {}
 
     /**
@@ -42,17 +50,23 @@ class AuthController extends Controller
                     'token' => $result['token'],
                 ],
             ], 201);
-        } catch (\Exception $e) {
+        } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Registration failed',
-                'error' => $e->getMessage(),
+                'message' => 'Validation failed',
+                'errors' => $e->errors(),
+            ], 400);
+        } catch (\Exception $e) {
+            Log::error('Registration failed', ['message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Registration failed. Please try again.',
             ], 500);
         }
     }
 
     /**
-     * Login user
+     * Login user - validates credentials and returns token
      */
     public function login(LoginRequest $request): JsonResponse
     {
@@ -60,6 +74,53 @@ class AuthController extends Controller
             $result = $this->authService->login(
                 $request->input('login'),
                 $request->input('password')
+            );
+
+            $token = $result['user']->createToken('auth_token')->plainTextToken;
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Login successful',
+                'data' => [
+                    'user' => [
+                        'id' => $result['user']->id,
+                        'username' => $result['user']->username,
+                        'email' => $result['user']->email,
+                        'phone' => $result['user']->phone,
+                    ],
+                    'token' => $token,
+                ],
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Login failed',
+                'errors' => $e->errors(),
+            ], 401);
+        } catch (\Exception $e) {
+            Log::error('Login failed', ['message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Login failed',
+                'error' => 'Internal server error',
+            ], 500);
+        }
+    }
+
+    /**
+     * Verify MFA OTP and complete login
+     */
+    public function verifyMfaAndLogin(Request $request): JsonResponse
+    {
+        try {
+            $request->validate([
+                'identifier' => 'required|string',
+                'otp' => 'required|string',
+            ]);
+
+            $result = $this->authService->verifyMfaAndLogin(
+                $request->input('identifier'),
+                $request->input('otp')
             );
 
             return response()->json([
@@ -78,14 +139,15 @@ class AuthController extends Controller
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Login failed',
+                'message' => 'MFA verification failed',
                 'errors' => $e->errors(),
             ], 401);
         } catch (\Exception $e) {
+            Log::error('MFA verification failed', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
-                'message' => 'Login failed',
-                'error' => $e->getMessage(),
+                'message' => 'MFA verification failed',
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -103,10 +165,11 @@ class AuthController extends Controller
                 'message' => 'Logout successful',
             ]);
         } catch (\Exception $e) {
+            Log::error('Logout failed', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Logout failed',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -125,10 +188,11 @@ class AuthController extends Controller
                 'message' => 'OTP sent successfully. Please check your email or phone.',
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to send OTP', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to send OTP',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -156,10 +220,11 @@ class AuthController extends Controller
                 'message' => 'OTP verified successfully',
             ]);
         } catch (\Exception $e) {
+            Log::error('OTP verification failed', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'OTP verification failed',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -187,10 +252,11 @@ class AuthController extends Controller
                 'errors' => $e->errors(),
             ], 400);
         } catch (\Exception $e) {
+            Log::error('Password reset failed', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Password reset failed',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -221,10 +287,11 @@ class AuthController extends Controller
         try {
             $this->authService->deleteAccount($request->user());
         } catch (\Exception $e) {
+            Log::error('Failed to delete account', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to delete account',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
 
@@ -235,30 +302,62 @@ class AuthController extends Controller
     }
 
     /**
-     * Change password for authenticated user
+     * Change password for authenticated user — step 1: validate and send OTP
      */
     public function changePassword(ChangePasswordRequest $request): JsonResponse
     {
         try {
             $user = $request->user();
+            $identifier = $user->email;
 
-            // Let the User model's "hashed" cast hash the plain password once (avoid double hashing).
+            $otp = $this->otpService->generate($identifier, Otp::TYPE_PASSWORD_CHANGE);
+            $this->notificationService->sendOtpEmail($identifier, $otp, Otp::TYPE_PASSWORD_CHANGE);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'OTP sent to your email. Please verify to complete password change.',
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to initiate password change', ['message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to initiate password change',
+                'error' => 'Internal server error',
+            ], 500);
+        }
+    }
+
+    /**
+     * Change password for authenticated user — step 2: verify OTP and apply
+     */
+    public function confirmChangePassword(ConfirmChangePasswordRequest $request): JsonResponse
+    {
+        try {
+            $user = $request->user();
+            $identifier = $user->email;
+            $otp = $request->input('otp');
+
+            if (! $this->otpService->verify($identifier, $otp, Otp::TYPE_PASSWORD_CHANGE)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid or expired OTP',
+                ], 400);
+            }
+
             $user->update([
                 'password' => $request->input('password'),
             ]);
-
-            // Revoke all tokens except the current one (optional - for security)
-            // $user->tokens()->where('id', '!=', $request->user()->currentAccessToken()->id)->delete();
 
             return response()->json([
                 'success' => true,
                 'message' => 'Password changed successfully',
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to change password', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to change password',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }

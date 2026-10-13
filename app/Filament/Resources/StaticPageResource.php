@@ -56,12 +56,11 @@ class StaticPageResource extends Resource
                             ->placeholder('Short summary of the page for search results')
                             ->helperText('Brief description for search results. Recommended: 150–160 characters.')
                             ->rules(['nullable', 'string', 'max:160']),
-                        Forms\Components\TextInput::make('meta_keywords')
+                        Forms\Components\TagsInput::make('meta_keywords')
                             ->label('Meta keywords')
-                            ->maxLength(255)
                             ->placeholder('e.g. contact, support, help')
-                            ->helperText('Comma-separated keywords for SEO. Optional.')
-                            ->rules(['nullable', 'string', 'max:255']),
+                            ->helperText('Type a keyword and press Enter. Optional.')
+                            ->rules(['nullable', 'array']),
                     ])
                     ->collapsible(),
                 Forms\Components\Toggle::make('is_published')

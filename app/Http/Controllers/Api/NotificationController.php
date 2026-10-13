@@ -151,7 +151,7 @@ class NotificationController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to load notifications',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -561,6 +561,7 @@ class NotificationController extends Controller
             'order_confirmation' => 'shopping-bag',
             'order_shipped' => 'truck',
             'delivery_updates' => 'package',
+            'delivery_delayed' => 'alert-triangle',
             'out_of_stock_alerts' => 'alert-triangle',
             'weekly_discounts' => 'percent',
             'exclusive_member_offers' => 'crown',

@@ -7,6 +7,7 @@ use App\Models\Order;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
@@ -17,14 +18,18 @@ class PaymentController extends Controller
     {
         try {
             $user = $request->user();
+            $perPage = min(max((int) $request->input('per_page', 20), 1), 100);
 
-            $orders = Order::where('user_id', $user->id)
+            $query = Order::where('user_id', $user->id)
                 ->where('status', '!=', 'cancelled')
                 ->with(['items.meal.category', 'address'])
-                ->orderBy('created_at', 'desc')
-                ->get();
+                ->orderBy('created_at', 'desc');
 
-            $paymentHistory = $orders->map(function ($order) {
+            $totalAmount = (clone $query)->sum('total');
+
+            $orders = $query->paginate($perPage);
+
+            $paymentHistory = $orders->through(function ($order) {
                 return [
                     'id' => $order->id,
                     'order_number' => $order->order_number,
@@ -45,15 +50,19 @@ class PaymentController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Payment history retrieved successfully',
-                'data' => $paymentHistory,
-                'total_count' => $paymentHistory->count(),
-                'total_amount' => (float) $orders->sum('total'),
+                'data' => $paymentHistory->items(),
+                'total_count' => $paymentHistory->total(),
+                'total_amount' => (float) $totalAmount,
+                'current_page' => $paymentHistory->currentPage(),
+                'per_page' => $paymentHistory->perPage(),
+                'last_page' => $paymentHistory->lastPage(),
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve payment history', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve payment history',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -84,10 +93,11 @@ class PaymentController extends Controller
                 'data' => $receipt,
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve receipt', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve receipt',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }

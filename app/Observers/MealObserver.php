@@ -12,9 +12,11 @@ class MealObserver
         protected WishlistAlertService $wishlistAlerts
     ) {}
 
-        public function creating(Meal $meal): void
+    public function creating(Meal $meal): void
     {
-        $meal->slug = Str::slug($meal->title);
+        if (empty($meal->slug)) {
+            $meal->slug = Str::slug($meal->title);
+        }
     }
 
     /**
@@ -22,9 +24,8 @@ class MealObserver
      */
     public function updating(Meal $meal): void
     {
-        if($meal->isDirty('title')){
-        $meal->slug = Str::slug($meal->title);
-
+        if ($meal->isDirty('title')) {
+            $meal->slug = Str::slug($meal->title);
         }
     }
 

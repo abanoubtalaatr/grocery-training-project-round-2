@@ -115,7 +115,6 @@ class MealResource extends Resource
                     ->label('Or enter new brand name')
                     ->maxLength(255)
                     ->nullable()
-                    ->dehydrated(false)
                     ->rules(['nullable', 'string', 'max:255'])
                     ->helperText('Leave empty if you selected a brand above. Filled value will be used as brand when saving.'),
                 Forms\Components\TextInput::make('stock_quantity')
