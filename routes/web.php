@@ -193,7 +193,6 @@ Route::middleware('auth:sanctum')->prefix('dashboard')->group(function () {
     Route::get('/admin/dashboard', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
-    Route::get('/', [\App\Http\Controllers\Api\DashboardController::class, 'index']);
     Route::post('/meals', [\App\Http\Controllers\Api\DashboardController::class, 'storeMeal']);
     Route::put('/meals/{meal}', [\App\Http\Controllers\Api\DashboardController::class, 'updateMeal']);
     Route::delete('/meals/{meal}', [\App\Http\Controllers\Api\DashboardController::class, 'destroyMeal']);
