@@ -225,7 +225,18 @@ Route::get('/faqs', [FaqController::class, 'index']);
 Route::get('/pages', [StaticPageController::class, 'index']);
 Route::get('/pages/slug/{slug}', [StaticPageController::class, 'showBySlug']);
 Route::get('/pages/important', [StaticPageController::class, 'importantPages']);
-Route::post('/contact', [ContactController::class, 'submit']);
+Route::post('/contact', [ContactController::class, 'submit'])->middleware('throttle:contact');
+
+    // Support routes
+    Route::get('/support/my-messages', [ContactController::class, 'myMessages']);
+    Route::middleware('role:support_agent,admin')->prefix('support')->group(function () {
+        Route::get('/messages', [ContactController::class, 'index']);
+        Route::get('/messages/statistics', [ContactController::class, 'statistics']);
+        Route::get('/messages/{contactMessage}', [ContactController::class, 'show']);
+        Route::put('/messages/{contactMessage}/status', [ContactController::class, 'updateStatus']);
+        Route::post('/messages/{contactMessage}/reply', [ContactController::class, 'reply']);
+        Route::delete('/messages/{contactMessage}', [ContactController::class, 'destroy']);
+    });
 
 // Health check route
 Route::get('/health', function () {
@@ -251,7 +262,7 @@ Route::middleware('auth:sanctum')->prefix('push-tokens')->group(function () {
 });
 
 // Driver routes
-Route::middleware('auth:sanctum')->prefix('drivers')->group(function () {
+Route::middleware('auth:sanctum')->prefix('driver')->group(function () {
     Route::get('/orders', [DriverOrderController::class, 'index']);
     Route::get('/orders/{order}', [DriverOrderController::class, 'show']);
     Route::post('/orders/{order}/status', [DriverOrderController::class, 'updateStatus']);

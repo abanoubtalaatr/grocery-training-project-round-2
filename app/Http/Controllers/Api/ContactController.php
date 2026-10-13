@@ -23,8 +23,11 @@ class ContactController extends Controller
      */
     public function submit(SubmitContactMessageRequest $request): JsonResponse
     {
+        $data = $request->validated();
+        $data['user_id'] = $request->user()?->id;
+
         $result = $this->contactService->submitMessage(
-            data: $request->validated(),
+            data: $data,
             ipAddress: $request->ip(),
             userAgent: $request->userAgent()
         );
@@ -112,6 +115,43 @@ class ContactController extends Controller
 
         return response()->json([
             'data' => $stats,
+        ]);
+    }
+
+    public function myMessages(Request $request): ContactMessageCollection
+    {
+        $user = $request->user();
+        if (! $user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthenticated.',
+            ], 401);
+        }
+
+        $messages = ContactMessage::where('user_id', $user->id)
+            ->orWhere('email', $user->email)
+            ->orderByDesc('created_at')
+            ->paginate($request->get('per_page', 20));
+
+        return new ContactMessageCollection($messages);
+    }
+
+    public function reply(\App\Http\Requests\ReplySupportMessageRequest $request, ContactMessage $contactMessage): JsonResponse
+    {
+        $this->authorize('update', $contactMessage);
+
+        $contactMessage->update([
+            'reply' => $request->validated('reply'),
+            'admin_notes' => $request->validated('admin_notes') ?? $contactMessage->admin_notes,
+            'replied_by' => $request->user()->id,
+            'replied_at' => now(),
+            'status' => 'replied',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Reply sent successfully',
+            'data' => new ContactMessageResource($contactMessage),
         ]);
     }
 }

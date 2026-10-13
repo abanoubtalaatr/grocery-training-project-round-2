@@ -14,7 +14,7 @@ class ContactService
     /**
      * Submit contact message and send notifications.
      */
-    public function submitMessage(array $data, string $ipAddress, string $userAgent): ?ContactMessage
+    public function submitMessage(array $data, string $ipAddress, string $userAgent): ?array
     {
         if ($this->isSpam($data['message'] ?? '')) {
             return null;
@@ -25,9 +25,9 @@ class ContactService
 
         $contactMessage = ContactMessage::create($data);
 
-        $this->sendEmails($contactMessage);
+        $emailSent = $this->sendEmails($contactMessage);
 
-        return $contactMessage;
+        return ['contactMessage' => $contactMessage, 'emailSent' => $emailSent];
     }
 
     /**
@@ -147,7 +147,7 @@ class ContactService
     /**
      * Handle sending email notifications.
      */
-    private function sendEmails(ContactMessage $contactMessage): void
+    private function sendEmails(ContactMessage $contactMessage): bool
     {
         try {
             Mail::to(config('mail.admin_email', 'admin@example.com'))
@@ -155,8 +155,10 @@ class ContactService
 
             Mail::to($contactMessage->email)
                 ->send(new ContactAutoReply($contactMessage));
+            return true;
         } catch (\Exception $e) {
             Log::error('Failed to send contact email: ' . $e->getMessage());
+            return false;
         }
     }
 }
