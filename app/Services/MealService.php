@@ -28,7 +28,7 @@ class MealService
     /**
      * Get filtered and sorted list of meals.
      */
-    public function getFilteredMeals(array $filters): Collection
+    public function getFilteredMeals(array $filters, int $perPage = 20): \Illuminate\Contracts\Pagination\LengthAwarePaginator
     {
         $query = Meal::with(['category', 'subcategory'])->available();
 
@@ -96,7 +96,7 @@ class MealService
             $query->orderBy('created_at', 'desc');
         }
 
-        return $query->get();
+        return $query->paginate($perPage);
     }
 
     /**

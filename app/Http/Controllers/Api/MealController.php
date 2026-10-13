@@ -56,7 +56,8 @@ class MealController extends Controller
     public function index(MealFilterRequest $request): JsonResponse
     {
         $user = $request->user();
-        $meals = $this->mealService->getFilteredMeals($request->validated());
+        $perPage = min(max((int) $request->input('per_page', 20), 1), 100);
+        $meals = $this->mealService->getFilteredMeals($request->validated(), $perPage);
 
         if ($user) {
             $favoriteIds = $user->favorites()->pluck('meal_id')->toArray();
@@ -68,8 +69,11 @@ class MealController extends Controller
         return response()->json(array_merge([
             'success' => true,
             'message' => $isEmpty ? 'No products match your filters.' : 'Meals retrieved successfully',
-            'data' => MealResource::collection($meals),
-            'total_count' => $meals->count(),
+            'data' => MealResource::collection($meals->items()),
+            'total_count' => $meals->total(),
+            'current_page' => $meals->currentPage(),
+            'per_page' => $meals->perPage(),
+            'last_page' => $meals->lastPage(),
             'filters_applied' => $request->validated(),
         ], $isEmpty ? ['empty_message' => 'No products match the applied filters. Try adjusting your search or filters.'] : []));
     }

@@ -15,8 +15,8 @@ class MealFilterRequest extends FormRequest
     {
         return [
             'search' => ['nullable', 'string', 'max:255'],
-            'category_id' => ['nullable', 'integer', 'exists:categories,id'],
-            'subcategory_id' => ['nullable', 'integer', 'exists:subcategories,id'],
+            'category_id' => ['nullable'],
+            'subcategory_id' => ['nullable'],
             'featured' => ['nullable', 'boolean'],
             'in_stock' => ['nullable', 'boolean'],
             'min_price' => ['nullable', 'numeric', 'min:0'],

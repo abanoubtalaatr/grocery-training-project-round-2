@@ -23,22 +23,31 @@ class ContactController extends Controller
      */
     public function submit(SubmitContactMessageRequest $request): JsonResponse
     {
-        $contactMessage = $this->contactService->submitMessage(
+        $result = $this->contactService->submitMessage(
             data: $request->validated(),
             ipAddress: $request->ip(),
             userAgent: $request->userAgent()
         );
 
-        if (!$contactMessage) {
+        if (!$result) {
             return response()->json([
                 'message' => 'Your message appears to be spam',
             ], 400);
         }
 
-        return response()->json([
+        $contactMessage = $result['contactMessage'];
+        $emailSent = $result['emailSent'];
+
+        $response = [
             'message' => 'Thank you for your message. We will get back to you soon.',
             'data' => new ContactMessageResource($contactMessage),
-        ], 201);
+        ];
+
+        if (! $emailSent) {
+            $response['warning'] = 'Your message was saved, but email notification could not be sent. Our team will still review your message.';
+        }
+
+        return response()->json($response, 201);
     }
 
     /**
