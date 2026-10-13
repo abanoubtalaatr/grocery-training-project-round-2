@@ -12,7 +12,11 @@ use App\Actions\Auth\RegisterAction;
 use App\Actions\Auth\ResetPasswordAction;
 use App\Actions\Auth\VerifyOtpAction;
 use App\Http\Controllers\Controller;
+use App\Models\Otp;
+use App\Services\NotificationService;
+use App\Services\OtpService;
 use App\Http\Requests\ChangePasswordRequest;
+use App\Http\Requests\ConfirmChangePasswordRequest;
 use App\Http\Requests\DeleteAccountRequest;
 use App\Http\Requests\ForgotPasswordRequest;
 use App\Http\Requests\LoginRequest;
@@ -35,6 +39,8 @@ class AuthController extends Controller
         protected DeleteAccountAction $deleteAccountAction,
         protected ChangePasswordAction $changePasswordAction,
         protected MeAction $meAction,
+        protected OtpService $otpService,
+        protected NotificationService $notificationService,
     ) {}
 
     /**
@@ -316,23 +322,22 @@ class AuthController extends Controller
     public function changePassword(ChangePasswordRequest $request): JsonResponse
     {
         try {
+            $user = $request->user();
+            $identifier = $user->email;
 
-            $this->changePasswordAction->execute(
-                $request->user(),
-                $request->password
-            );
+            $otp = $this->otpService->generate($identifier, Otp::TYPE_PASSWORD_CHANGE);
+            $this->notificationService->sendOtpEmail($identifier, $otp, Otp::TYPE_PASSWORD_CHANGE);
 
             return response()->json([
                 'success' => true,
-                'message' => 'Password changed successfully',
+                'message' => 'OTP sent to your email. Please verify to complete password change.',
             ]);
-
         } catch (\Exception $e) {
-
+            Log::error('Failed to initiate password change', ['message' => $e->getMessage()]);
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to change password',
-                'error' => $e->getMessage(),
+                'message' => 'Failed to initiate password change',
+                'error' => 'Internal server error',
             ], 500);
         }
     }

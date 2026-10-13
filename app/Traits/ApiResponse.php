@@ -13,11 +13,17 @@ trait ApiResponse
             'message_2' => $message_2,
         ], $code);
     }
-    public function error($message = 'Error', $code = 400)
+    public function error($message = 'Error', $code = 400, $errors = null)
     {
-        return response()->json([
+        $payload = [
             'success' => false,
             'message' => $message,
-        ], $code);
+        ];
+
+        if ($errors !== null) {
+            $payload['errors'] = $errors;
+        }
+
+        return response()->json($payload, $code);
     }
 }
