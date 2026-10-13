@@ -27,6 +27,13 @@ use App\Http\Controllers\Api\StripeCheckoutController;
 use App\Http\Controllers\Api\StripeController;
 use App\Http\Controllers\Api\StripeWebhookController;
 use App\Http\Controllers\Api\SubcategoryController;
+use App\Http\Controllers\Api\OrderChatController;
+use App\Http\Controllers\Api\PushTokenController;
+use App\Http\Controllers\Api\DriverOrderController;
+use App\Http\Controllers\Api\MealViewController;
+use App\Http\Controllers\Api\UserActivityController;
+use App\Http\Controllers\Api\SmartListMealController;
+use App\Http\Controllers\Api\CategoryMealController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -147,11 +154,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/cards/{id}', [StripeController::class, 'deleteCard']);
 
     // Order routes
-    Route::prefix('orders')->group(function () {
+        Route::prefix('orders')->group(function () {
         Route::post('/', [OrderController::class, 'store']);
         Route::get('/', [OrderController::class, 'index']);
         Route::get('/track', [OrderController::class, 'track']);
         Route::get('/{id}', [OrderController::class, 'show']);
+
+        // Order chat (customer <-> driver)
+        Route::get('/{order}/messages', [OrderChatController::class, 'index']);
+        Route::post('/{order}/messages', [OrderChatController::class, 'store'])->middleware('throttle:chatbot');
+        Route::get('/{order}/messages/unread', [OrderChatController::class, 'unreadCount']);
     });
 
     // Payment routes
@@ -228,3 +240,27 @@ Route::get('/health', function () {
 // Categories routes by mohammed-bashamekha
 use App\Http\Controllers\CategoryController as ControllersCategoryController;
 Route::apiResource('categories-ver2', ControllersCategoryController::class);
+
+// Push tokens
+Route::middleware('auth:sanctum')->prefix('push-tokens')->group(function () {
+    Route::get('/', [PushTokenController::class, 'index']);
+    Route::post('/', [PushTokenController::class, 'store'])->middleware('throttle:auth');
+    Route::delete('/{token}', [PushTokenController::class, 'destroy']);
+});
+
+// Driver routes
+Route::middleware('auth:sanctum')->prefix('drivers')->group(function () {
+    Route::get('/orders', [DriverOrderController::class, 'index']);
+    Route::get('/orders/{order}', [DriverOrderController::class, 'show']);
+    Route::post('/orders/{order}/status', [DriverOrderController::class, 'updateStatus']);
+    Route::post('/location', [DriverOrderController::class, 'updateLocation']);
+    Route::get('/orders/{order}/messages', [DriverOrderController::class, 'messages']);
+    Route::post('/orders/{order}/messages', [DriverOrderController::class, 'sendMessage'])->middleware('throttle:chatbot');
+    Route::get('/orders/{order}/messages/unread', [DriverOrderController::class, 'unreadCount']);
+});
+
+// Analytics tracking
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/meals/{meal}/view', [MealViewController::class, 'track']);
+    Route::post('/activity', [UserActivityController::class, 'track']);
+});
