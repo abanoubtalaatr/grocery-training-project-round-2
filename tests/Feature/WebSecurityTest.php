@@ -45,13 +45,14 @@ class WebSecurityTest extends TestCase
 
     public function test_api_routes_are_excluded_from_csrf(): void
     {
-        $middleware = app()->make(\App\Http\Middleware\VerifyCsrfToken::class);
-        $reflection = new \ReflectionClass($middleware);
-        $prop = $reflection->getProperty('except');
-        $prop->setAccessible(true);
-        $except = $prop->getValue($middleware);
+        $response = $this->postJson('/api/contact', [
+            'name' => 'Test',
+            'email' => 'test@example.com',
+            'subject' => 'Test',
+            'message' => 'Test message',
+        ]);
 
-        $this->assertContains('api/*', $except);
+        $this->assertNotEquals(419, $response->status(), 'API routes should not require CSRF tokens.');
     }
 
     // --- C8: CORS wildcard removed ---

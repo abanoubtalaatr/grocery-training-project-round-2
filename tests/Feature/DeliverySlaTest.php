@@ -10,11 +10,18 @@ use App\Models\Order;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Mail;
 use Tests\TestCase;
 
 class DeliverySlaTest extends TestCase
 {
     use DatabaseTransactions;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Mail::fake();
+    }
 
     public function test_standard_delivery_uses_24_hour_sla_deadline(): void
     {

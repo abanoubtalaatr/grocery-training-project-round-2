@@ -39,7 +39,7 @@ class AdminSecurityTest extends TestCase
     {
         $admin = $this->createAdmin();
 
-        Livewire::test(\Filament\Pages\Auth\Login::class)
+        Livewire::test(\Filament\Auth\Pages\Login::class)
             ->set('data.email', $admin->email)
             ->set('data.password', 'AdminPassword123!')
             ->call('authenticate');
@@ -51,7 +51,7 @@ class AdminSecurityTest extends TestCase
     {
         $admin = $this->createAdmin();
 
-        Livewire::test(\Filament\Pages\Auth\Login::class)
+        Livewire::test(\Filament\Auth\Pages\Login::class)
             ->set('data.email', $admin->email)
             ->set('data.password', 'wrong-password')
             ->call('authenticate')
