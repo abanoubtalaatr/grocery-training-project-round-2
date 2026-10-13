@@ -25,6 +25,7 @@ use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\VerifyOtpRequest;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
@@ -41,6 +42,7 @@ class AuthController extends Controller
         protected MeAction $meAction,
         protected OtpService $otpService,
         protected NotificationService $notificationService,
+        protected \App\Services\AuthService $authService,
     ) {}
 
     /**
