@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Favorite;
 use App\Models\Meal;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,13 +20,14 @@ class FavoriteController extends Controller
     {
         try {
             $user = $request->user();
-            
+
             $favorites = $user->favorites()
                 ->with(['meal.category', 'meal.subcategory'])
                 ->latest()
                 ->get()
                 ->map(function ($favorite) {
                     $meal = $favorite->meal;
+
                     return [
                         'id' => $meal->id,
                         'title' => $meal->title,
@@ -33,23 +35,23 @@ class FavoriteController extends Controller
                         'description' => $meal->description,
                         'image_url' => $meal->image_url,
                         'offer_title' => $meal->offer_title,
-                        
+
                         // Pricing
                         ...$meal->getApiPriceAttributes(),
                         'has_offer' => $meal->hasOffer(),
-                        
+
                         // Rating & Details
                         'rating' => (float) $meal->rating,
                         'rating_count' => (int) $meal->rating_count,
                         'size' => $meal->size,
                         'brand' => $meal->brand,
-                        
+
                         // Stock & Availability
                         'stock_quantity' => $meal->stock_quantity,
                         'in_stock' => $meal->isInStock(),
                         'is_available' => $meal->is_available,
                         'is_featured' => $meal->is_featured,
-                        
+
                         // Category & Subcategory
                         'category' => [
                             'id' => $meal->category->id,
@@ -61,7 +63,7 @@ class FavoriteController extends Controller
                             'name' => $meal->subcategory->name,
                             'slug' => $meal->subcategory->slug,
                         ] : null,
-                        
+
                         'is_favorited' => true,
                         'favorited_at' => $favorite->created_at,
                     ];
@@ -75,6 +77,7 @@ class FavoriteController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to retrieve favorites', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve favorites',
@@ -120,7 +123,7 @@ class FavoriteController extends Controller
                     'is_favorited' => $isFavorited,
                 ],
             ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Meal not found',
@@ -128,6 +131,7 @@ class FavoriteController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to toggle favorite', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to toggle favorite',
@@ -154,13 +158,14 @@ class FavoriteController extends Controller
                     'is_favorited' => $isFavorited,
                 ],
             ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Meal not found',
             ], 404);
         } catch (\Exception $e) {
             Log::error('Failed to check favorite status', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to check favorite status',
@@ -195,13 +200,14 @@ class FavoriteController extends Controller
                     'message' => 'Meal was not in favorites',
                 ], 404);
             }
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Meal not found',
             ], 404);
         } catch (\Exception $e) {
             Log::error('Failed to remove from favorites', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to remove from favorites',

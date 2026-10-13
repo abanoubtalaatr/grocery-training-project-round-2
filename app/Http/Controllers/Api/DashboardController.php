@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Cart;
+use App\Models\Category;
+use App\Models\Meal;
+use App\Models\MealView;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\Meal;
-use App\Models\Category;
-use App\Models\MealView;
 use App\Models\UserActivity;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -40,6 +40,7 @@ class DashboardController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to retrieve dashboard data', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve dashboard data',
@@ -162,15 +163,16 @@ class DashboardController extends Controller
 
         // Also calculate savings from meal discount prices
         $mealSavings = OrderItem::whereHas('order', function ($query) use ($user) {
-                $query->where('user_id', $user->id)
-                      ->where('status', '!=', 'cancelled');
-            })
+            $query->where('user_id', $user->id)
+                ->where('status', '!=', 'cancelled');
+        })
             ->with('meal')
             ->get()
             ->sum(function ($item) {
                 if ($item->meal && $item->meal->discount_price) {
                     return ($item->meal->price - $item->meal->discount_price) * $item->quantity;
                 }
+
                 return 0;
             });
 
@@ -199,9 +201,9 @@ class DashboardController extends Controller
     private function getCategoryDistribution($user): array
     {
         $orderItems = OrderItem::whereHas('order', function ($query) use ($user) {
-                $query->where('user_id', $user->id)
-                      ->where('status', '!=', 'cancelled');
-            })
+            $query->where('user_id', $user->id)
+                ->where('status', '!=', 'cancelled');
+        })
             ->with('meal.category')
             ->get();
 
@@ -214,7 +216,7 @@ class DashboardController extends Controller
                 $categoryName = $item->meal->category->name;
                 $quantity = $item->quantity;
 
-                if (!isset($categoryTotals[$categoryId])) {
+                if (! isset($categoryTotals[$categoryId])) {
                     $categoryTotals[$categoryId] = [
                         'category_id' => $categoryId,
                         'category_name' => $categoryName,
@@ -277,9 +279,9 @@ class DashboardController extends Controller
     private function getTopPurchases($user, int $limit = 10): array
     {
         $topMeals = OrderItem::whereHas('order', function ($query) use ($user) {
-                $query->where('user_id', $user->id)
-                      ->where('status', '!=', 'cancelled');
-            })
+            $query->where('user_id', $user->id)
+                ->where('status', '!=', 'cancelled');
+        })
             ->with('meal.category', 'meal.subcategory')
             ->select('meal_id', DB::raw('SUM(quantity) as total_quantity'), DB::raw('SUM(subtotal) as total_spent'))
             ->groupBy('meal_id')
@@ -289,6 +291,7 @@ class DashboardController extends Controller
 
         return $topMeals->map(function ($item) {
             $meal = $item->meal;
+
             return [
                 'meal_id' => $meal?->id,
                 'title' => $meal?->title,

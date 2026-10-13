@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SendOrderMessageRequest;
 use App\Models\Order;
-use App\Models\OrderMessage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

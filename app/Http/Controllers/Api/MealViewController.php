@@ -31,6 +31,7 @@ class MealViewController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to track meal view', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to track view',

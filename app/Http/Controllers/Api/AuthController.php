@@ -17,8 +17,8 @@ use App\Services\NotificationService;
 use App\Services\OtpService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -50,7 +50,7 @@ class AuthController extends Controller
                     'token' => $result['token'],
                 ],
             ], 201);
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
@@ -58,6 +58,7 @@ class AuthController extends Controller
             ], 400);
         } catch (\Exception $e) {
             Log::error('Registration failed', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Registration failed. Please try again.',
@@ -91,7 +92,7 @@ class AuthController extends Controller
                     'token' => $token,
                 ],
             ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Login failed',
@@ -99,6 +100,7 @@ class AuthController extends Controller
             ], 401);
         } catch (\Exception $e) {
             Log::error('Login failed', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Login failed',
@@ -136,7 +138,7 @@ class AuthController extends Controller
                     'token' => $result['token'],
                 ],
             ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'MFA verification failed',
@@ -144,6 +146,7 @@ class AuthController extends Controller
             ], 401);
         } catch (\Exception $e) {
             Log::error('MFA verification failed', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'MFA verification failed',
@@ -166,6 +169,7 @@ class AuthController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Logout failed', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Logout failed',
@@ -189,6 +193,7 @@ class AuthController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to send OTP', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to send OTP',
@@ -221,6 +226,7 @@ class AuthController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('OTP verification failed', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'OTP verification failed',
@@ -245,7 +251,7 @@ class AuthController extends Controller
                 'success' => true,
                 'message' => 'Password reset successfully',
             ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Password reset failed',
@@ -253,6 +259,7 @@ class AuthController extends Controller
             ], 400);
         } catch (\Exception $e) {
             Log::error('Password reset failed', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Password reset failed',
@@ -288,6 +295,7 @@ class AuthController extends Controller
             $this->authService->deleteAccount($request->user());
         } catch (\Exception $e) {
             Log::error('Failed to delete account', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to delete account',
@@ -319,6 +327,7 @@ class AuthController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to initiate password change', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to initiate password change',
@@ -354,6 +363,7 @@ class AuthController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to change password', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to change password',

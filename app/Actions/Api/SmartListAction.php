@@ -23,15 +23,15 @@ class SmartListAction
         try {
             return DB::transaction(function () use ($user, $data, $imagePath) {
                 $smartList = $user->smartLists()->create([
-                    'name'                 => $data->name,
-                    'category'             => $data->category,
-                    'description'          => $data->description,
-                    'image'                => $imagePath,
+                    'name' => $data->name,
+                    'category' => $data->category,
+                    'description' => $data->description,
+                    'image' => $imagePath,
                     'notify_on_price_drop' => $data->notifyOnPriceDrop,
-                    'notify_on_offers'     => $data->notifyOnOffers,
+                    'notify_on_offers' => $data->notifyOnOffers,
                 ]);
 
-                if (!empty($data->mealIds)) {
+                if (! empty($data->mealIds)) {
                     $smartList->meals()->sync($data->mealIds);
                 }
 
@@ -70,7 +70,7 @@ class SmartListAction
                 $data,
                 $attributes
             ) {
-                if (!empty($attributes)) {
+                if (! empty($attributes)) {
                     $smartList->update($attributes);
                 }
 

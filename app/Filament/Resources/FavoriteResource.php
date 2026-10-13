@@ -1,19 +1,16 @@
 <?php
 
-
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\FavoriteResource\Pages;
-use App\Filament\Resources\FavoriteResource\RelationManagers;
 use App\Models\Favorite;
-use Filament\Forms;
-use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
 use Filament\Actions;
+use Filament\Forms;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class FavoriteResource extends Resource
 {
@@ -24,19 +21,19 @@ class FavoriteResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->schema([
-                Forms\Components\Select::make('user_id')
-                    ->label('User')
-                    ->relationship('user', 'username', fn (Builder $query) => $query->orderBy('username'))
-                    ->searchable()
-                    ->preload()
-                    ->required(),
-                Forms\Components\Select::make('meal_id')
-                    ->label('Meal')
-                    ->relationship('meal', 'title', fn (Builder $query) => $query->orderBy('title'))
-                    ->searchable()
-                    ->preload()
-                    ->required(),
-            ]);
+            Forms\Components\Select::make('user_id')
+                ->label('User')
+                ->relationship('user', 'username', fn (Builder $query) => $query->orderBy('username'))
+                ->searchable()
+                ->preload()
+                ->required(),
+            Forms\Components\Select::make('meal_id')
+                ->label('Meal')
+                ->relationship('meal', 'title', fn (Builder $query) => $query->orderBy('title'))
+                ->searchable()
+                ->preload()
+                ->required(),
+        ]);
     }
 
     public static function table(Table $table): Table

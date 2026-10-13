@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ApplyCouponRequest;
 use App\Models\Cart;
-use App\Models\CartItem;
 use App\Models\Meal;
 use App\Models\Offer;
 use App\Services\ShippingService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -43,6 +43,7 @@ class CartController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to retrieve cart', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve cart',
@@ -60,7 +61,7 @@ class CartController extends Controller
             $maxPerProduct = config('cart.max_quantity_per_product', 10);
             $validated = $request->validate([
                 'meal_id' => ['required', 'exists:meals,id'],
-                'quantity' => ['required', 'integer', 'min:1', 'max:' . $maxPerProduct],
+                'quantity' => ['required', 'integer', 'min:1', 'max:'.$maxPerProduct],
             ], [
                 'quantity.max' => "Maximum {$maxPerProduct} units per product allowed.",
             ]);
@@ -70,7 +71,7 @@ class CartController extends Controller
             $meal = Meal::findOrFail($validated['meal_id']);
 
             // Check if meal is available
-            if (!$meal->is_available) {
+            if (! $meal->is_available) {
                 return response()->json([
                     'success' => false,
                     'message' => 'This meal is currently unavailable',
@@ -78,7 +79,7 @@ class CartController extends Controller
             }
 
             // Check if meal is in stock
-            if (!$meal->isInStock()) {
+            if (! $meal->isInStock()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'This meal is out of stock',
@@ -112,6 +113,7 @@ class CartController extends Controller
                 $effectiveMax = min($maxPerProduct, $meal->stock_quantity);
                 if ($newQuantity > $effectiveMax) {
                     DB::rollBack();
+
                     return response()->json([
                         'success' => false,
                         'message' => "Maximum {$maxPerProduct} units per product. You already have {$cartItem->quantity} in cart; maximum total is {$effectiveMax}.",
@@ -162,6 +164,7 @@ class CartController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to add item to cart', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to add item to cart',
@@ -178,14 +181,14 @@ class CartController extends Controller
         try {
             $maxPerProduct = config('cart.max_quantity_per_product', 10);
             $validated = $request->validate([
-                'quantity' => ['required', 'integer', 'min:1', 'max:' . $maxPerProduct],
+                'quantity' => ['required', 'integer', 'min:1', 'max:'.$maxPerProduct],
             ], [
                 'quantity.max' => "Maximum {$maxPerProduct} units per product allowed.",
             ]);
 
             $user = $request->user();
             $cart = $user->getOrCreateCart();
-            
+
             $cartItem = $cart->items()->findOrFail($itemId);
             $meal = $cartItem->meal;
 
@@ -219,7 +222,7 @@ class CartController extends Controller
                 'message' => 'Validation failed',
                 'errors' => $e->errors(),
             ], 422);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Cart item not found',
@@ -227,6 +230,7 @@ class CartController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to update cart item', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to update cart item',
@@ -243,7 +247,7 @@ class CartController extends Controller
         try {
             $user = $request->user();
             $cart = $user->getOrCreateCart();
-            
+
             $cartItem = $cart->items()->findOrFail($itemId);
 
             DB::beginTransaction();
@@ -260,7 +264,7 @@ class CartController extends Controller
                 'message' => 'Item removed from cart successfully',
                 'data' => $this->formatCart($cart),
             ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Cart item not found',
@@ -268,6 +272,7 @@ class CartController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to remove item from cart', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to remove item from cart',
@@ -300,6 +305,7 @@ class CartController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to clear cart', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to clear cart',
@@ -339,7 +345,7 @@ class CartController extends Controller
             if (! $offer->canApplyToAmount($subtotal)) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Minimum purchase of $' . number_format((float) $offer->minimum_purchase, 2) . ' required for this coupon.',
+                    'message' => 'Minimum purchase of $'.number_format((float) $offer->minimum_purchase, 2).' required for this coupon.',
                 ], 400);
             }
 
@@ -354,6 +360,7 @@ class CartController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to apply coupon', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to apply coupon',
@@ -383,6 +390,7 @@ class CartController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to remove coupon', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to remove coupon',

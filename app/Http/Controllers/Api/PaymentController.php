@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
@@ -59,6 +58,7 @@ class PaymentController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to retrieve payment history', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve payment history',
@@ -94,6 +94,7 @@ class PaymentController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to retrieve receipt', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve receipt',
@@ -120,13 +121,13 @@ class PaymentController extends Controller
 
         return [
             'receipt_number' => $order->order_number,
-            'invoice_number' => 'INV-' . str_pad($order->id, 8, '0', STR_PAD_LEFT),
+            'invoice_number' => 'INV-'.str_pad($order->id, 8, '0', STR_PAD_LEFT),
             'type' => 'receipt', // or 'invoice'
             'date' => $order->placed_at ?? $order->created_at,
             'payment_date' => $order->placed_at ?? $order->created_at,
             'status' => $order->status,
             'status_description' => $order->status_description,
-            
+
             // Customer Information
             'customer' => [
                 'id' => $user->id,
@@ -219,7 +220,7 @@ class PaymentController extends Controller
      */
     private function getPaymentMethodDisplay(string $method): string
     {
-        return match($method) {
+        return match ($method) {
             'card' => 'Credit/Debit Card',
             'stripe_checkout' => 'Card (Stripe Checkout)',
             'cash_on_delivery' => 'Cash on Delivery',

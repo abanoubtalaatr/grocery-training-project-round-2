@@ -14,7 +14,7 @@ class SmartListMealAction
     {
         $attached = $smartList->meals()->syncWithoutDetaching([$data->mealId]);
 
-        $isNew = !empty($attached['attached']);
+        $isNew = ! empty($attached['attached']);
 
         return new SmartListMealResult(
             smartList: $smartList->load('meals')->loadCount('meals'),
@@ -25,8 +25,8 @@ class SmartListMealAction
     public function remove(SmartList $smartList, int $mealId): ?SmartList
     {
         $exists = $smartList->meals()->where('meal_id', $mealId)->exists();
-        
-        if (!$exists) {
+
+        if (! $exists) {
             return null;
         }
 

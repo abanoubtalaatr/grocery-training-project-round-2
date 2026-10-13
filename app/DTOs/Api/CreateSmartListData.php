@@ -8,9 +8,9 @@ final readonly class CreateSmartListData
         public readonly string $name,
         public readonly ?string $category = null,
         public readonly ?string $description = null,
-        public readonly mixed $image = null, 
-        public readonly bool $notifyOnPriceDrop = true, 
-        public readonly bool $notifyOnOffers = true,   
+        public readonly mixed $image = null,
+        public readonly bool $notifyOnPriceDrop = true,
+        public readonly bool $notifyOnOffers = true,
         public readonly array $mealIds = []
     ) {}
 

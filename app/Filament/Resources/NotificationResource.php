@@ -1,19 +1,15 @@
 <?php
 
-
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\NotificationResource\Pages;
-use App\Filament\Resources\NotificationResource\RelationManagers;
 use App\Models\Notification;
-use Filament\Forms;
-use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
 use Filament\Actions;
+use Filament\Forms;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class NotificationResource extends Resource
 {
@@ -24,20 +20,20 @@ class NotificationResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->schema([
-                Forms\Components\TextInput::make('type')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('notifiable_type')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('notifiable_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\Textarea::make('data')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\DateTimePicker::make('read_at'),
-            ]);
+            Forms\Components\TextInput::make('type')
+                ->required()
+                ->maxLength(255),
+            Forms\Components\TextInput::make('notifiable_type')
+                ->required()
+                ->maxLength(255),
+            Forms\Components\TextInput::make('notifiable_id')
+                ->required()
+                ->numeric(),
+            Forms\Components\Textarea::make('data')
+                ->required()
+                ->columnSpanFull(),
+            Forms\Components\DateTimePicker::make('read_at'),
+        ]);
     }
 
     public static function table(Table $table): Table

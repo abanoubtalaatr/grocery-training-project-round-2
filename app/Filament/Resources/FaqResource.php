@@ -1,19 +1,15 @@
 <?php
 
-
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\FaqResource\Pages;
-use App\Filament\Resources\FaqResource\RelationManagers;
 use App\Models\Faq;
-use Filament\Forms;
-use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
 use Filament\Actions;
+use Filament\Forms;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class FaqResource extends Resource
 {
@@ -24,21 +20,21 @@ class FaqResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->schema([
-                Forms\Components\TextInput::make('question')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('answer')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\TextInput::make('category')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('order')
-                    ->required()
-                    ->numeric()
-                    ->default(0),
-                Forms\Components\Toggle::make('is_active')
-                    ->required(),
-            ]);
+            Forms\Components\TextInput::make('question')
+                ->required()
+                ->maxLength(255),
+            Forms\Components\Textarea::make('answer')
+                ->required()
+                ->columnSpanFull(),
+            Forms\Components\TextInput::make('category')
+                ->maxLength(255),
+            Forms\Components\TextInput::make('order')
+                ->required()
+                ->numeric()
+                ->default(0),
+            Forms\Components\Toggle::make('is_active')
+                ->required(),
+        ]);
     }
 
     public static function table(Table $table): Table

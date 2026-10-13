@@ -8,7 +8,6 @@ use App\Http\Resources\Api\CategoryResource;
 use App\Models\Category;
 use App\Traits\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -22,7 +21,7 @@ class CategoryController extends Controller
         $categories = Category::active()
             ->ordered()
             ->withCount([
-                'meals' => fn($query) => $query->available(),
+                'meals' => fn ($query) => $query->available(),
             ])
             ->paginate($request->perPage);
 
@@ -31,6 +30,7 @@ class CategoryController extends Controller
             'Categories retrieved successfully'
         );
     }
+
     /**
      * Get single category with meals
      */
@@ -52,5 +52,4 @@ class CategoryController extends Controller
             'Category retrieved successfully'
         );
     }
-    
 }

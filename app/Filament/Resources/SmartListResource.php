@@ -1,19 +1,16 @@
 <?php
 
-
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SmartListResource\Pages;
 use App\Filament\Resources\SmartListResource\RelationManagers;
 use App\Models\SmartList;
-use Filament\Forms;
-use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
 use Filament\Actions;
+use Filament\Forms;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SmartListResource extends Resource
 {
@@ -24,19 +21,19 @@ class SmartListResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->schema([
-                Forms\Components\Select::make('user_id')
-                    ->relationship('user', 'username')
-                    ->required()
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('description')
-                    ->maxLength(255),
-                Forms\Components\FileUpload::make('image')
-                    ->image(),
-            ]);
+            Forms\Components\Select::make('user_id')
+                ->relationship('user', 'username')
+                ->required()
+                ->searchable()
+                ->preload(),
+            Forms\Components\TextInput::make('name')
+                ->required()
+                ->maxLength(255),
+            Forms\Components\TextInput::make('description')
+                ->maxLength(255),
+            Forms\Components\FileUpload::make('image')
+                ->image(),
+        ]);
     }
 
     public static function table(Table $table): Table

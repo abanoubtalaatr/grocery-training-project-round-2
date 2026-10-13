@@ -28,60 +28,51 @@ class ApiExceptionRenderer
         }
 
         return match (true) {
-            $e instanceof ValidationException =>
-            $this->error(
+            $e instanceof ValidationException => $this->error(
                 'Validation Failed',
                 422,
                 $e->errors()
             ),
 
-            $e instanceof TooManyRequestsHttpException =>
-            $this->error(
+            $e instanceof TooManyRequestsHttpException => $this->error(
                 'Too many attempts. Please try again later',
                 429
             ),
 
-            $e instanceof ModelNotFoundException =>
-            $this->error(
+            $e instanceof ModelNotFoundException => $this->error(
                 'Not Found',
                 404,
                 [
                     class_basename($e->getModel()) => [
-                        'This ' . class_basename($e->getModel()) . ' is not found.'
-                    ]
+                        'This '.class_basename($e->getModel()).' is not found.',
+                    ],
                 ]
             ),
 
-            $e instanceof NotFoundHttpException =>
-            $this->error(
+            $e instanceof NotFoundHttpException => $this->error(
                 'The requested endpoint does not exist',
                 404
             ),
 
-            $e instanceof MethodNotAllowedHttpException =>
-            $this->error(
+            $e instanceof MethodNotAllowedHttpException => $this->error(
                 'The HTTP method used for this request is not supported',
                 405
             ),
 
-            $e instanceof AuthenticationException =>
-            $this->error(
+            $e instanceof AuthenticationException => $this->error(
                 'Unauthenticated',
                 401
             ),
 
             $e instanceof AuthorizationException,
-            $e instanceof AccessDeniedHttpException =>
-            $this->error(
+            $e instanceof AccessDeniedHttpException => $this->error(
                 'Forbidden',
                 403
             ),
 
-            $e instanceof QueryException =>
-            $this->handleQueryException($e),
+            $e instanceof QueryException => $this->handleQueryException($e),
 
-            default =>
-            $this->handleGeneralException($e),
+            default => $this->handleGeneralException($e),
         };
     }
 

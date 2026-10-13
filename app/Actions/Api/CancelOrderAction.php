@@ -13,10 +13,6 @@ class CancelOrderAction
     /**
      * Cancel an active order and restore meal inventory.
      *
-     * @param  User  $user
-     * @param  Order  $order
-     * @param  string|null  $reason
-     * @return Order
      *
      * @throws HttpException
      */
@@ -54,8 +50,8 @@ class CancelOrderAction
             ];
 
             if ($reason !== null && $reason !== '') {
-                $existingNotes = $order->notes ? $order->notes . ' | ' : '';
-                $updateData['notes'] = $existingNotes . 'Cancellation reason: ' . $reason;
+                $existingNotes = $order->notes ? $order->notes.' | ' : '';
+                $updateData['notes'] = $existingNotes.'Cancellation reason: '.$reason;
             }
 
             $order->update($updateData);

@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers\Api;
 
-use Stripe\Stripe;
+use App\Actions\Api\CancelOrderAction;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CancelOrderRequest;
+use App\Http\Requests\StoreOrderRequest;
+use App\Jobs\SendInvoiceEmailJob;
 use App\Models\Cart;
 use App\Models\Meal;
 use App\Models\Order;
-use App\Models\Address;
 use App\Models\OrderItem;
 use App\Models\OrderNote;
-use Stripe\PaymentIntent;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use App\Actions\Api\CancelOrderAction;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreOrderRequest;
-use App\Http\Requests\CancelOrderRequest;
 use App\Services\ShippingService;
-use App\Jobs\SendInvoiceEmailJob;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class OrderController extends Controller
 {
@@ -37,13 +37,14 @@ class OrderController extends Controller
                 'message' => 'Order cancelled successfully',
                 'data' => $this->formatOrder($cancelledOrder),
             ]);
-        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+        } catch (HttpException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to cancel order',
             ], $e->getStatusCode());
         } catch (\Exception $e) {
             Log::error('Order cancel failed', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to cancel order',
@@ -82,7 +83,7 @@ class OrderController extends Controller
             // Get user's active cart
             $cart = $user->activeCart()->with('items.meal')->first();
 
-            if (!$cart || $cart->isEmpty()) {
+            if (! $cart || $cart->isEmpty()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Your cart is empty. Please add items to your cart before placing an order.',
@@ -91,7 +92,7 @@ class OrderController extends Controller
 
             // Validate and process items from cart
             $itemsResult = $this->validateAndProcessCartItems($cart->items);
-            if (!$itemsResult['success']) {
+            if (! $itemsResult['success']) {
                 return response()->json($itemsResult['response'], 400);
             }
 
@@ -134,7 +135,6 @@ class OrderController extends Controller
             // Clear user's active cart
             $this->clearUserCart($user);
 
-
             if (isset($validated['special_note_id']) || isset($validated['notes'])) {
                 OrderNote::create([
                     'order_id' => $order->id,
@@ -156,6 +156,7 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Order creation failed', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create order',
@@ -175,7 +176,7 @@ class OrderController extends Controller
         foreach ($cartItems as $cartItem) {
             $meal = $cartItem->meal;
 
-            if (!$meal) {
+            if (! $meal) {
                 return [
                     'success' => false,
                     'response' => [
@@ -185,7 +186,7 @@ class OrderController extends Controller
                 ];
             }
 
-            if (!$meal->is_available) {
+            if (! $meal->is_available) {
                 return [
                     'success' => false,
                     'response' => [
@@ -246,7 +247,7 @@ class OrderController extends Controller
 
         Stripe::setApiKey(config('services.stripe.secret'));
 
-        if (!$user->stripe_customer_id) {
+        if (! $user->stripe_customer_id) {
             return [
                 'success' => false,
                 'response' => [
@@ -258,7 +259,7 @@ class OrderController extends Controller
 
         try {
             $paymentIntent = PaymentIntent::create([
-                'amount' => (int)($total * 100),
+                'amount' => (int) ($total * 100),
                 'currency' => 'usd',
                 'customer' => $user->stripe_customer_id,
                 'payment_method' => $validated['payment_method_id'],
@@ -271,7 +272,7 @@ class OrderController extends Controller
                     'success' => false,
                     'response' => [
                         'success' => false,
-                        'message' => 'Payment failed: ' . $paymentIntent->status,
+                        'message' => 'Payment failed: '.$paymentIntent->status,
                     ],
                 ];
             }
@@ -282,6 +283,7 @@ class OrderController extends Controller
             ];
         } catch (\Exception $e) {
             Log::error('Payment processing failed', ['message' => $e->getMessage()]);
+
             return [
                 'success' => false,
                 'response' => [
@@ -386,6 +388,7 @@ class OrderController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to retrieve orders', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve orders',
@@ -408,7 +411,7 @@ class OrderController extends Controller
                 ->orderBy('created_at', 'desc')
                 ->first();
 
-            if (!$order) {
+            if (! $order) {
                 return response()->json([
                     'success' => false,
                     'message' => 'No active order found',
@@ -499,6 +502,7 @@ class OrderController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to track order', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to track order',

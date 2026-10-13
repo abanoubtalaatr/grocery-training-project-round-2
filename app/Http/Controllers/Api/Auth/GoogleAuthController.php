@@ -14,6 +14,7 @@ use Throwable;
 class GoogleAuthController extends Controller
 {
     private const INVALID_GOOGLE_TOKEN_MESSAGE = 'Invalid Google token.';
+
     private const ALLOWED_GOOGLE_ISSUERS = [
         'accounts.google.com',
         'https://accounts.google.com',

@@ -1,19 +1,15 @@
 <?php
 
-
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\OtpResource\Pages;
-use App\Filament\Resources\OtpResource\RelationManagers;
 use App\Models\Otp;
-use Filament\Forms;
-use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
 use Filament\Actions;
+use Filament\Forms;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class OtpResource extends Resource
 {
@@ -24,20 +20,20 @@ class OtpResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->schema([
-                Forms\Components\TextInput::make('identifier')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('otp')
-                    ->required()
-                    ->maxLength(10),
-                Forms\Components\TextInput::make('type')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Toggle::make('is_used')
-                    ->required(),
-                Forms\Components\DateTimePicker::make('expires_at')
-                    ->required(),
-            ]);
+            Forms\Components\TextInput::make('identifier')
+                ->required()
+                ->maxLength(255),
+            Forms\Components\TextInput::make('otp')
+                ->required()
+                ->maxLength(10),
+            Forms\Components\TextInput::make('type')
+                ->required()
+                ->maxLength(255),
+            Forms\Components\Toggle::make('is_used')
+                ->required(),
+            Forms\Components\DateTimePicker::make('expires_at')
+                ->required(),
+        ]);
     }
 
     public static function table(Table $table): Table

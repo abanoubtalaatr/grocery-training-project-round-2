@@ -1,22 +1,17 @@
 <?php
 
-
-
-
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use App\Rules\UsernameMustContainLetter;
-use Filament\Forms;
-use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
 use Filament\Actions;
+use Filament\Forms;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
 
 class UserResource extends Resource
 {
@@ -31,46 +26,46 @@ class UserResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->schema([
-                Forms\Components\TextInput::make('username')
-                    ->required()
-                    ->maxLength(User::USERNAME_MAX_LENGTH)
-                    ->rules([new UsernameMustContainLetter]),
-                Forms\Components\FileUpload::make('profile_image')
-                    ->image(),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('firstname')
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('lastname')
-                    ->maxLength(255),
-                Forms\Components\Select::make('role')
-                    ->options([
-                        'customer' => 'Customer',
-                        'delivery_partner' => 'Driver',
-                        'support_agent' => 'Support Agent',
-                        'admin' => 'Admin',
-                    ])
-                    ->default('customer')
-                    ->required(),
-                Forms\Components\TextInput::make('country_code')
-                    ->required()
-                    ->maxLength(255)
-                    ->default('+20'),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required(fn (string $context): bool => $context === 'create')
-                    ->minLength(12)
-                    ->maxLength(255)
-                    ->dehydrated(fn ($state) => filled($state)),
-                Forms\Components\Toggle::make('agree_terms')
-                    ->required(),
-                Forms\Components\Toggle::make('is_active')
-                    ->required(),
-            ]);
+            Forms\Components\TextInput::make('username')
+                ->required()
+                ->maxLength(User::USERNAME_MAX_LENGTH)
+                ->rules([new UsernameMustContainLetter]),
+            Forms\Components\FileUpload::make('profile_image')
+                ->image(),
+            Forms\Components\TextInput::make('email')
+                ->email()
+                ->maxLength(255),
+            Forms\Components\TextInput::make('phone')
+                ->tel()
+                ->maxLength(255),
+            Forms\Components\TextInput::make('firstname')
+                ->maxLength(255),
+            Forms\Components\TextInput::make('lastname')
+                ->maxLength(255),
+            Forms\Components\Select::make('role')
+                ->options([
+                    'customer' => 'Customer',
+                    'delivery_partner' => 'Driver',
+                    'support_agent' => 'Support Agent',
+                    'admin' => 'Admin',
+                ])
+                ->default('customer')
+                ->required(),
+            Forms\Components\TextInput::make('country_code')
+                ->required()
+                ->maxLength(255)
+                ->default('+20'),
+            Forms\Components\TextInput::make('password')
+                ->password()
+                ->required(fn (string $context): bool => $context === 'create')
+                ->minLength(12)
+                ->maxLength(255)
+                ->dehydrated(fn ($state) => filled($state)),
+            Forms\Components\Toggle::make('agree_terms')
+                ->required(),
+            Forms\Components\Toggle::make('is_active')
+                ->required(),
+        ]);
     }
 
     public static function table(Table $table): Table

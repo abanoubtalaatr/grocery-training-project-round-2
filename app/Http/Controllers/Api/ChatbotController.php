@@ -10,11 +10,13 @@ use App\Models\ContactMessage;
 use App\Models\Faq;
 use App\Models\Meal;
 use App\Models\Offer;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class ChatbotController extends Controller
@@ -219,7 +221,7 @@ class ChatbotController extends Controller
                     'meals_count' => $meals->count(),
                 ],
             ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
@@ -292,7 +294,7 @@ class ChatbotController extends Controller
     /**
      * Create a support ticket and notify admin when AI fails.
      */
-    private function createFailureHandoff(\App\Models\User $user, string $question, string $errorReason, Request $request): ?int
+    private function createFailureHandoff(User $user, string $question, string $errorReason, Request $request): ?int
     {
         try {
             $contactMessage = ContactMessage::create([
@@ -304,8 +306,8 @@ class ChatbotController extends Controller
                 'message' => "AI chatbot failed during a customer interaction.\n\n"
                     ."Failure Reason: {$errorReason}\n"
                     ."Customer Question: {$question}\n\n"
-                    ."The customer was unable to receive an AI response. "
-                    ."Please review and assist the customer directly.",
+                    .'The customer was unable to receive an AI response. '
+                    .'Please review and assist the customer directly.',
                 'ip_address' => $request->ip(),
                 'user_agent' => $request->userAgent(),
                 'status' => 'new',
@@ -314,7 +316,7 @@ class ChatbotController extends Controller
             try {
                 Mail::to(config('mail.admin_email', 'admin@example.com'))
                     ->send(new ContactMessageReceived($contactMessage));
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 Log::error('Failed to send AI failure handoff email', [
                     'contact_message_id' => $contactMessage->id,
                     'error' => $e->getMessage(),
@@ -322,7 +324,7 @@ class ChatbotController extends Controller
             }
 
             return $contactMessage->id;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Log::error('Failed to create AI failure handoff', [
                 'user_id' => $user->id,
                 'error' => $e->getMessage(),
@@ -434,8 +436,8 @@ class ChatbotController extends Controller
 
         $contextLines = [];
         foreach ($recentMessages as $msg) {
-            $contextLines[] = 'User: ' . $msg->question;
-            $contextLines[] = 'AI: ' . $msg->answer;
+            $contextLines[] = 'User: '.$msg->question;
+            $contextLines[] = 'AI: '.$msg->answer;
         }
         $contextText = implode("\n", $contextLines);
 
@@ -461,7 +463,7 @@ class ChatbotController extends Controller
             'name' => $user->full_name ?? $user->username,
             'email' => $user->email,
             'phone' => $user->phone,
-            'subject' => 'AI Support Handoff' . ($orderId ? " (Order #{$orderId})" : ''),
+            'subject' => 'AI Support Handoff'.($orderId ? " (Order #{$orderId})" : ''),
             'message' => $messageBody,
             'ip_address' => $request->ip(),
             'user_agent' => $request->userAgent(),

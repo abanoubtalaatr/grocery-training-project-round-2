@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ReplySupportMessageRequest;
 use App\Http\Resources\ContactMessageCollection;
 use App\Http\Resources\ContactMessageResource;
+use App\Mail\ContactAutoReply;
 use App\Mail\ContactMessageReceived;
 use App\Models\ContactMessage;
 use App\Support\EmailValidation;
@@ -68,7 +69,7 @@ class ContactController extends Controller
 
             // Send auto-reply to user
             Mail::to($request->email)
-                ->send(new \App\Mail\ContactAutoReply($contactMessage));
+                ->send(new ContactAutoReply($contactMessage));
 
         } catch (\Exception $e) {
             Log::error('Failed to send contact email', [

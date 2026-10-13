@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Address;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -44,6 +45,7 @@ class AddressController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to retrieve addresses', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve addresses',
@@ -66,13 +68,14 @@ class AddressController extends Controller
                 'message' => 'Address retrieved successfully',
                 'data' => $this->formatAddress($address),
             ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Address not found',
             ], 404);
         } catch (\Exception $e) {
             Log::error('Failed to retrieve address', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve address',
@@ -211,7 +214,7 @@ class AddressController extends Controller
                 'message' => 'Address updated successfully',
                 'data' => $this->formatAddress($address->fresh()),
             ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Address not found',
@@ -256,7 +259,7 @@ class AddressController extends Controller
                 'success' => true,
                 'message' => 'Address deleted successfully',
             ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Address not found',
@@ -303,7 +306,7 @@ class AddressController extends Controller
                 'message' => 'Default address updated successfully',
                 'data' => $this->formatAddress($address->fresh()),
             ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Address not found',

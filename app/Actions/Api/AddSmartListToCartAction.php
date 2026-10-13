@@ -16,8 +16,6 @@ class AddSmartListToCartAction
     /**
      * Add all available items from a smart list into the user's active cart.
      *
-     * @param  User  $user
-     * @param  SmartList  $smartList
      * @return array<string, mixed>
      */
     public function execute(User $user, SmartList $smartList): array
@@ -35,21 +33,23 @@ class AddSmartListToCartAction
 
         DB::transaction(function () use ($cart, $smartList, $maxPerProduct, &$added, &$skipped) {
             foreach ($smartList->meals as $meal) {
-                if (!$meal->is_available) {
+                if (! $meal->is_available) {
                     $skipped[] = [
                         'meal_id' => $meal->id,
                         'meal_title' => $meal->title,
                         'reason' => 'Meal is currently unavailable',
                     ];
+
                     continue;
                 }
 
-                if (!$meal->isInStock() || $meal->stock_quantity < 1) {
+                if (! $meal->isInStock() || $meal->stock_quantity < 1) {
                     $skipped[] = [
                         'meal_id' => $meal->id,
                         'meal_title' => $meal->title,
                         'reason' => 'Meal is out of stock',
                     ];
+
                     continue;
                 }
 
@@ -63,6 +63,7 @@ class AddSmartListToCartAction
                         'meal_title' => $meal->title,
                         'reason' => "Maximum allowed quantity ({$effectiveMax}) already in cart",
                     ];
+
                     continue;
                 }
 

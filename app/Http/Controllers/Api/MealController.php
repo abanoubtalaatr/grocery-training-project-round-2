@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Meal;
 use App\Services\FrequencyService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -183,6 +184,7 @@ class MealController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to retrieve new products', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve meals',
@@ -231,6 +233,7 @@ class MealController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to retrieve hot meals', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve hot meals',
@@ -279,6 +282,7 @@ class MealController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to retrieve hot meals', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve hot meals',
@@ -430,6 +434,7 @@ class MealController extends Controller
             ], $isEmpty ? ['empty_message' => 'No products match the applied filters. Try adjusting your search or filters.'] : []));
         } catch (\Exception $e) {
             Log::error('Failed to retrieve meals', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve meals',
@@ -494,6 +499,7 @@ class MealController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to retrieve today deals', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve today\'s deals',
@@ -611,13 +617,14 @@ class MealController extends Controller
                     'updated_at' => $meal->updated_at,
                 ],
             ]);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        } catch (ModelNotFoundException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Meal not found',
             ], 404);
         } catch (\Exception $e) {
             Log::error('Failed to retrieve meal', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve meal',

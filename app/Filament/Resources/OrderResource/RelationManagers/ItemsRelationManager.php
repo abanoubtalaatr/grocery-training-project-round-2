@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\OrderResource\RelationManagers;
 
-use Filament\Schemas\Schema;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 

@@ -1,23 +1,17 @@
 <?php
 
-
-
-
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
-use App\Models\Address;
 use App\Models\Order;
-use App\Models\User;
-use Filament\Forms;
-use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
 use Filament\Actions;
+use Filament\Forms;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class OrderResource extends Resource
 {
@@ -32,87 +26,86 @@ class OrderResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->schema([
-                Forms\Components\Select::make('user_id')
-                    ->label('User')
-                    ->relationship('user', 'username')
-                    ->required()
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\Select::make('address_id')
-                    ->label('Address')
-                    ->relationship('address', 'street_address', fn (Builder $query, callable $get) =>
-                        $query->where('user_id', $get('user_id'))
-                    )
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\TextInput::make('order_number')
-                    ->required()
-                    ->maxLength(255)
-                    ->disabled()
-                    ->dehydrated(),
-                Forms\Components\Select::make('payment_method')
-                    ->options([
-                        'card' => 'Card',
-                        'cash_on_delivery' => 'Cash on Delivery',
-                        'stripe_checkout' => 'Stripe Checkout (hosted)',
-                    ])
-                    ->required(),
-                Forms\Components\TextInput::make('payment_method_id')
-                    ->maxLength(255)
-                    ->label('Payment Method ID'),
-                Forms\Components\Select::make('delivery_type')
-                    ->options([
-                        'delivery' => 'Delivery',
-                        'pickup' => 'Pickup',
-                    ])
-                    ->required(),
-                Forms\Components\Select::make('status')
-                    ->options([
-                        'awaiting_payment' => 'Awaiting payment',
-                        'placed' => 'Order Placed',
-                        'processing' => 'Processing',
-                        'shipping' => 'Shipping',
-                        'out_for_delivery' => 'Out for Delivery',
-                        'delivered' => 'Delivered',
-                        'cancelled' => 'Cancelled',
-                    ])
-                    ->required(),
-                Forms\Components\TextInput::make('subtotal')
-                    ->required()
-                    ->numeric()
-                    ->default(0.00),
-                Forms\Components\TextInput::make('tax')
-                    ->required()
-                    ->numeric()
-                    ->default(0.00),
-                Forms\Components\TextInput::make('discount')
-                    ->required()
-                    ->numeric()
-                    ->default(0.00),
-                Forms\Components\TextInput::make('total')
-                    ->required()
-                    ->numeric()
-                    ->default(0.00),
-                Forms\Components\TextInput::make('shipping_fee')
-                    ->numeric()
-                    ->default(0.00),
-                Forms\Components\Textarea::make('notes')
-                    ->columnSpanFull(),
-                Forms\Components\DateTimePicker::make('placed_at')
-                    ->label('Placed At'),
-                Forms\Components\DateTimePicker::make('processing_at')
-                    ->label('Processing At'),
-                Forms\Components\DateTimePicker::make('shipping_at')
-                    ->label('Shipping At'),
-                Forms\Components\DateTimePicker::make('out_for_delivery_at')
-                    ->label('Out for Delivery At'),
-                Forms\Components\DateTimePicker::make('delivered_at')
-                    ->label('Delivered At'),
-                Forms\Components\DateTimePicker::make('cancelled_at')
-                    ->label('Cancelled At'),
-                Forms\Components\DateTimePicker::make('estimated_delivery_time')
-                    ->label('Estimated Delivery Time'),
-            ]);
+            Forms\Components\Select::make('user_id')
+                ->label('User')
+                ->relationship('user', 'username')
+                ->required()
+                ->searchable()
+                ->preload(),
+            Forms\Components\Select::make('address_id')
+                ->label('Address')
+                ->relationship('address', 'street_address', fn (Builder $query, callable $get) => $query->where('user_id', $get('user_id'))
+                )
+                ->searchable()
+                ->preload(),
+            Forms\Components\TextInput::make('order_number')
+                ->required()
+                ->maxLength(255)
+                ->disabled()
+                ->dehydrated(),
+            Forms\Components\Select::make('payment_method')
+                ->options([
+                    'card' => 'Card',
+                    'cash_on_delivery' => 'Cash on Delivery',
+                    'stripe_checkout' => 'Stripe Checkout (hosted)',
+                ])
+                ->required(),
+            Forms\Components\TextInput::make('payment_method_id')
+                ->maxLength(255)
+                ->label('Payment Method ID'),
+            Forms\Components\Select::make('delivery_type')
+                ->options([
+                    'delivery' => 'Delivery',
+                    'pickup' => 'Pickup',
+                ])
+                ->required(),
+            Forms\Components\Select::make('status')
+                ->options([
+                    'awaiting_payment' => 'Awaiting payment',
+                    'placed' => 'Order Placed',
+                    'processing' => 'Processing',
+                    'shipping' => 'Shipping',
+                    'out_for_delivery' => 'Out for Delivery',
+                    'delivered' => 'Delivered',
+                    'cancelled' => 'Cancelled',
+                ])
+                ->required(),
+            Forms\Components\TextInput::make('subtotal')
+                ->required()
+                ->numeric()
+                ->default(0.00),
+            Forms\Components\TextInput::make('tax')
+                ->required()
+                ->numeric()
+                ->default(0.00),
+            Forms\Components\TextInput::make('discount')
+                ->required()
+                ->numeric()
+                ->default(0.00),
+            Forms\Components\TextInput::make('total')
+                ->required()
+                ->numeric()
+                ->default(0.00),
+            Forms\Components\TextInput::make('shipping_fee')
+                ->numeric()
+                ->default(0.00),
+            Forms\Components\Textarea::make('notes')
+                ->columnSpanFull(),
+            Forms\Components\DateTimePicker::make('placed_at')
+                ->label('Placed At'),
+            Forms\Components\DateTimePicker::make('processing_at')
+                ->label('Processing At'),
+            Forms\Components\DateTimePicker::make('shipping_at')
+                ->label('Shipping At'),
+            Forms\Components\DateTimePicker::make('out_for_delivery_at')
+                ->label('Out for Delivery At'),
+            Forms\Components\DateTimePicker::make('delivered_at')
+                ->label('Delivered At'),
+            Forms\Components\DateTimePicker::make('cancelled_at')
+                ->label('Cancelled At'),
+            Forms\Components\DateTimePicker::make('estimated_delivery_time')
+                ->label('Estimated Delivery Time'),
+        ]);
     }
 
     public static function table(Table $table): Table

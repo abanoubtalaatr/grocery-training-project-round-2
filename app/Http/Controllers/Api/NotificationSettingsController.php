@@ -144,7 +144,7 @@ class NotificationSettingsController extends Controller
                     'order_shipped' => $settings->order_shipped,
                     'delivery_updates' => $settings->delivery_updates,
                     'out_of_stock_alerts' => $settings->out_of_stock_alerts,
-                ]
+                ],
             ],
             'deals_promotions' => [
                 'category' => 'Deals & Promotions',
@@ -153,7 +153,7 @@ class NotificationSettingsController extends Controller
                     'weekly_discounts' => $settings->weekly_discounts,
                     'exclusive_member_offers' => $settings->exclusive_member_offers,
                     'seasonal_campaigns' => $settings->seasonal_campaigns,
-                ]
+                ],
             ],
             'account_reminders' => [
                 'category' => 'Account & Reminders',
@@ -161,7 +161,7 @@ class NotificationSettingsController extends Controller
                 'settings' => [
                     'cart_reminders' => $settings->cart_reminders,
                     'payment_billing' => $settings->payment_billing,
-                ]
+                ],
             ],
             'channels' => [
                 'category' => 'Notification Channels',
@@ -170,8 +170,8 @@ class NotificationSettingsController extends Controller
                     'email_notifications' => $settings->email_notifications,
                     'push_notifications' => $settings->push_notifications,
                     'sms_notifications' => $settings->sms_notifications,
-                ]
-            ]
+                ],
+            ],
         ];
     }
 

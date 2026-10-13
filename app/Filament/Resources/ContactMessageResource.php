@@ -1,19 +1,15 @@
 <?php
 
-
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ContactMessageResource\Pages;
-use App\Filament\Resources\ContactMessageResource\RelationManagers;
 use App\Models\ContactMessage;
-use Filament\Forms;
-use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
 use Filament\Actions;
+use Filament\Forms;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ContactMessageResource extends Resource
 {
@@ -24,34 +20,34 @@ class ContactMessageResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('subject')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Textarea::make('message')
-                    ->required()
-                    ->columnSpanFull(),
-                Forms\Components\Select::make('status')
-                    ->options([
-                        'new' => 'New',
-                        'read' => 'Read',
-                        'replied' => 'Replied',
-                        'spam' => 'Spam',
-                    ])
-                    ->default('new')
-                    ->required(),
-                Forms\Components\Textarea::make('admin_notes')
-                    ->columnSpanFull(),
-            ]);
+            Forms\Components\TextInput::make('name')
+                ->required()
+                ->maxLength(255),
+            Forms\Components\TextInput::make('email')
+                ->email()
+                ->required()
+                ->maxLength(255),
+            Forms\Components\TextInput::make('phone')
+                ->tel()
+                ->maxLength(255),
+            Forms\Components\TextInput::make('subject')
+                ->required()
+                ->maxLength(255),
+            Forms\Components\Textarea::make('message')
+                ->required()
+                ->columnSpanFull(),
+            Forms\Components\Select::make('status')
+                ->options([
+                    'new' => 'New',
+                    'read' => 'Read',
+                    'replied' => 'Replied',
+                    'spam' => 'Spam',
+                ])
+                ->default('new')
+                ->required(),
+            Forms\Components\Textarea::make('admin_notes')
+                ->columnSpanFull(),
+        ]);
     }
 
     public static function table(Table $table): Table

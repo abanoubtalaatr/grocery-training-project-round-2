@@ -1,23 +1,16 @@
 <?php
 
-
-
-
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ReviewResource\Pages;
-use App\Filament\Resources\ReviewResource\RelationManagers;
-use App\Models\Meal;
 use App\Models\Review;
-use App\Models\User;
-use Filament\Forms;
-use Filament\Schemas\Schema;
-use Filament\Resources\Resource;
 use Filament\Actions;
+use Filament\Forms;
+use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ReviewResource extends Resource
 {
@@ -32,35 +25,35 @@ class ReviewResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema->schema([
-                Forms\Components\Select::make('user_id')
-                    ->label('User')
-                    ->relationship('user', 'username')
-                    ->required()
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\Select::make('meal_id')
-                    ->label('Meal')
-                    ->relationship('meal', 'title')
-                    ->required()
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\TextInput::make('rating')
-                    ->required()
-                    ->numeric()
-                    ->minValue(1)
-                    ->maxValue(5)
-                    ->default(5),
-                Forms\Components\Textarea::make('comment')
-                    ->rows(4)
-                    ->columnSpanFull(),
-                Forms\Components\Toggle::make('is_approved')
-                    ->label('Approved')
-                    ->default(true),
-                Forms\Components\FileUpload::make('images')
-                    ->image()
-                    ->multiple()
-                    ->columnSpanFull(),
-            ]);
+            Forms\Components\Select::make('user_id')
+                ->label('User')
+                ->relationship('user', 'username')
+                ->required()
+                ->searchable()
+                ->preload(),
+            Forms\Components\Select::make('meal_id')
+                ->label('Meal')
+                ->relationship('meal', 'title')
+                ->required()
+                ->searchable()
+                ->preload(),
+            Forms\Components\TextInput::make('rating')
+                ->required()
+                ->numeric()
+                ->minValue(1)
+                ->maxValue(5)
+                ->default(5),
+            Forms\Components\Textarea::make('comment')
+                ->rows(4)
+                ->columnSpanFull(),
+            Forms\Components\Toggle::make('is_approved')
+                ->label('Approved')
+                ->default(true),
+            Forms\Components\FileUpload::make('images')
+                ->image()
+                ->multiple()
+                ->columnSpanFull(),
+        ]);
     }
 
     public static function table(Table $table): Table
