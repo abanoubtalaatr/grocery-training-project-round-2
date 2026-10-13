@@ -115,6 +115,49 @@ class AuthController extends Controller
     /**
      * Logout
      */
+
+    public function verifyMfaAndLogin(Request $request): JsonResponse
+    {
+        try {
+            $request->validate([
+                'identifier' => 'required|string',
+                'otp' => 'required|string',
+            ]);
+
+            $result = $this->authService->verifyMfaAndLogin(
+                $request->input('identifier'),
+                $request->input('otp')
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Login successful',
+                'data' => [
+                    'user' => [
+                        'id' => $result['user']->id,
+                        'username' => $result['user']->username,
+                        'email' => $result['user']->email,
+                        'phone' => $result['user']->phone,
+                    ],
+                    'token' => $result['token'],
+                ],
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'MFA verification failed',
+                'errors' => $e->errors(),
+            ], 401);
+        } catch (\Exception $e) {
+            Log::error('MFA verification failed', ['message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'MFA verification failed',
+                'error' => 'Internal server error',
+            ], 500);
+        }
+    }
+
     public function logout(Request $request): JsonResponse
     {
         try {
@@ -293,4 +336,37 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+    public function confirmChangePassword(ConfirmChangePasswordRequest $request): JsonResponse
+    {
+        try {
+            $user = $request->user();
+            $identifier = $user->email;
+            $otp = $request->input('otp');
+
+            if (! $this->otpService->verify($identifier, $otp, Otp::TYPE_PASSWORD_CHANGE)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid or expired OTP',
+                ], 400);
+            }
+
+            $user->update([
+                'password' => bcrypt($request->input('password')),
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Password changed successfully',
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to change password', ['message' => $e->getMessage()]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to change password',
+                'error' => 'Internal server error',
+            ], 500);
+        }
+    }
+
 }
