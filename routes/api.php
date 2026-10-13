@@ -93,7 +93,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('smart-lists/{id}/meals', [SmartListController::class, 'addMeal']);
     Route::delete('smart-lists/{id}/meals/{mealId}', [SmartListController::class, 'removeMeal']);
-    Route::apiResource('smart-lists', SmartListController::class);
+    Route::apiResource('smart-lists', SmartListController::class)->names('api.smart-lists');
 
     Route::prefix('notification-settings')->group(function () {
         Route::get('/', [NotificationSettingsController::class, 'index']);
