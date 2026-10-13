@@ -3,40 +3,37 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\OtpResource\Pages;
-use App\Filament\Resources\OtpResource\RelationManagers;
 use App\Models\Otp;
+use Filament\Actions;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class OtpResource extends Resource
 {
     protected static ?string $model = Otp::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('identifier')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('otp')
-                    ->required()
-                    ->maxLength(10),
-                Forms\Components\TextInput::make('type')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\Toggle::make('is_used')
-                    ->required(),
-                Forms\Components\DateTimePicker::make('expires_at')
-                    ->required(),
-            ]);
+        return $schema->schema([
+            Forms\Components\TextInput::make('identifier')
+                ->required()
+                ->maxLength(255),
+            Forms\Components\TextInput::make('otp')
+                ->required()
+                ->maxLength(10),
+            Forms\Components\TextInput::make('type')
+                ->required()
+                ->maxLength(255),
+            Forms\Components\Toggle::make('is_used')
+                ->required(),
+            Forms\Components\DateTimePicker::make('expires_at')
+                ->required(),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -67,11 +64,11 @@ class OtpResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

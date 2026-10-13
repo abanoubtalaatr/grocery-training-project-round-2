@@ -4,112 +4,108 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
-use App\Models\Address;
 use App\Models\Order;
-use App\Models\User;
+use Filament\Actions;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-shopping-cart';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shopping-cart';
 
-    protected static ?string $navigationGroup = 'Sales';
+    protected static string|\UnitEnum|null $navigationGroup = 'Sales';
 
     protected static ?int $navigationSort = 1;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('user_id')
-                    ->label('User')
-                    ->relationship('user', 'username')
-                    ->required()
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\Select::make('address_id')
-                    ->label('Address')
-                    ->relationship('address', 'address_line_1', fn (Builder $query, callable $get) =>
-                        $query->where('user_id', $get('user_id'))
-                    )
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\TextInput::make('order_number')
-                    ->required()
-                    ->maxLength(255)
-                    ->disabled()
-                    ->dehydrated(),
-                Forms\Components\Select::make('payment_method')
-                    ->options([
-                        'stripe' => 'Stripe',
-                        'cash' => 'Cash',
-                        'card' => 'Card',
-                        'cash_on_delivery' => 'Cash on delivery',
-                        'stripe_checkout' => 'Stripe Checkout (hosted)',
-                    ])
-                    ->required(),
-                Forms\Components\TextInput::make('payment_method_id')
-                    ->maxLength(255)
-                    ->label('Payment Method ID'),
-                Forms\Components\Select::make('delivery_type')
-                    ->options([
-                        'standard' => 'Standard',
-                        'express' => 'Express',
-                        'scheduled' => 'Scheduled',
-                    ])
-                    ->required(),
-                Forms\Components\Select::make('status')
-                    ->options([
-                        'awaiting_payment' => 'Awaiting payment',
-                        'placed' => 'Order Placed',
-                        'processing' => 'Processing',
-                        'shipping' => 'Shipping',
-                        'out_for_delivery' => 'Out for Delivery',
-                        'delivered' => 'Delivered',
-                        'cancelled' => 'Cancelled',
-                    ])
-                    ->required(),
-                Forms\Components\TextInput::make('subtotal')
-                    ->required()
-                    ->numeric()
-                    ->default(0.00),
-                Forms\Components\TextInput::make('tax')
-                    ->required()
-                    ->numeric()
-                    ->default(0.00),
-                Forms\Components\TextInput::make('discount')
-                    ->required()
-                    ->numeric()
-                    ->default(0.00),
-                Forms\Components\TextInput::make('total')
-                    ->required()
-                    ->numeric()
-                    ->default(0.00),
-                Forms\Components\Textarea::make('notes')
-                    ->columnSpanFull(),
-                Forms\Components\DateTimePicker::make('placed_at')
-                    ->label('Placed At'),
-                Forms\Components\DateTimePicker::make('processing_at')
-                    ->label('Processing At'),
-                Forms\Components\DateTimePicker::make('shipping_at')
-                    ->label('Shipping At'),
-                Forms\Components\DateTimePicker::make('out_for_delivery_at')
-                    ->label('Out for Delivery At'),
-                Forms\Components\DateTimePicker::make('delivered_at')
-                    ->label('Delivered At'),
-                Forms\Components\DateTimePicker::make('cancelled_at')
-                    ->label('Cancelled At'),
-                Forms\Components\DateTimePicker::make('estimated_delivery_time')
-                    ->label('Estimated Delivery Time'),
-            ]);
+        return $schema->schema([
+            Forms\Components\Select::make('user_id')
+                ->label('User')
+                ->relationship('user', 'username')
+                ->required()
+                ->searchable()
+                ->preload(),
+            Forms\Components\Select::make('address_id')
+                ->label('Address')
+                ->relationship('address', 'street_address', fn (Builder $query, callable $get) => $query->where('user_id', $get('user_id'))
+                )
+                ->searchable()
+                ->preload(),
+            Forms\Components\TextInput::make('order_number')
+                ->required()
+                ->maxLength(255)
+                ->disabled()
+                ->dehydrated(),
+            Forms\Components\Select::make('payment_method')
+                ->options([
+                    'card' => 'Card',
+                    'cash_on_delivery' => 'Cash on Delivery',
+                    'stripe_checkout' => 'Stripe Checkout (hosted)',
+                ])
+                ->required(),
+            Forms\Components\TextInput::make('payment_method_id')
+                ->maxLength(255)
+                ->label('Payment Method ID'),
+            Forms\Components\Select::make('delivery_type')
+                ->options([
+                    'delivery' => 'Delivery',
+                    'pickup' => 'Pickup',
+                ])
+                ->required(),
+            Forms\Components\Select::make('status')
+                ->options([
+                    'awaiting_payment' => 'Awaiting payment',
+                    'placed' => 'Order Placed',
+                    'processing' => 'Processing',
+                    'shipping' => 'Shipping',
+                    'out_for_delivery' => 'Out for Delivery',
+                    'delivered' => 'Delivered',
+                    'cancelled' => 'Cancelled',
+                ])
+                ->required(),
+            Forms\Components\TextInput::make('subtotal')
+                ->required()
+                ->numeric()
+                ->default(0.00),
+            Forms\Components\TextInput::make('tax')
+                ->required()
+                ->numeric()
+                ->default(0.00),
+            Forms\Components\TextInput::make('discount')
+                ->required()
+                ->numeric()
+                ->default(0.00),
+            Forms\Components\TextInput::make('total')
+                ->required()
+                ->numeric()
+                ->default(0.00),
+            Forms\Components\TextInput::make('shipping_fee')
+                ->numeric()
+                ->default(0.00),
+            Forms\Components\Textarea::make('notes')
+                ->columnSpanFull(),
+            Forms\Components\DateTimePicker::make('placed_at')
+                ->label('Placed At'),
+            Forms\Components\DateTimePicker::make('processing_at')
+                ->label('Processing At'),
+            Forms\Components\DateTimePicker::make('shipping_at')
+                ->label('Shipping At'),
+            Forms\Components\DateTimePicker::make('out_for_delivery_at')
+                ->label('Out for Delivery At'),
+            Forms\Components\DateTimePicker::make('delivered_at')
+                ->label('Delivered At'),
+            Forms\Components\DateTimePicker::make('cancelled_at')
+                ->label('Cancelled At'),
+            Forms\Components\DateTimePicker::make('estimated_delivery_time')
+                ->label('Estimated Delivery Time'),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -127,6 +123,7 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
+                        'awaiting_payment' => 'warning',
                         'placed' => 'warning',
                         'processing' => 'info',
                         'shipping' => 'info',
@@ -193,7 +190,7 @@ class OrderResource extends Resource
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
                     ->options([
-                        'awaiting_payment' => 'Awaiting payment',
+                        'awaiting_payment' => 'Awaiting Payment',
                         'placed' => 'Order Placed',
                         'processing' => 'Processing',
                         'shipping' => 'Shipping',
@@ -203,19 +200,17 @@ class OrderResource extends Resource
                     ]),
                 Tables\Filters\SelectFilter::make('payment_method')
                     ->options([
-                        'stripe' => 'Stripe',
-                        'cash' => 'Cash',
                         'card' => 'Card',
-                        'cash_on_delivery' => 'Cash on delivery',
+                        'cash_on_delivery' => 'Cash on Delivery',
                         'stripe_checkout' => 'Stripe Checkout (hosted)',
                     ]),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

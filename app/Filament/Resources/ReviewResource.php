@@ -3,61 +3,57 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ReviewResource\Pages;
-use App\Filament\Resources\ReviewResource\RelationManagers;
-use App\Models\Meal;
 use App\Models\Review;
-use App\Models\User;
+use Filament\Actions;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ReviewResource extends Resource
 {
     protected static ?string $model = Review::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-star';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-star';
 
-    protected static ?string $navigationGroup = 'Products';
+    protected static string|\UnitEnum|null $navigationGroup = 'Products';
 
     protected static ?int $navigationSort = 3;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('user_id')
-                    ->label('User')
-                    ->relationship('user', 'username')
-                    ->required()
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\Select::make('meal_id')
-                    ->label('Meal')
-                    ->relationship('meal', 'title')
-                    ->required()
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\TextInput::make('rating')
-                    ->required()
-                    ->numeric()
-                    ->minValue(1)
-                    ->maxValue(5)
-                    ->default(5),
-                Forms\Components\Textarea::make('comment')
-                    ->rows(4)
-                    ->columnSpanFull(),
-                Forms\Components\Toggle::make('is_approved')
-                    ->label('Approved')
-                    ->default(true),
-                Forms\Components\FileUpload::make('images')
-                    ->image()
-                    ->multiple()
-                    ->columnSpanFull(),
-            ]);
+        return $schema->schema([
+            Forms\Components\Select::make('user_id')
+                ->label('User')
+                ->relationship('user', 'username')
+                ->required()
+                ->searchable()
+                ->preload(),
+            Forms\Components\Select::make('meal_id')
+                ->label('Meal')
+                ->relationship('meal', 'title')
+                ->required()
+                ->searchable()
+                ->preload(),
+            Forms\Components\TextInput::make('rating')
+                ->required()
+                ->numeric()
+                ->minValue(1)
+                ->maxValue(5)
+                ->default(5),
+            Forms\Components\Textarea::make('comment')
+                ->rows(4)
+                ->columnSpanFull(),
+            Forms\Components\Toggle::make('is_approved')
+                ->label('Approved')
+                ->default(true),
+            Forms\Components\FileUpload::make('images')
+                ->image()
+                ->multiple()
+                ->columnSpanFull(),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -128,11 +124,11 @@ class ReviewResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

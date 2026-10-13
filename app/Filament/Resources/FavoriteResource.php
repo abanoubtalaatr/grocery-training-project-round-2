@@ -3,39 +3,37 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\FavoriteResource\Pages;
-use App\Filament\Resources\FavoriteResource\RelationManagers;
 use App\Models\Favorite;
+use Filament\Actions;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class FavoriteResource extends Resource
 {
     protected static ?string $model = Favorite::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('user_id')
-                    ->label('User')
-                    ->relationship('user', 'username', fn (Builder $query) => $query->orderBy('username'))
-                    ->searchable()
-                    ->preload()
-                    ->required(),
-                Forms\Components\Select::make('meal_id')
-                    ->label('Meal')
-                    ->relationship('meal', 'title', fn (Builder $query) => $query->orderBy('title'))
-                    ->searchable()
-                    ->preload()
-                    ->required(),
-            ]);
+        return $schema->schema([
+            Forms\Components\Select::make('user_id')
+                ->label('User')
+                ->relationship('user', 'username', fn (Builder $query) => $query->orderBy('username'))
+                ->searchable()
+                ->preload()
+                ->required(),
+            Forms\Components\Select::make('meal_id')
+                ->label('Meal')
+                ->relationship('meal', 'title', fn (Builder $query) => $query->orderBy('title'))
+                ->searchable()
+                ->preload()
+                ->required(),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -70,11 +68,11 @@ class FavoriteResource extends Resource
                     ->query(fn (Builder $query) => $query->whereDoesntHave('user')),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

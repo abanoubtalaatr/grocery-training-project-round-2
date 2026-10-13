@@ -22,12 +22,12 @@ class ResetPasswordRequest extends FormRequest
      */
     public function rules(): array
     {
-        $otpLength = max(4, min(8, (int) config('otp.length', 6)));
+        $otpLength = max(4, min(8, (int) config('otp.length', 4)));
 
         return [
             'identifier' => ['required', 'string'],
             'otp' => ['required', 'string', 'size:'.$otpLength],
-            'password' => ['required', 'string', 'confirmed', Password::min(8)->letters()->numbers()],
+            'password' => ['required', 'string', 'confirmed', Password::min(12)->letters()->numbers()],
         ];
     }
 
@@ -41,7 +41,7 @@ class ResetPasswordRequest extends FormRequest
         return [
             'identifier.required' => 'Email or phone number is required.',
             'otp.required' => 'OTP code is required.',
-            'otp.size' => 'OTP must be '.max(4, min(8, (int) config('otp.length', 6))).' digits.',
+            'otp.size' => 'OTP must be '.max(4, min(8, (int) config('otp.length', 4))).' digits.',
             'password.required' => 'Password is required.',
             'password.confirmed' => 'Password confirmation does not match.',
         ];

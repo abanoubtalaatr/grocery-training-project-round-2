@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
 {
@@ -17,14 +17,18 @@ class PaymentController extends Controller
     {
         try {
             $user = $request->user();
+            $perPage = min(max((int) $request->input('per_page', 20), 1), 100);
 
-            $orders = Order::where('user_id', $user->id)
+            $query = Order::where('user_id', $user->id)
                 ->where('status', '!=', 'cancelled')
                 ->with(['items.meal.category', 'address'])
-                ->orderBy('created_at', 'desc')
-                ->get();
+                ->orderBy('created_at', 'desc');
 
-            $paymentHistory = $orders->map(function ($order) {
+            $totalAmount = (clone $query)->sum('total');
+
+            $orders = $query->paginate($perPage);
+
+            $paymentHistory = $orders->through(function ($order) {
                 return [
                     'id' => $order->id,
                     'order_number' => $order->order_number,
@@ -45,15 +49,20 @@ class PaymentController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Payment history retrieved successfully',
-                'data' => $paymentHistory,
-                'total_count' => $paymentHistory->count(),
-                'total_amount' => (float) $orders->sum('total'),
+                'data' => $paymentHistory->items(),
+                'total_count' => $paymentHistory->total(),
+                'total_amount' => (float) $totalAmount,
+                'current_page' => $paymentHistory->currentPage(),
+                'per_page' => $paymentHistory->perPage(),
+                'last_page' => $paymentHistory->lastPage(),
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve payment history', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve payment history',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -84,10 +93,12 @@ class PaymentController extends Controller
                 'data' => $receipt,
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve receipt', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve receipt',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -110,13 +121,13 @@ class PaymentController extends Controller
 
         return [
             'receipt_number' => $order->order_number,
-            'invoice_number' => 'INV-' . str_pad($order->id, 8, '0', STR_PAD_LEFT),
+            'invoice_number' => 'INV-'.str_pad($order->id, 8, '0', STR_PAD_LEFT),
             'type' => 'receipt', // or 'invoice'
             'date' => $order->placed_at ?? $order->created_at,
             'payment_date' => $order->placed_at ?? $order->created_at,
             'status' => $order->status,
             'status_description' => $order->status_description,
-            
+
             // Customer Information
             'customer' => [
                 'id' => $user->id,
@@ -209,7 +220,7 @@ class PaymentController extends Controller
      */
     private function getPaymentMethodDisplay(string $method): string
     {
-        return match($method) {
+        return match ($method) {
             'card' => 'Credit/Debit Card',
             'stripe_checkout' => 'Card (Stripe Checkout)',
             'cash_on_delivery' => 'Cash on Delivery',

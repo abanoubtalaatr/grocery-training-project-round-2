@@ -12,8 +12,10 @@ class Offer extends Model
 
     protected $fillable = [
         'title',
+        'title_ar',
         'code',
         'description',
+        'description_ar',
         'type',
         'discount_value',
         'minimum_purchase',
@@ -24,6 +26,30 @@ class Offer extends Model
         'is_active',
         'is_featured',
     ];
+
+    /**
+     * Get localized title based on app locale.
+     */
+    public function getLocalizedTitleAttribute(): string
+    {
+        if (app()->getLocale() === 'ar' && ! empty($this->title_ar)) {
+            return $this->title_ar;
+        }
+
+        return $this->title ?? '';
+    }
+
+    /**
+     * Get localized description based on app locale.
+     */
+    public function getLocalizedDescriptionAttribute(): ?string
+    {
+        if (app()->getLocale() === 'ar' && ! empty($this->description_ar)) {
+            return $this->description_ar;
+        }
+
+        return $this->description;
+    }
 
     protected $casts = [
         'start_date' => 'date',

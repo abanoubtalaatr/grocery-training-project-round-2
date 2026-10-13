@@ -38,7 +38,7 @@ class ChangePasswordRequest extends FormRequest
                 'required',
                 'string',
                 'confirmed',
-                Password::min(8)->letters()->numbers(),
+                Password::min(12)->letters()->numbers(),
                 function (string $_attribute, mixed $value, Closure $fail): void {
                     if (! is_string($value) || $value === '') {
                         return;
@@ -63,7 +63,7 @@ class ChangePasswordRequest extends FormRequest
             'current_password.required' => 'Current password is required.',
             'password.required' => 'New password is required.',
             'password.confirmed' => 'Password confirmation does not match.',
-            'password.min' => 'Password must be at least 8 characters.',
+            'password.min' => 'Password must be at least 12 characters.',
             'password.letters' => 'Password must include at least one letter.',
             'password.numbers' => 'Password must include at least one number.',
         ];

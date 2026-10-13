@@ -5,57 +5,67 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\UserResource\Pages;
 use App\Models\User;
 use App\Rules\UsernameMustContainLetter;
+use Filament\Actions;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-users';
 
-    protected static ?string $navigationGroup = 'Users';
+    protected static string|\UnitEnum|null $navigationGroup = 'Users';
 
     protected static ?int $navigationSort = 1;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('username')
-                    ->required()
-                    ->maxLength(User::USERNAME_MAX_LENGTH)
-                    ->rules([new UsernameMustContainLetter]),
-                Forms\Components\FileUpload::make('profile_image')
-                    ->image(),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('phone')
-                    ->tel()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('country_code')
-                    ->required()
-                    ->maxLength(255)
-                    ->default(+20),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required(fn (string $context): bool => $context === 'create')
-                    ->maxLength(255)
-                    ->dehydrated(fn ($state) => filled($state))
-                    ->dehydrateStateUsing(fn ($state) => \Hash::make($state)),
-                Forms\Components\Toggle::make('agree_terms')
-                    ->required(),
-                Forms\Components\Toggle::make('is_active')
-                    ->required(),
-                Forms\Components\Toggle::make('is_admin')
-                    ->label('Admin')
-                    ->helperText('Grant admin access to this user')
-                    ->required(),
-            ]);
+        return $schema->schema([
+            Forms\Components\TextInput::make('username')
+                ->required()
+                ->maxLength(User::USERNAME_MAX_LENGTH)
+                ->rules([new UsernameMustContainLetter]),
+            Forms\Components\FileUpload::make('profile_image')
+                ->image(),
+            Forms\Components\TextInput::make('email')
+                ->email()
+                ->maxLength(255),
+            Forms\Components\TextInput::make('phone')
+                ->tel()
+                ->maxLength(255),
+            Forms\Components\TextInput::make('firstname')
+                ->maxLength(255),
+            Forms\Components\TextInput::make('lastname')
+                ->maxLength(255),
+            Forms\Components\Select::make('role')
+                ->options([
+                    'customer' => 'Customer',
+                    'delivery_partner' => 'Driver',
+                    'support_agent' => 'Support Agent',
+                    'admin' => 'Admin',
+                ])
+                ->default('customer')
+                ->required(),
+            Forms\Components\TextInput::make('country_code')
+                ->required()
+                ->maxLength(255)
+                ->default('+20'),
+            Forms\Components\TextInput::make('password')
+                ->password()
+                ->required(fn (string $context): bool => $context === 'create')
+                ->minLength(12)
+                ->maxLength(255)
+                ->dehydrated(fn ($state) => filled($state)),
+            Forms\Components\Toggle::make('agree_terms')
+                ->required(),
+            Forms\Components\Toggle::make('is_active')
+                ->required(),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -81,11 +91,10 @@ class UserResource extends Resource
                     ->boolean()
                     ->label('Active')
                     ->sortable(),
-                Tables\Columns\IconColumn::make('is_admin')
-                    ->boolean()
-                    ->label('Admin')
+                Tables\Columns\TextColumn::make('role')
+                    ->searchable()
                     ->sortable()
-                    ->color('success'),
+                    ->badge(),
                 Tables\Columns\IconColumn::make('email_verified')
                     ->boolean()
                     ->label('Email Verified')
@@ -110,8 +119,14 @@ class UserResource extends Resource
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_active')
                     ->label('Active'),
-                Tables\Filters\TernaryFilter::make('is_admin')
-                    ->label('Admin'),
+                Tables\Filters\SelectFilter::make('role')
+                    ->label('Role')
+                    ->options([
+                        'customer' => 'Customer',
+                        'delivery_partner' => 'Driver',
+                        'support_agent' => 'Support Agent',
+                        'admin' => 'Admin',
+                    ]),
                 Tables\Filters\TernaryFilter::make('email_verified')
                     ->label('Email Verified'),
                 Tables\Filters\TernaryFilter::make('phone_verified')
@@ -119,13 +134,14 @@ class UserResource extends Resource
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Actions\ViewAction::make(),
+                Actions\EditAction::make(),
+                Actions\DeleteAction::make()
+                    ->hidden(fn (?User $record): bool => $record && $record->id === Auth::id()),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -145,5 +161,22 @@ class UserResource extends Resource
             'view' => Pages\ViewUser::route('/{record}'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
+    }
+
+    /**
+     * Check if the given record is the last active admin.
+     */
+    public static function isLastActiveAdmin(User $record): bool
+    {
+        if (! $record->isAdmin()) {
+            return false;
+        }
+
+        $otherActiveAdminCount = User::where('is_active', true)
+            ->where('id', '!=', $record->id)
+            ->where('role', User::ROLE_ADMIN)
+            ->count();
+
+        return $otherActiveAdminCount === 0;
     }
 }

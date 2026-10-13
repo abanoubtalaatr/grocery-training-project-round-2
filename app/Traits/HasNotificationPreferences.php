@@ -35,7 +35,7 @@ trait HasNotificationPreferences
         }
 
         if ($settings->push_notifications) {
-            $channels[] = 'database';
+            $channels[] = 'push';
         }
 
         if ($settings->sms_notifications) {

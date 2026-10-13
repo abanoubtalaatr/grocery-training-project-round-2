@@ -3,14 +3,20 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ChatbotHandoffRequest;
+use App\Mail\ContactMessageReceived;
 use App\Models\ChatbotMessage;
+use App\Models\ContactMessage;
 use App\Models\Faq;
 use App\Models\Meal;
 use App\Models\Offer;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class ChatbotController extends Controller
@@ -60,7 +66,7 @@ class ChatbotController extends Controller
             }
             $rating = $validator['rating'] ?? null;
             $locale = $validator['locale'] ?? null;
-            $apiKey = env('GEMINI_API_KEY');
+            $apiKey = config('services.gemini.api_key');
 
             if (! $apiKey) {
                 return response()->json([
@@ -80,7 +86,7 @@ class ChatbotController extends Controller
             $meals = Meal::with(['category', 'subcategory'])
                 ->available()
                 ->orderByDesc('sold_count')
-                ->limit(250)
+                ->limit(100)
                 ->get()
                 ->map(function ($meal) {
                     return [
@@ -133,24 +139,26 @@ class ChatbotController extends Controller
             $prompt .= 'User question: '.$question."\n\n";
             $prompt .= 'Provide a helpful, concise answer. If the question is off-topic, politely redirect to app features (orders, meals, offers, FAQ).';
 
-            $response = Http::timeout(30)->post(
-                'https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash-lite:generateContent?key='.$apiKey,
-                [
-                    'contents' => [
-                        [
-                            'parts' => [
-                                ['text' => $prompt],
+            $response = Http::timeout(30)
+                ->withHeaders(['x-goog-api-key' => $apiKey])
+                ->post(
+                    'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:generateContent',
+                    [
+                        'contents' => [
+                            [
+                                'parts' => [
+                                    ['text' => $prompt],
+                                ],
                             ],
                         ],
-                    ],
-                    'generationConfig' => [
-                        'temperature' => 0.7,
-                        'topK' => 40,
-                        'topP' => 0.95,
-                        'maxOutputTokens' => 1024,
-                    ],
-                ]
-            );
+                        'generationConfig' => [
+                            'temperature' => 0.7,
+                            'topK' => 40,
+                            'topP' => 0.95,
+                            'maxOutputTokens' => 1024,
+                        ],
+                    ]
+                );
 
             if (! $response->successful()) {
                 Log::error('Gemini API Error', [
@@ -158,11 +166,19 @@ class ChatbotController extends Controller
                     'body' => $response->body(),
                 ]);
 
-                return response()->json([
+                $errorReason = $response->status() === 401 ? 'Invalid API key' : 'API request failed (HTTP '.$response->status().')';
+                $supportMessageId = $this->createFailureHandoff($user, $question, $errorReason, $request);
+
+                $payload = [
                     'success' => false,
                     'message' => 'Failed to get response from AI',
-                    'error' => $response->status() === 401 ? 'Invalid API key' : 'API request failed',
-                ], 502);
+                    'error' => $errorReason,
+                ];
+                if ($supportMessageId !== null) {
+                    $payload['support_message_id'] = $supportMessageId;
+                }
+
+                return response()->json($payload, 502);
             }
 
             $responseData = $response->json() ?? [];
@@ -171,11 +187,19 @@ class ChatbotController extends Controller
             if ($aiResponse === null || $aiResponse === '') {
                 Log::warning('Gemini returned no text candidate', ['body' => $response->body()]);
 
-                return response()->json([
+                $blockReason = $responseData['promptFeedback']['blockReason'] ?? 'empty_or_blocked';
+                $supportMessageId = $this->createFailureHandoff($user, $question, 'Empty or blocked response: '.$blockReason, $request);
+
+                $payload = [
                     'success' => false,
                     'message' => 'No response from AI',
-                    'error' => $responseData['promptFeedback']['blockReason'] ?? 'empty_or_blocked',
-                ], 502);
+                    'error' => $blockReason,
+                ];
+                if ($supportMessageId !== null) {
+                    $payload['support_message_id'] = $supportMessageId;
+                }
+
+                return response()->json($payload, 502);
             }
 
             $answer = trim($aiResponse);
@@ -197,7 +221,7 @@ class ChatbotController extends Controller
                     'meals_count' => $meals->count(),
                 ],
             ]);
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
                 'message' => 'Validation failed',
@@ -209,11 +233,21 @@ class ChatbotController extends Controller
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            return response()->json([
+            $supportMessageId = null;
+            if (isset($user) && $user !== null && isset($question)) {
+                $supportMessageId = $this->createFailureHandoff($user, $question, 'Exception: '.$e->getMessage(), $request);
+            }
+
+            $payload = [
                 'success' => false,
                 'message' => 'Failed to process chat request',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
-            ], 500);
+                'error' => 'Internal server error',
+            ];
+            if ($supportMessageId !== null) {
+                $payload['support_message_id'] = $supportMessageId;
+            }
+
+            return response()->json($payload, 500);
         }
     }
 
@@ -255,6 +289,49 @@ class ChatbotController extends Controller
         }
 
         return 'Respond in the same language the user used.';
+    }
+
+    /**
+     * Create a support ticket and notify admin when AI fails.
+     */
+    private function createFailureHandoff(User $user, string $question, string $errorReason, Request $request): ?int
+    {
+        try {
+            $contactMessage = ContactMessage::create([
+                'user_id' => $user->id,
+                'name' => $user->full_name ?? $user->username,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'subject' => 'AI Support Handoff — AI Failure',
+                'message' => "AI chatbot failed during a customer interaction.\n\n"
+                    ."Failure Reason: {$errorReason}\n"
+                    ."Customer Question: {$question}\n\n"
+                    .'The customer was unable to receive an AI response. '
+                    .'Please review and assist the customer directly.',
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'status' => 'new',
+            ]);
+
+            try {
+                Mail::to(config('mail.admin_email', 'admin@example.com'))
+                    ->send(new ContactMessageReceived($contactMessage));
+            } catch (Throwable $e) {
+                Log::error('Failed to send AI failure handoff email', [
+                    'contact_message_id' => $contactMessage->id,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+
+            return $contactMessage->id;
+        } catch (Throwable $e) {
+            Log::error('Failed to create AI failure handoff', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return null;
+        }
     }
 
     /**
@@ -300,7 +377,7 @@ class ChatbotController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve chat history',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -336,5 +413,71 @@ class ChatbotController extends Controller
                 'suggestions' => $suggestions,
             ],
         ]);
+    }
+
+    /**
+     * Hand off AI conversation to human support.
+     */
+    public function handoff(ChatbotHandoffRequest $request): JsonResponse
+    {
+        $user = $request->user();
+
+        // Retrieve latest user messages for context
+        $recentMessages = $user->chatbotMessages()
+            ->latest()
+            ->limit(5)
+            ->get()
+            ->reverse();
+
+        $question = $request->validated('question');
+        if (! $question && $recentMessages->isNotEmpty()) {
+            $question = $recentMessages->last()->question;
+        }
+
+        $contextLines = [];
+        foreach ($recentMessages as $msg) {
+            $contextLines[] = 'User: '.$msg->question;
+            $contextLines[] = 'AI: '.$msg->answer;
+        }
+        $contextText = implode("\n", $contextLines);
+
+        $orderId = $request->validated('order_id');
+        $notes = $request->validated('notes');
+
+        $messageBody = "Customer requested human support handoff from AI Chatbot.\n";
+        if ($orderId) {
+            $messageBody .= "Referenced Order: #{$orderId}\n";
+        }
+        if ($notes) {
+            $messageBody .= "Customer Notes: {$notes}\n";
+        }
+        if ($question) {
+            $messageBody .= "Latest Question: {$question}\n\n";
+        }
+        if ($contextText !== '') {
+            $messageBody .= "--- Recent Chatbot Transcript ---\n{$contextText}";
+        }
+
+        $contactMessage = ContactMessage::create([
+            'user_id' => $user->id,
+            'name' => $user->full_name ?? $user->username,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'subject' => 'AI Support Handoff'.($orderId ? " (Order #{$orderId})" : ''),
+            'message' => $messageBody,
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'status' => 'new',
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Your inquiry has been handed off to human support. Our team will review your conversation history and respond shortly.',
+            'data' => [
+                'support_message_id' => $contactMessage->id,
+                'status' => $contactMessage->status,
+                'created_at' => $contactMessage->created_at,
+            ],
+        ], 201);
     }
 }

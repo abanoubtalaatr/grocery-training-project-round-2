@@ -111,7 +111,7 @@ class ReviewController extends Controller
         $review = Review::findOrFail($id);
         
         // Check authorization (owner or admin)
-        if (Auth::id() !== $review->user_id && !Auth::user()->is_admin) {
+        if (Auth::id() !== $review->user_id && !Auth::user()->isAdmin()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized'
@@ -135,7 +135,7 @@ class ReviewController extends Controller
         $review = Review::findOrFail($id);
         
         // Check authorization (owner or admin)
-        if (Auth::id() !== $review->user_id && !Auth::user()->is_admin) {
+        if (Auth::id() !== $review->user_id && !Auth::user()->isAdmin()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Unauthorized'

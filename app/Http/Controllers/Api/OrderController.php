@@ -2,27 +2,67 @@
 
 namespace App\Http\Controllers\Api;
 
-use Stripe\Stripe;
+use App\Actions\Api\CancelOrderAction;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CancelOrderRequest;
+use App\Http\Requests\StoreOrderRequest;
+use App\Jobs\SendInvoiceEmailJob;
 use App\Models\Cart;
 use App\Models\Meal;
 use App\Models\Order;
-use App\Models\Address;
 use App\Models\OrderItem;
 use App\Models\OrderNote;
-use Stripe\PaymentIntent;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreOrderRequest;
 use App\Services\ShippingService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Stripe\PaymentIntent;
+use Stripe\Stripe;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class OrderController extends Controller
 {
+    /**
+     * Cancel an active order.
+     */
+    public function cancel(CancelOrderRequest $request, Order $order, CancelOrderAction $action): JsonResponse
+    {
+        try {
+            $reason = $request->validated('reason');
+            $cancelledOrder = $action->execute($request->user(), $order, is_string($reason) ? $reason : null);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Order cancelled successfully',
+                'data' => $this->formatOrder($cancelledOrder),
+            ]);
+        } catch (HttpException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to cancel order',
+            ], $e->getStatusCode());
+        } catch (\Exception $e) {
+            Log::error('Order cancel failed', ['message' => $e->getMessage()]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to cancel order',
+                'error' => 'Internal server error',
+            ], 500);
+        }
+    }
 
     public function show(Request $request, Order $order)
     {
-        $order = $order->load(['items.meal', 'address']);
+        if ($order->user_id !== $request->user()->id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found.',
+            ], 404);
+        }
+
+        $order = $order->load(['items.meal', 'address', 'notes.specialNote']);
 
         return response()->json([
             'success' => true,
@@ -30,7 +70,7 @@ class OrderController extends Controller
             'data' => $this->formatOrder($order),
         ]);
     }
-    
+
     /**
      * Create a new order.
      */
@@ -43,7 +83,7 @@ class OrderController extends Controller
             // Get user's active cart
             $cart = $user->activeCart()->with('items.meal')->first();
 
-            if (!$cart || $cart->isEmpty()) {
+            if (! $cart || $cart->isEmpty()) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Your cart is empty. Please add items to your cart before placing an order.',
@@ -52,7 +92,7 @@ class OrderController extends Controller
 
             // Validate and process items from cart
             $itemsResult = $this->validateAndProcessCartItems($cart->items);
-            if (!$itemsResult['success']) {
+            if (! $itemsResult['success']) {
                 return response()->json($itemsResult['response'], 400);
             }
 
@@ -66,35 +106,25 @@ class OrderController extends Controller
                 'subtotal' => $cart->subtotal,
                 'tax' => $cart->tax,
                 'discount' => $cart->discount,
+                'coupon_code' => $cart->coupon_code,
                 'shipping_fee' => $shippingFee,
-                'total' => (float) $cart->subtotal + (float) $cart->tax + $shippingFee,
+                'total' => (float) $cart->total + $shippingFee,
             ];
             $total = $totals['total'];
 
             // Validate amount matches cart total
-            // if (abs($total - $validated['amount']) > 0.01) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => 'Amount mismatch. Please recalculate your order.',
-            //         'calculated_total' => $total,
-            //         'provided_amount' => $validated['amount'],
-            //     ], 400);
-            // }
+            if (abs($total - $validated['amount']) > 0.01) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Amount mismatch. Please recalculate your order.',
+                    'calculated_total' => $total,
+                    'provided_amount' => $validated['amount'],
+                ], 400);
+            }
 
             DB::beginTransaction();
 
-            // $paymentResult = match ($validated['payment_method']) {
-            //     'stripe_checkout' => ['success' => true],
-            //     default => $this->processPayment($user, $validated, $total),
-            // };
-
-            // if (! $paymentResult['success']) {
-            //     DB::rollBack();
-
-            //     return response()->json($paymentResult['response'], 400);
-            // }
-
-            $stripePaymentIntentId = $paymentResult['stripe_payment_intent_id'] ?? null;
+            $stripePaymentIntentId = null;
 
             // Create order
             $order = $this->createOrder($user, $validated, $totals['subtotal'], $totals, $stripePaymentIntentId);
@@ -105,24 +135,18 @@ class OrderController extends Controller
             // Clear user's active cart
             $this->clearUserCart($user);
 
-            
-            if(isset($validated['special_note_id'])) {
+            if (isset($validated['special_note_id']) || isset($validated['notes'])) {
                 OrderNote::create([
                     'order_id' => $order->id,
-                    'special_note_id' => $validated['special_note_id'],
+                    'special_note_id' => $validated['special_note_id'] ?? null,
                     'notes' => $validated['notes'] ?? null,
-                ]);
-            }
-            if(isset($validated['notes'])   ) {
-                OrderNote::create([
-                    'order_id' => $order->id,
-                    'special_note_id' => null,
-                    'notes' => $validated['notes'],
                 ]);
             }
             DB::commit();
 
-            $order->load(['items.meal', 'address']);
+            SendInvoiceEmailJob::dispatch($order);
+
+            $order->load(['items.meal', 'address', 'notes.specialNote']);
 
             return response()->json([
                 'success' => true,
@@ -131,10 +155,12 @@ class OrderController extends Controller
             ], 201);
         } catch (\Exception $e) {
             DB::rollBack();
+            Log::error('Order creation failed', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to create order',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -150,7 +176,7 @@ class OrderController extends Controller
         foreach ($cartItems as $cartItem) {
             $meal = $cartItem->meal;
 
-            if (!$meal) {
+            if (! $meal) {
                 return [
                     'success' => false,
                     'response' => [
@@ -160,7 +186,7 @@ class OrderController extends Controller
                 ];
             }
 
-            if (!$meal->is_available) {
+            if (! $meal->is_available) {
                 return [
                     'success' => false,
                     'response' => [
@@ -211,23 +237,6 @@ class OrderController extends Controller
     }
 
     /**
-     * Calculate order totals.
-     */
-    private function calculateTotals(float $subtotal): array
-    {
-        $tax = $subtotal * 0.1; // 10% tax
-        $discount = 0;
-        $total = $subtotal + $tax - $discount;
-
-        return [
-            'subtotal' => $subtotal,
-            'tax' => $tax,
-            'discount' => $discount,
-            'total' => $total,
-        ];
-    }
-
-    /**
      * Process payment for card orders.
      */
     private function processPayment($user, array $validated, float $total): array
@@ -238,7 +247,7 @@ class OrderController extends Controller
 
         Stripe::setApiKey(config('services.stripe.secret'));
 
-        if (!$user->stripe_customer_id) {
+        if (! $user->stripe_customer_id) {
             return [
                 'success' => false,
                 'response' => [
@@ -250,7 +259,7 @@ class OrderController extends Controller
 
         try {
             $paymentIntent = PaymentIntent::create([
-                'amount' => (int)($total * 100),
+                'amount' => (int) ($total * 100),
                 'currency' => 'usd',
                 'customer' => $user->stripe_customer_id,
                 'payment_method' => $validated['payment_method_id'],
@@ -263,7 +272,7 @@ class OrderController extends Controller
                     'success' => false,
                     'response' => [
                         'success' => false,
-                        'message' => 'Payment failed: ' . $paymentIntent->status,
+                        'message' => 'Payment failed: '.$paymentIntent->status,
                     ],
                 ];
             }
@@ -273,11 +282,13 @@ class OrderController extends Controller
                 'stripe_payment_intent_id' => $paymentIntent->id,
             ];
         } catch (\Exception $e) {
+            Log::error('Payment processing failed', ['message' => $e->getMessage()]);
+
             return [
                 'success' => false,
                 'response' => [
                     'success' => false,
-                    'message' => 'Payment processing failed: ' . $e->getMessage(),
+                    'message' => 'Payment processing failed',
                 ],
             ];
         }
@@ -294,9 +305,13 @@ class OrderController extends Controller
             'user_id' => $user->id,
             'address_id' => $validated['delivery_type'] === 'delivery' ? $validated['address_id'] : null,
             'payment_method' => $validated['payment_method'],
+            'coupon_code' => $totals['coupon_code'] ?? null,
             'payment_method_id' => null,
             'stripe_payment_intent_id' => $stripePaymentIntentId,
             'delivery_type' => $validated['delivery_type'],
+            'pickup_location' => $validated['delivery_type'] === 'pickup' ? $validated['pickup_location'] : null,
+            'pickup_location_confirmed' => $validated['delivery_type'] === 'pickup',
+            'delivery_speed' => $validated['delivery_type'] === 'delivery' ? ($validated['delivery_speed'] ?? null) : null,
             'status' => $isHostedStripe ? 'awaiting_payment' : 'placed',
             'subtotal' => $subtotal,
             'tax' => $totals['tax'],
@@ -314,16 +329,23 @@ class OrderController extends Controller
     private function createOrderItems(Order $order, array $items): void
     {
         foreach ($items as $item) {
+            $meal = Meal::lockForUpdate()->find($item['meal']->id);
+
+            if ($meal->stock_quantity < $item['quantity']) {
+                throw new \Exception("Insufficient stock for '{$meal->title}'.");
+            }
+
             OrderItem::create([
                 'order_id' => $order->id,
-                'meal_id' => $item['meal']->id,
+                'meal_id' => $meal->id,
                 'quantity' => $item['quantity'],
                 'unit_price' => $item['unit_price'],
                 'discount_amount' => $item['discount_amount'],
                 'subtotal' => $item['subtotal'],
             ]);
 
-            $item['meal']->decrement('stock_quantity', $item['quantity']);
+            $meal->decrement('stock_quantity', $item['quantity']);
+            $meal->increment('sold_count', $item['quantity']);
         }
     }
 
@@ -346,26 +368,31 @@ class OrderController extends Controller
     {
         try {
             $user = $request->user();
+            $perPage = min(max((int) $request->input('per_page', 20), 1), 100);
 
-            $orders = Order::
-                with(['items.meal.category', 'items.meal.subcategory', 'address'])
+            $orders = Order::where('user_id', $user->id)
+                ->with(['items.meal.category', 'items.meal.subcategory', 'address', 'notes.specialNote'])
                 ->orderBy('created_at', 'desc')
-                ->get()
-                ->map(function ($order) {
-                    return $this->formatOrder($order);
-                });
+                ->paginate($perPage);
+
+            $formattedOrders = $orders->through(fn ($order) => $this->formatOrder($order));
 
             return response()->json([
                 'success' => true,
                 'message' => 'Orders retrieved successfully',
-                'data' => $orders,
-                'total_count' => $orders->count(),
+                'data' => $formattedOrders->items(),
+                'total_count' => $formattedOrders->total(),
+                'current_page' => $formattedOrders->currentPage(),
+                'per_page' => $formattedOrders->perPage(),
+                'last_page' => $formattedOrders->lastPage(),
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to retrieve orders', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to retrieve orders',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -380,11 +407,11 @@ class OrderController extends Controller
 
             $order = Order::where('user_id', $user->id)
                 ->whereNotIn('status', ['cancelled', 'delivered'])
-                ->with(['items.meal.category', 'items.meal.subcategory', 'address'])
+                ->with(['items.meal.category', 'items.meal.subcategory', 'address', 'driver', 'notes.specialNote'])
                 ->orderBy('created_at', 'desc')
                 ->first();
 
-            if (!$order) {
+            if (! $order) {
                 return response()->json([
                     'success' => false,
                     'message' => 'No active order found',
@@ -412,6 +439,22 @@ class OrderController extends Controller
                         'position' => $order->status_position,
                         'status' => $order->status,
                         'status_description' => $order->status_description,
+                        'driver' => $order->driver ? [
+                            'id' => $order->driver->id,
+                            'name' => $order->driver->full_name ?? $order->driver->username,
+                            'phone' => $order->driver->phone,
+                            'avatar' => $order->driver->profile_image_url,
+                        ] : null,
+                        'driver_location' => ($order->driver_latitude !== null && $order->driver_longitude !== null) ? [
+                            'latitude' => (float) $order->driver_latitude,
+                            'longitude' => (float) $order->driver_longitude,
+                            'updated_at' => $order->driver_location_updated_at,
+                        ] : null,
+                        'delivery_address' => $order->address ? [
+                            'full_address' => $order->address->full_address,
+                            'latitude' => $order->address->latitude ? (float) $order->address->latitude : null,
+                            'longitude' => $order->address->longitude ? (float) $order->address->longitude : null,
+                        ] : null,
                         'positions' => [
                             [
                                 'position' => 1,
@@ -458,10 +501,12 @@ class OrderController extends Controller
                 ],
             ]);
         } catch (\Exception $e) {
+            Log::error('Failed to track order', ['message' => $e->getMessage()]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to track order',
-                'error' => $e->getMessage(),
+                'error' => 'Internal server error',
             ], 500);
         }
     }
@@ -477,6 +522,8 @@ class OrderController extends Controller
             'payment_method' => $order->payment_method,
             'stripe_payment_intent_id' => $order->stripe_payment_intent_id,
             'delivery_type' => $order->delivery_type,
+            'pickup_location' => $order->pickup_location,
+            'pickup_location_confirmed' => (bool) $order->pickup_location_confirmed,
             'status' => $order->status,
             'status_position' => $order->status_position,
             'status_description' => $order->status_description,
@@ -529,6 +576,17 @@ class OrderController extends Controller
             'shipping_fee' => (float) ($order->shipping_fee ?? 0),
             'total' => $order->total,
             'notes' => $order->notes,
+            'driver' => $order->driver ? [
+                'id' => $order->driver->id,
+                'name' => $order->driver->full_name ?? $order->driver->username,
+                'phone' => $order->driver->phone,
+                'avatar' => $order->driver->profile_image_url,
+            ] : null,
+            'driver_location' => ($order->driver_latitude !== null && $order->driver_longitude !== null) ? [
+                'latitude' => (float) $order->driver_latitude,
+                'longitude' => (float) $order->driver_longitude,
+                'updated_at' => $order->driver_location_updated_at,
+            ] : null,
             'created_at' => $order->created_at,
             'updated_at' => $order->updated_at,
             'placed_at' => $order->placed_at,

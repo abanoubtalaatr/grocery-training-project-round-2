@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Models\Meal;
+use App\Notifications\FcmPushChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
@@ -18,7 +19,7 @@ class WishlistPriceAlertNotification extends Notification implements ShouldQueue
 
     public function via(object $notifiable): array
     {
-        return ['database'];
+        return ['database', FcmPushChannel::class];
     }
 
     /**

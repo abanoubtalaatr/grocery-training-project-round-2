@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "build": "node ./node_modules/@tailwindcss/cli/dist/index.mjs -i resources/css/app.css -o public/css/app.css --minify",
+    "dev": "node ./node_modules/@tailwindcss/cli/dist/index.mjs -i resources/css/app.css -o public/css/app.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "autoprefixer": "^10.5.6",
+    "postcss": "^8.5.28",
+    "tailwindcss": "^4.3.3"
+  }
+}

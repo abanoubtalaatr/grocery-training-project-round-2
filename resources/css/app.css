@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+@source "../views";
+
+@theme {
+  --color-brand-50: #ecfdf5;
+  --color-brand-100: #d1fae5;
+  --color-brand-200: #a7f3d0;
+  --color-brand-300: #6ee7b7;
+  --color-brand-400: #34d399;
+  --color-brand-500: #10b981;
+  --color-brand-600: #059669;
+  --color-brand-700: #047857;
+  --color-brand-800: #065f46;
+  --color-brand-900: #064e3b;
+  --color-brand-accent: #f59e0b;
+  --color-brand-accent-hover: #d97706;
+}
+
+:root {
+  --primary: #10b981;
+  --primary-hover: #059669;
+  --accent: #f59e0b;
+  --surface-bg: #f8fafc;
+  --card-bg: #ffffff;
+}

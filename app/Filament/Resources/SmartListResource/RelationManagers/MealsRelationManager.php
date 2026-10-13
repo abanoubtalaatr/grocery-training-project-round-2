@@ -2,8 +2,9 @@
 
 namespace App\Filament\Resources\SmartListResource\RelationManagers;
 
-use Filament\Forms\Form;
+use Filament\Actions;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,9 +15,9 @@ class MealsRelationManager extends RelationManager
 
     protected static ?string $title = 'List items (meals)';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form->schema([]);
+        return $schema->schema([]);
     }
 
     public function table(Table $table): Table
@@ -39,16 +40,16 @@ class MealsRelationManager extends RelationManager
                     ->sortable(),
             ])
             ->headerActions([
-                Tables\Actions\AttachAction::make()
+                Actions\AttachAction::make()
                     ->preloadRecordSelect()
                     ->recordSelectOptionsQuery(fn (Builder $query) => $query->whereNotIn('id', $this->getOwnerRecord()->meals->pluck('id'))),
             ])
             ->actions([
-                Tables\Actions\DetachAction::make(),
+                Actions\DetachAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DetachBulkAction::make(),
+                Actions\BulkActionGroup::make([
+                    Actions\DetachBulkAction::make(),
                 ]),
             ])
             ->emptyStateHeading('No items in this list')

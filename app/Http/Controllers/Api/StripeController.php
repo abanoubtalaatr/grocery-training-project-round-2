@@ -53,19 +53,52 @@ class StripeController extends Controller
     {
         $request->validate([
             'payment_method_id' => 'required|string',
-            'amount' => 'required|numeric',
+            'order_id' => 'required|integer|exists:orders,id',
         ]);
 
         Stripe::setApiKey(config('services.stripe.secret'));
         $user = $request->user();
 
+        $order = $user->orders()->whereKey($request->order_id)->first();
+
+        if (! $order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found.',
+            ], 404);
+        }
+
+        if (! in_array($order->status, ['awaiting_payment', 'placed'], true)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This order cannot be charged.',
+            ], 422);
+        }
+
+        $paymentMethod = PaymentMethod::retrieve($request->payment_method_id);
+
+        if ($paymentMethod->customer !== $user->stripe_customer_id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Payment method not found.',
+            ], 404);
+        }
+
+        $amount = (float) $order->total;
+
         $paymentIntent = PaymentIntent::create([
-            'amount' => $request->amount * 100,
+            'amount' => (int) round($amount * 100),
             'currency' => 'usd',
             'customer' => $user->stripe_customer_id,
             'payment_method' => $request->payment_method_id,
             'off_session' => true,
             'confirm' => true,
+            'idempotency_key' => 'charge_order_' . $order->id,
+        ]);
+
+        $order->update([
+            'stripe_payment_intent_id' => $paymentIntent->id,
+            'payment_method_id' => $request->payment_method_id,
         ]);
 
         return response()->json(['status' => 'success', 'payment_intent' => $paymentIntent]);
@@ -74,8 +107,21 @@ class StripeController extends Controller
     public function deleteCard(Request $request, $id)
     {
         Stripe::setApiKey(config('services.stripe.secret'));
+        $user = $request->user();
+
+        if (! $user->stripe_customer_id) {
+            return response()->json(['status' => 'deleted']);
+        }
 
         $paymentMethod = PaymentMethod::retrieve($id);
+
+        if ($paymentMethod->customer !== $user->stripe_customer_id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Payment method not found.',
+            ], 404);
+        }
+
         $paymentMethod->detach();
 
         return response()->json(['status' => 'deleted']);

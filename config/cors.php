@@ -27,9 +27,7 @@ return [
         'https://grocery-react-pi.vercel.app'
     ],
 
-    'allowed_origins_patterns' => [
-        '#^https?://.*\.vercel\.app$#',
-    ],
+    'allowed_origins_patterns' => [],
 
     'allowed_headers' => ['*'],
 

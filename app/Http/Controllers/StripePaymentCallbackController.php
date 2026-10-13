@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Stripe\Checkout\Session;
@@ -11,12 +12,12 @@ use Throwable;
 
 class StripePaymentCallbackController extends Controller
 {
-    public function success(Request $request)
+    public function success(Request $request): RedirectResponse
     {
         $sessionId = $request->query('session_id');
 
         if (! $sessionId) {
-            return $this->jsonOrHtml(false, 'Missing session_id parameter.', null, 400);
+            return redirect()->route('home')->with('error', 'Missing session ID.');
         }
 
         try {
@@ -24,18 +25,17 @@ class StripePaymentCallbackController extends Controller
             $session = Session::retrieve($sessionId);
         } catch (Throwable $e) {
             report($e);
-
-            return $this->jsonOrHtml(false, 'Unable to verify payment session.', null, 502);
+            return redirect()->route('home')->with('error', 'Unable to verify payment session.');
         }
 
         if ($session->payment_status !== 'paid') {
-            return $this->jsonOrHtml(false, 'Payment has not been completed.', null, 402);
+            return redirect()->route('home')->with('error', 'Payment has not been completed.');
         }
 
         $order = $this->resolveOrder($session);
 
         if (! $order) {
-            return $this->jsonOrHtml(false, 'Order not found.', null, 404);
+            return redirect()->route('home')->with('error', 'Order not found.');
         }
 
         if ($order->status === 'awaiting_payment') {
@@ -59,20 +59,40 @@ class StripePaymentCallbackController extends Controller
             $order->refresh();
         }
 
-        return $this->jsonOrHtml(true, 'Payment successful. Your order has been placed.', [
-            'order_id' => $order->id,
-            'order_number' => $order->order_number,
-            'status' => $order->status,
-        ], 200);
+        return redirect()->route('payment.invoice', $order->id)
+            ->with('success', 'Payment successful! Your order has been placed.');
     }
 
-    public function cancel(Request $request)
+    public function cancel(Request $request): RedirectResponse
     {
         $orderId = $request->query('order_id');
 
-        return $this->jsonOrHtml(false, 'Payment was cancelled.', [
-            'order_id' => $orderId,
-        ], 200);
+        if ($orderId) {
+            $order = Order::find($orderId);
+            if ($order && $order->status === 'awaiting_payment') {
+                DB::transaction(function () use ($order) {
+                    $order->refresh();
+                    if ($order->status !== 'awaiting_payment') {
+                        return;
+                    }
+
+                    foreach ($order->items as $item) {
+                        if ($item->meal) {
+                            $item->meal->increment('stock_quantity', $item->quantity);
+                        }
+                    }
+
+                    $order->update([
+                        'status' => 'cancelled',
+                        'cancelled_at' => now(),
+                        'notes' => trim(($order->notes ?? '') . "\nPayment cancelled by user."),
+                    ]);
+                });
+            }
+        }
+
+        return redirect()->route('cart.show')
+            ->with('error', 'Payment was cancelled. Your cart items have been restored.');
     }
 
     private function resolveOrder(Session $session): ?Order
@@ -87,14 +107,5 @@ class StripePaymentCallbackController extends Controller
         }
 
         return null;
-    }
-
-    private function jsonOrHtml(bool $success, string $message, ?array $data, int $status)
-    {
-        return response()->json([
-            'success' => $success,
-            'message' => $message,
-            'data' => $data,
-        ], $status);
     }
 }

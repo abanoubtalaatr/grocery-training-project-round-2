@@ -3,70 +3,66 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\OrderItemResource\Pages;
-use App\Filament\Resources\OrderItemResource\RelationManagers;
-use App\Filament\Resources\OrderResource;
 use App\Models\OrderItem;
+use Filament\Actions;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class OrderItemResource extends Resource
 {
     protected static ?string $model = OrderItem::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Select::make('order_id')
-                    ->relationship('order', 'id')
-                    ->required()
-                    ->label('Order'),
-                Forms\Components\Select::make('meal_id')
-                    ->relationship('meal', 'title')
-                    ->required()
-                    ->label('Meal'),
-                Forms\Components\TextInput::make('quantity')
-                    ->label('Quantity')
-                    ->required()
-                    ->numeric()
-                    ->integer()
-                    ->minValue(1)
-                    ->default(1)
-                    ->rules(['required', 'integer', 'min:1'])
-                    ->validationMessages(['min' => 'Value must be greater than zero.']),
-                Forms\Components\TextInput::make('unit_price')
-                    ->label('Unit price')
-                    ->required()
-                    ->numeric()
-                    ->minValue(0)
-                    ->step(0.01)
-                    ->rules(['required', 'numeric', 'min:0'])
-                    ->validationMessages(['min' => 'Value must be greater than or equal to zero.']),
-                Forms\Components\TextInput::make('discount_amount')
-                    ->label('Discount amount')
-                    ->required()
-                    ->numeric()
-                    ->minValue(0)
-                    ->step(0.01)
-                    ->default(0)
-                    ->rules(['required', 'numeric', 'min:0'])
-                    ->validationMessages(['min' => 'Value must be greater than or equal to zero.']),
-                Forms\Components\TextInput::make('subtotal')
-                    ->label('Subtotal')
-                    ->required()
-                    ->numeric()
-                    ->minValue(0)
-                    ->step(0.01)
-                    ->rules(['required', 'numeric', 'min:0'])
-                    ->validationMessages(['min' => 'Value must be greater than or equal to zero.']),
-            ]);
+        return $schema->schema([
+            Forms\Components\Select::make('order_id')
+                ->relationship('order', 'id')
+                ->required()
+                ->label('Order'),
+            Forms\Components\Select::make('meal_id')
+                ->relationship('meal', 'title')
+                ->required()
+                ->label('Meal'),
+            Forms\Components\TextInput::make('quantity')
+                ->label('Quantity')
+                ->required()
+                ->numeric()
+                ->integer()
+                ->minValue(1)
+                ->default(1)
+                ->rules(['required', 'integer', 'min:1'])
+                ->validationMessages(['min' => 'Value must be greater than zero.']),
+            Forms\Components\TextInput::make('unit_price')
+                ->label('Unit price')
+                ->required()
+                ->numeric()
+                ->minValue(0)
+                ->step(0.01)
+                ->rules(['required', 'numeric', 'min:0'])
+                ->validationMessages(['min' => 'Value must be greater than or equal to zero.']),
+            Forms\Components\TextInput::make('discount_amount')
+                ->label('Discount amount')
+                ->required()
+                ->numeric()
+                ->minValue(0)
+                ->step(0.01)
+                ->default(0)
+                ->rules(['required', 'numeric', 'min:0'])
+                ->validationMessages(['min' => 'Value must be greater than or equal to zero.']),
+            Forms\Components\TextInput::make('subtotal')
+                ->label('Subtotal')
+                ->required()
+                ->numeric()
+                ->minValue(0)
+                ->step(0.01)
+                ->rules(['required', 'numeric', 'min:0'])
+                ->validationMessages(['min' => 'Value must be greater than or equal to zero.']),
+        ]);
     }
 
     public static function table(Table $table): Table
@@ -110,11 +106,11 @@ class OrderItemResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
