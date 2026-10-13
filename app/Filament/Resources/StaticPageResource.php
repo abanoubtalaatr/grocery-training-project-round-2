@@ -1,13 +1,16 @@
 <?php
 
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\StaticPageResource\Pages;
 use App\Filament\Resources\StaticPageResource\RelationManagers;
 use App\Models\StaticPage;
 use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
+use Filament\Actions;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,12 +20,11 @@ class StaticPageResource extends Resource
 {
     protected static ?string $model = StaticPage::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema->schema([
                 Forms\Components\TextInput::make('slug')
                     ->label('URL slug')
                     ->required()
@@ -40,7 +42,7 @@ class StaticPageResource extends Resource
                     ->required()
                     ->columnSpanFull()
                     ->placeholder('Main page content (HTML or plain text)'),
-                Forms\Components\Section::make('SEO (Meta tags)')
+                Schemas\Components\Section::make('SEO (Meta tags)')
                     ->description('Optional. Used by search engines and when the page is shared.')
                     ->schema([
                         Forms\Components\TextInput::make('meta_title')
@@ -106,11 +108,11 @@ class StaticPageResource extends Resource
             ])
             ->defaultSort('order')
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

@@ -1,5 +1,8 @@
 <?php
 
+
+
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ReviewResource\Pages;
@@ -8,8 +11,9 @@ use App\Models\Meal;
 use App\Models\Review;
 use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
+use Filament\Actions;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,16 +23,15 @@ class ReviewResource extends Resource
 {
     protected static ?string $model = Review::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-star';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-star';
 
-    protected static ?string $navigationGroup = 'Products';
+    protected static string|\UnitEnum|null $navigationGroup = 'Products';
 
     protected static ?int $navigationSort = 3;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema->schema([
                 Forms\Components\Select::make('user_id')
                     ->label('User')
                     ->relationship('user', 'username')
@@ -128,11 +131,11 @@ class ReviewResource extends Resource
                     }),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                Actions\BulkActionGroup::make([
+                    Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }

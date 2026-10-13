@@ -1,13 +1,18 @@
 <?php
 
+
+
+
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\SettingResource\Pages;
 use App\Filament\Resources\SettingResource\RelationManagers;
 use App\Models\Setting;
 use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
+use Filament\Actions;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,9 +22,9 @@ class SettingResource extends Resource
 {
     protected static ?string $model = Setting::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-cog-6-tooth';
 
-    protected static ?string $navigationGroup = 'Settings';
+    protected static string|\UnitEnum|null $navigationGroup = 'Settings';
 
     protected static ?string $modelLabel = 'Store Settings';
 
@@ -27,11 +32,10 @@ class SettingResource extends Resource
 
     protected static ?int $navigationSort = 50;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Forms\Components\Section::make('General')
+        return $schema->schema([
+                Schemas\Components\Section::make('General')
                     ->schema([
                         Forms\Components\TextInput::make('site_name')
                             ->maxLength(255),
@@ -48,7 +52,7 @@ class SettingResource extends Resource
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('Contact Information')
+                Schemas\Components\Section::make('Contact Information')
                     ->schema([
                         Forms\Components\TextInput::make('email')
                             ->email()
@@ -69,7 +73,7 @@ class SettingResource extends Resource
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('Social Media')
+                Schemas\Components\Section::make('Social Media')
                     ->schema([
                         Forms\Components\TextInput::make('facebook')
                             ->maxLength(255)
@@ -99,7 +103,7 @@ class SettingResource extends Resource
                     ->columns(2)
                     ->collapsible(),
 
-                Forms\Components\Section::make('Store Configuration')
+                Schemas\Components\Section::make('Store Configuration')
                     ->schema([
                         Forms\Components\Select::make('store_status')
                             ->options([
@@ -135,7 +139,7 @@ class SettingResource extends Resource
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('Shipping')
+                Schemas\Components\Section::make('Shipping')
                     ->schema([
                         Forms\Components\TextInput::make('shipping_fee')
                             ->numeric()
@@ -152,7 +156,7 @@ class SettingResource extends Resource
                     ])
                     ->columns(2),
 
-                Forms\Components\Section::make('Payments & Tax')
+                Schemas\Components\Section::make('Payments & Tax')
                     ->schema([
                         Forms\Components\TextInput::make('tax_rate')
                             ->numeric()
@@ -204,7 +208,7 @@ class SettingResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Actions\EditAction::make(),
             ])
             ->bulkActions([
                 //

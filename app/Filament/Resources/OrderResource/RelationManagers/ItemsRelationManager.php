@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\OrderResource\RelationManagers;
 
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -13,9 +13,9 @@ class ItemsRelationManager extends RelationManager
 
     protected static ?string $title = 'Order items (products)';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form->schema([]);
+        return $schema->schema([]);
     }
 
     public function table(Table $table): Table
