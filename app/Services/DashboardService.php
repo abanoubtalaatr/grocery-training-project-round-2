@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\Meal;
+use App\Models\MealView;
+use App\Models\UserActivity;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\User;
@@ -22,6 +24,7 @@ class DashboardService
             'category_distribution' => $this->getCategoryDistribution($user),
             'recent_orders' => $this->getRecentOrders($user, $recentLimit),
             'top_purchases' => $this->getTopPurchases($user, $topPurchasesLimit),
+            'analytics' => $this->getAnalytics($user),
         ];
     }
 
@@ -210,5 +213,34 @@ class DashboardService
                 'total_quantity_purchased' => (int) $item->total_quantity,
                 'total_spent' => (float) $item->total_spent,
             ])->toArray();
+    }
+
+    private function getAnalytics(User $user): array
+    {
+        $totalTimeSpentMinutes = UserActivity::where('user_id', $user->id)
+            ->get()
+            ->sum(function ($activity) {
+                return $activity->session_start->diffInMinutes($activity->last_activity_at);
+            });
+
+        $viewedProductsCount = MealView::where('user_id', $user->id)
+            ->distinct('meal_id')
+            ->count('meal_id');
+
+        $ordersCount = Order::where('user_id', $user->id)
+            ->where('status', '!=', 'cancelled')
+            ->count();
+
+        $notificationsCount = $user->notifications()->whereNull('read_at')->count();
+
+        $favoritesCount = $user->favorites()->count();
+
+        return [
+            'time_spent_minutes' => (int) $totalTimeSpentMinutes,
+            'viewed_products_count' => (int) $viewedProductsCount,
+            'orders_count' => (int) $ordersCount,
+            'notifications_count' => (int) $notificationsCount,
+            'favorites_count' => (int) $favoritesCount,
+        ];
     }
 }
