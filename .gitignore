@@ -22,4 +22,5 @@ yarn-error.log
 /.agents
 /.claude
 /.terrain
-/.codegraph*.bak
+/.codegraph
+*.bak
