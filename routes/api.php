@@ -148,6 +148,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [ChatbotController::class, 'chat']);
         Route::get('/history', [ChatbotController::class, 'history']);
         Route::get('/suggestions', [ChatbotController::class, 'suggestions']);
+        Route::post('/handoff', [ChatbotController::class, 'handoff'])->middleware('throttle:chatbot');
     });
 
     Route::get('/cards', [StripeController::class, 'listCards']);
@@ -160,7 +161,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [OrderController::class, 'store']);
         Route::get('/', [OrderController::class, 'index']);
         Route::get('/track', [OrderController::class, 'track']);
-        Route::get('/{id}', [OrderController::class, 'show']);
+        Route::get('/{order}', [OrderController::class, 'show']);
 
         // Order chat (customer <-> driver)
         Route::get('/{order}/messages', [OrderChatController::class, 'index']);
